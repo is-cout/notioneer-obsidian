@@ -6,6 +6,16 @@ Practical "where do I go to change X" answers. For the how-things-fit-together v
      per user-facing setting or customization point. Keep entries short and point at
      the exact file/symbol, not a general explanation. -->
 
+### How do I add or edit a slash command?
+
+Add an entry to `SLASH_COMMANDS` in [src/slash/commands.ts](../src/slash/commands.ts). The
+`snippet` field is literal Markdown; put `${cursor}` where the caret should land. Nothing
+else needs registering.
+
+### How do I turn the slash menu off?
+
+Settings → Community plugins → Notioneer → **Slash commands**.
+
 ### Can I bump a dependency version?
 
 Only with explicit approval — versions are pinned on purpose. See [DEPENDENCIES.md](DEPENDENCIES.md).

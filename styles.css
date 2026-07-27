@@ -1,1 +1,13 @@
 /* src/styles/index.css */
+.notioneer-slash-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.notioneer-slash-name {
+  font-weight: var(--font-medium);
+}
+.notioneer-slash-desc {
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+}

@@ -1,3 +1,20 @@
 /* Plugin styles. Bundled by esbuild into the root styles.css — don't hand-edit
    the root file, edit this one (or split it into partials imported here once
    it grows past a page or two). */
+
+/* --- Slash command menu --- */
+
+.notioneer-slash-item {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.notioneer-slash-name {
+	font-weight: var(--font-medium);
+}
+
+.notioneer-slash-desc {
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+}

@@ -24,9 +24,25 @@ Scope decisions, set at scaffold time:
 | File | Responsibility |
 |---|---|
 | `src/main.ts` | Plugin entry point: `onload`/`onunload`, settings load/save, settings tab. |
+| `src/slash/commands.ts` | The slash command list (each one a plain-Markdown snippet) and the filter used by the menu. |
+| `src/slash/suggest.ts` | `EditorSuggest` subclass: when `/` opens the menu, and how the chosen snippet is inserted. |
 
 <!-- Add a row per new src/*.ts file as the project grows past a single file — this
      table is the map a new contributor (or future Claude session) reads first. -->
+
+## Slash commands
+
+`SlashSuggest` extends Obsidian's `EditorSuggest`, so the menu inherits the app's own
+keyboard handling and styling. It triggers only when `/` sits at the start of a line or
+after whitespace — otherwise dates (`1/2`) and URLs would open the menu.
+
+Each command in `SLASH_COMMANDS` carries a `snippet` of literal Markdown. `${cursor}`
+inside the snippet marks where the caret goes afterwards; it is stripped before insertion.
+Adding a command means adding an entry to that array — there is no registration step.
+
+The suggester is registered unconditionally and reads the `slashCommands` setting at
+trigger time. Unregistering would need `workspace.editorSuggest`, which is not in the
+public API.
 
 ## Build pipeline
 

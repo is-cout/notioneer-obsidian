@@ -4,6 +4,23 @@ Living log of significant changes to the project. This is **not** optional bookk
 
 Format: `YYYY-MM-DD — short description. Why (if not obvious). Files touched.`
 
+## 2026-07-27 (0.6.0)
+
+- **Note header ported from make.md instead of re-derived.** `src/styles/header.css` is now
+  make.md's CSS copied verbatim (`FileContext.css`, `FlowEditor.css`, the `--mk-ui-*` aliases
+  from `DefaultVibe.css`) and the DOM uses their class names and element order, so the rules
+  apply as written. Why: 0.5.0 reimplemented the layout from reading their source and got two
+  things wrong that made it look nothing like make.md — the header was constrained to
+  `--file-line-width` a second time (`.cm-sizer` already does it) and the banner sat in the
+  flow instead of `position: absolute` + `.mk-spacer`.
+- **Fixed the cover buttons doing nothing.** CodeMirror disables pointer events on what is
+  injected into `.cm-sizer`, so the click never reached the handler and no `cover` key was
+  ever written — the image was never the problem. make.md has the same `pointer-events: all`
+  rule for its reading-mode header.
+- CSS is split into per-feature partials imported by `index.css`.
+- Files: `src/styles/header.css` (new), `src/styles/index.css`, `src/header/noteHeader.ts`,
+  `docs/ARCHITECTURE.md`, `docs/FAQ.md`, `package.json`, `manifest.json`, `versions.json`.
+
 ## 2026-07-27 (0.5.0)
 
 - **Note header rebuilt to match make.md.** The 0.4.0 header was an approximation written

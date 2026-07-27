@@ -69,25 +69,40 @@ instead of eating one of the bold asterisks.
 
 ## Note header
 
-Structured after make.md's `MarkdownHeaderView` (MIT — see [Credits](#credits)): banner
-image, the note title overlapping its bottom edge, then the note's properties.
+A port of make.md's `MarkdownHeaderView` (MIT — see [Credits](#credits)), not an imitation of
+it: `src/styles/header.css` is their CSS copied verbatim, and `src/header/noteHeader.ts`
+builds their DOM, with their class names, so the copied rules apply as written.
 
-The element is prepended to each Markdown editor's `.cm-sizer`, the same mount point make.md
-uses (`inlineContextLoader.tsx`). `.cm-sizer` spans the full editor width, which is what lets
-the banner bleed past the reading width while the title and property rows stay inside it via
-`--file-line-width` / `--file-margins`. With a banner the title block is pulled up 34px so it
-overlaps the image.
+```
+.mk-inline-context                 prepended to .cm-sizer
+  .mk-path-context-component
+    .mk-path-context-label
+      .mk-space-banner > img       absolute — escapes the reading width
+      .mk-space-banner-buttons     add / change / remove cover
+      .mk-spacer                   reserves the banner's height in the flow
+      .mk-inline-title.inline-title
+    .mk-path-context-properties
+      .mk-path-context-row*        one per frontmatter key
+      .mk-path-context-row-new
+```
 
-Obsidian's own inline title and `.metadata-container` are hidden by the
-`notioneer-inline-context-enabled` body class while the header is on, so nothing renders
-twice. That is scoped to `.markdown-source-view` — reading view has no `.cm-sizer`, gets no
-header, and keeps the native panel.
+The mount point is make.md's too (`inlineContextLoader.tsx`). `.cm-sizer` already carries the
+reading width, so the title and property rows line up with the note body without any width
+rules of their own — and the banner has to be `position: absolute` to escape it, with
+`.mk-spacer` reserving the height it gives up. Getting this wrong is what made an earlier
+version look nothing like make.md: it constrained the header to `--file-line-width` a second
+time and let the banner sit in the flow.
 
-Colours and metrics come from Obsidian's theme variables (`--text-faint`,
-`--background-modifier-hover`, `--file-line-width`, …), so the header follows the active
-theme. make.md aliases those into `--mk-ui-*` in `DefaultVibe.css` first; Notioneer uses the
-Obsidian variables directly rather than carrying the alias layer. The title reuses Obsidian's
-own `inline-title` class for the same reason.
+Colours come from `--mk-ui-*`, which make.md defines in `DefaultVibe.css` as aliases of
+Obsidian's theme variables (`--mk-ui-text-tertiary` -> `--text-faint`, and so on). That alias
+block is copied too, scoped to `.mk-inline-context`, so the header follows the active theme.
+The title reuses Obsidian's own `inline-title` class for the same reason.
+
+Two rules are ours, marked `Notioneer:` in the CSS. CodeMirror disables pointer events on
+what is injected into `.cm-sizer`, so buttons and inputs need `pointer-events: all` — make.md
+has the equivalent rule for its reading-mode header, and without it the cover buttons are
+dead. And `.metadata-container` is hidden inside the editor, since the property rows replace
+it there; reading view gets no header and keeps the native panel.
 
 State lives entirely in the note:
 
@@ -108,16 +123,24 @@ title or a property value would be interrupted by the write it triggers.
 
 - TypeScript (`tsconfig.json`) type-checks `src/**/*.ts` (`tsc -noEmit`) — no `.js` is emitted by `tsc` itself.
 - [esbuild](https://esbuild.github.io/) (`esbuild.config.mjs`) bundles `src/main.ts` into a single CommonJS `main.js`, externalizing `obsidian`, `electron`, CodeMirror/Lezer packages (provided by the Obsidian host at runtime) and Node builtins.
-- A second esbuild step bundles `src/styles/index.css` into the root `styles.css` — the file Obsidian actually loads. The root `styles.css` is generated; edit the source under `src/styles/` instead.
+- A second esbuild step bundles `src/styles/index.css` into the root `styles.css` — the file Obsidian actually loads. `index.css` `@import`s the per-feature partials (`header.css`); esbuild inlines them. The root `styles.css` is generated; edit the sources under `src/styles/` instead.
 - `manifest.json` + `versions.json` follow the standard Obsidian plugin conventions (`minAppVersion` compatibility map).
 
 See [DEVELOPMENT.md](DEVELOPMENT.md) for how to actually run the build.
 
 ## Credits
 
-The note header's layout and CSS are ported from [make.md](https://github.com/Make-md/makemd)
-(`src/core/react/components/MarkdownEditor/MarkdownHeaderView.tsx`, `BannerView.tsx`,
-`src/css/Panels/FileContext.css`, `src/adapters/obsidian/inlineContextLoader.tsx`), MIT
-licensed, Copyright (c) 2022 JP Cen. make.md is React-based; Notioneer reimplements the same
-structure in plain DOM, without spaces, stickers, banner repositioning, or the `--mk-ui-*`
-variable layer.
+The note header is ported from [make.md](https://github.com/Make-md/makemd), MIT licensed,
+Copyright (c) 2022 JP Cen:
+
+| make.md | Notioneer |
+|---|---|
+| `src/css/Panels/FileContext.css`, `src/css/Editor/Flow/FlowEditor.css`, `src/css/DefaultVibe.css` | `src/styles/header.css` — rules copied verbatim, additions marked `Notioneer:` |
+| `src/core/react/components/MarkdownEditor/MarkdownHeaderView.tsx`, `BannerView.tsx`, `SpaceView/TitleComponent.tsx`, `SpaceEditor/HeaderPropertiesView.tsx` | `src/header/noteHeader.ts` — same DOM and class names, plain DOM instead of React |
+| `src/adapters/obsidian/inlineContextLoader.tsx` | the `.cm-sizer` mount in `NoteHeader.render` |
+
+Not ported: spaces, stickers, banner repositioning (`banner_y`), inline backlinks, the
+property type system, and the React/`Superstate` core those depend on. Forking make.md
+wholesale was considered and rejected — 605 source files, ~128k lines and 55 runtime
+dependencies, with the header components resting on the spaces core (40–65 `superstate` /
+`spaceManager` / `pathState` references each) that this plugin exists to leave out.

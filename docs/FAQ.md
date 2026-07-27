@@ -41,9 +41,21 @@ reading view still uses the native one.
 
 ### How do I change the cover height?
 
-`--notioneer-banner-height` on `.notioneer-inline-context` in
-[src/styles/index.css](../src/styles/index.css) — or override it in a CSS snippet. Rebuild
+`--mk-banner-height` on `.mk-inline-context` in
+[src/styles/header.css](../src/styles/header.css) — or override it in a CSS snippet. Rebuild
 after editing the source; the root `styles.css` is generated.
+
+### Why does the header use make.md's `mk-` class names?
+
+So make.md's CSS can be copied verbatim instead of re-derived — see
+[ARCHITECTURE.md](ARCHITECTURE.md#note-header). If you also have make.md installed, its rules
+will match these elements too; they are the same rules, so it looks the same.
+
+### I have a snippet hiding the native properties panel — do I still need it?
+
+No. Notioneer hides `.metadata-container` inside the editor on its own. A snippet that also
+hides it in *reading* view will leave you with no properties there at all, since the header
+only renders in the editor.
 
 ### Can I bump a dependency version?
 

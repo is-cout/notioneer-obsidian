@@ -28,6 +28,8 @@ Scope decisions, set at scaffold time:
 | `src/slash/suggest.ts` | `EditorSuggest` subclass: when `/` opens the menu, and how the chosen snippet is inserted. |
 | `src/toolbar/format.ts` | The inline formats and the wrap/unwrap logic they apply to the selection. |
 | `src/toolbar/selectionToolbar.ts` | The floating toolbar element: when to show it, where to place it, wiring buttons to formats. |
+| `src/header/noteHeader.ts` | The per-view note header: cover image, editable title, cover add/remove actions. |
+| `src/header/coverPicker.ts` | Fuzzy modal listing the vault's image files, used to pick a cover. |
 | `src/editorUtils.ts` | Shared editor-position math (`positionAfter`). |
 
 <!-- Add a row per new src/*.ts file as the project grows past a single file — this
@@ -63,6 +65,22 @@ before the action ran. Only source/Live Preview mode is handled; reading view ha
 selected) or around it (`word` selected inside `**word**`), and refuses to match a marker
 whose neighbouring character repeats it — so italic on `**bold**` nests to `***bold***`
 instead of eating one of the bold asterisks.
+
+## Note header
+
+The header element is prepended to each Markdown editor's `.cm-sizer`, so it scrolls with
+the note and inherits the reading width. Obsidian's native properties panel already sits in
+that same container just below — which is why Notioneer renders cover + title only and does
+**not** reimplement a properties editor. Reading view has no `.cm-sizer` and is left alone.
+
+State lives entirely in the note: the cover is a `cover` frontmatter key (an external URL,
+or a vault path resolved through `metadataCache.getFirstLinkpathDest` +
+`vault.getResourcePath`), and the title is the filename, renamed through
+`fileManager.renameFile` so links update.
+
+Rendering is a full repaint of the header on `layout-change` / `file-open` /
+`active-leaf-change` / `metadataCache.changed`. Repainting is skipped while focus is inside
+the header, otherwise editing the title would be interrupted by its own rename event.
 
 ## Build pipeline
 

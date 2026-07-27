@@ -35,6 +35,8 @@ import { IMakeMDPlugin } from "shared/types/makemd";
 import { LocalCachePersister } from "shared/types/persister";
 import { modifyFlowDom } from "./adapters/obsidian/inlineContextLoader";
 import { NotioneerSettingsTab } from "./adapters/obsidian/notioneerSettings";
+import { SlashSuggest } from "./notioneer-slash/suggest";
+import { SelectionToolbar } from "./notioneer-toolbar/selectionToolbar";
 
 import "css/DefaultVibe.css";
 import "css/Editor/Properties/DatePicker.css";
@@ -46,6 +48,7 @@ import "css/Obsidian/Mods.css";
 import "css/Panels/FileContext.css";
 import "css/System/Settings.css";
 import "css/UI/Buttons.css";
+import "css/notioneer.css";
 
 /** Notioneer's entry point.
 
@@ -119,6 +122,7 @@ export default class NotioneerPlugin extends Plugin implements IMakeMDPlugin {
 
 		this.loadSuperstate();
 		this.loadInlineContext();
+		this.loadEditorTools();
 		this.addSettingTab(new NotioneerSettingsTab(this.app, this));
 	}
 
@@ -151,6 +155,16 @@ export default class NotioneerPlugin extends Plugin implements IMakeMDPlugin {
 
 		this.registerEvent(this.app.workspace.on("active-leaf-change", () => this.refreshHeader()));
 		this.registerEvent(this.app.workspace.on("layout-change", () => this.refreshHeader()));
+	}
+
+	/** Notioneer's own editor features, in place of make.md's "basics": slash commands that
+	    insert plain Markdown (theirs insert make.md blocks — the reason this plugin exists)
+	    and a selection formatting toolbar. Both are plain DOM and use no React. */
+	private loadEditorTools(): void {
+		this.registerEditorSuggest(
+			new SlashSuggest(this.app, () => this.superstate.settings.notioneerSlashCommands),
+		);
+		new SelectionToolbar(this, () => this.superstate.settings.notioneerSelectionToolbar);
 	}
 
 	/** Mounts (or re-mounts) the header on the active Markdown editor. Upstream drives this

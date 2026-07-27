@@ -51,6 +51,19 @@ export class NotioneerSettingsTab extends PluginSettingTab {
 					}),
 			);
 
+		new Setting(containerEl).setName("Editor").setHeading();
+
+		this.toggle(
+			"Slash commands",
+			"Type / in the editor to insert Markdown blocks. Unlike make.md's, these insert plain Markdown — /table gives a real Markdown table.",
+			"notioneerSlashCommands",
+		);
+		this.toggle(
+			"Selection toolbar",
+			"Show a formatting toolbar when text is selected.",
+			"notioneerSelectionToolbar",
+		);
+
 		new Setting(containerEl).setName("Frontmatter keys").setHeading();
 
 		this.text("Cover", "Frontmatter key the cover image is stored under.", "fmKeyBanner");
@@ -60,7 +73,7 @@ export class NotioneerSettingsTab extends PluginSettingTab {
 	private toggle(
 		name: string,
 		description: string,
-		key: "inlineContext" | "banners" | "inlineContextProperties",
+		key: "inlineContext" | "banners" | "inlineContextProperties" | "notioneerSlashCommands" | "notioneerSelectionToolbar",
 		onChanged?: () => void,
 	): void {
 		new Setting(this.containerEl)

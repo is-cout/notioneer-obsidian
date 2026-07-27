@@ -91,4 +91,8 @@ export interface MakeMDSettings {
   contextCreateUseModal: boolean;
   homepagePath: string;
   mobileMakeHeader: boolean;
+
+  // Notioneer additions: our own editor features, in place of make.md's "basics".
+  notioneerSlashCommands: boolean;
+  notioneerSelectionToolbar: boolean;
 }

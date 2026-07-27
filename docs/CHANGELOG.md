@@ -4,6 +4,31 @@ Living log of significant changes to the project. This is **not** optional bookk
 
 Format: `YYYY-MM-DD — short description. Why (if not obvious). Files touched.`
 
+## 2026-07-27 (0.8.0)
+
+- **Stripped the fork down to the header (stage 2).** `src/main.ts` rewritten to wire up only
+  the note header, then everything the entry point could no longer reach was deleted:
+  619 -> 305 source files, `main.js` 5.7 -> 4.4 MB, `styles.css` 149 -> 58 KB. Gone: navigator,
+  space views and space editor, frames and frame editor, context/table views, Blink, inline
+  backlinks, D3 visualizations, `.mdb`/`.mkit`/`.html` editors, kit install, export, dataview
+  adapter, tab stickers, and make.md’s settings tab (replaced by a small one with only the
+  settings that still do something).
+- Four import edges were keeping the whole tree alive and had to be cut first: the
+  `makemd-core` barrel (205 importers, now rewritten to direct imports and deleted), a
+  four-string union type `BannerView` imported from the frame editor, the `CellEditMode` enum
+  and cell prop types living inside `TableView` (moved to `shared/types/cellEditMode.ts`), and
+  `PropertyField` living inside the context-list editor (moved out; freed 132 files at once).
+  Details in `docs/ARCHITECTURE.md`.
+- Added `scripts/unreachable.mjs` (reachability from the entry, with `--delete` and `--why`)
+  and `scripts/debarrel.mjs`. The first is how stage 4 will be done too.
+- **Restored the Markdown slash commands and selection toolbar (stage 3).** Back from
+  `legacy/` into `src/notioneer-slash/` and `src/notioneer-toolbar/`, with
+  `notioneerSlashCommands` / `notioneerSelectionToolbar` settings. `/table` inserts a real
+  Markdown table again — make.md’s own slash commands went out with `basics`.
+- Files: `src/main.ts`, `src/adapters/obsidian/notioneerSettings.ts` (new), `src/notioneer-slash/`,
+  `src/notioneer-toolbar/`, `src/css/notioneer.css`, `src/shared/types/cellEditMode.ts` (new),
+  `scripts/`, `docs/ARCHITECTURE.md`, `docs/FAQ.md`, `README.md`, plus 300+ deletions.
+
 ## 2026-07-27 (0.7.0)
 
 - **Became a fork of make.md** (stage 1 of 3). Reimplementing the header from their source

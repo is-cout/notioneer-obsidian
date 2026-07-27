@@ -2,31 +2,40 @@ import { MarkdownView, Menu, Plugin, TFile, normalizePath, setIcon } from "obsid
 import { CoverPicker } from "./coverPicker";
 import { NewPropertyModal } from "./newPropertyModal";
 
-const HEADER_CLASS = "notioneer-inline-context";
+/** Body class make.md uses to hide Obsidian's own inline title while its header renders one. */
+const ENABLED_BODY_CLASS = "mk-inline-context-enabled";
 
-/** Body class that hides Obsidian's own inline title and properties panel while the
-    Notioneer header is rendering them instead. */
-const ENABLED_BODY_CLASS = "notioneer-inline-context-enabled";
+const ROOT_CLASS = "mk-inline-context";
 
-/** Frontmatter key holding the cover image — the same key make.md's banner uses, so a
-    vault that already has covers keeps them. Plain YAML: the note still makes sense
-    without this plugin. */
+/** Frontmatter key holding the cover image — the key make.md's banner uses, so a vault that
+    already has covers keeps them. Plain YAML: the note still makes sense without the plugin. */
 const COVER_KEY = "cover";
 
-/** Notion-style note header, structured after make.md's `MarkdownHeaderView`: banner
-    image, the note title overlapping its bottom edge, then the note's properties.
+/** make.md's banner height (`bannerHeight` in core/schemas/settings.ts) minus the offsets its
+    BannerView applies for a header with no sticker. Reserves the flow space the absolutely
+    positioned banner gives up. */
+const SPACER_HEIGHT = 200 - 62 + 40;
 
-    Layout notes, all inherited from make.md:
-    - The element is prepended to the editor's `.cm-sizer`, which spans the full editor
-      width — that is what lets the banner bleed past the reading width while the title
-      and properties stay inside it (`--file-line-width` / `--file-margins`).
-    - With a banner, the title block is pulled up by 34px so it overlaps the image.
-    - Colours come from Obsidian's own theme variables (`--text-muted`, `--file-line-width`,
-      …), which is why the header follows whatever theme is active. make.md aliases those
-      into `--mk-ui-*` first; we use the Obsidian variables directly.
+/** Notion-style note header: banner, title, properties.
 
-    Only source/Live Preview is handled — reading view has no `.cm-sizer` and keeps
-    Obsidian's native properties panel. */
+    The DOM mirrors make.md's `MarkdownHeaderView` — same element order and the same class
+    names — because `src/styles/header.css` is their CSS copied verbatim. Change one and the
+    other has to move with it.
+
+        .mk-inline-context                 (prepended to .cm-sizer)
+          .mk-path-context-component
+            .mk-path-context-label
+              .mk-space-banner > img       (absolute, escapes the reading width)
+              .mk-space-banner-buttons     (add / change / remove cover)
+              .mk-spacer                   (reserves the banner's height in the flow)
+              .mk-inline-title.inline-title
+            .mk-path-context-properties
+              .mk-path-context-row*        (one per frontmatter key)
+              .mk-path-context-row-new     (new property)
+
+    `.cm-sizer` already carries the reading width, so everything except the banner lines up
+    with the note body for free. Only source/Live Preview is handled — reading view has no
+    `.cm-sizer` and keeps Obsidian's native properties panel. */
 export class NoteHeader {
 	constructor(
 		private plugin: Plugin,
@@ -39,7 +48,7 @@ export class NoteHeader {
 		plugin.registerEvent(metadataCache.on("changed", () => this.refreshAll()));
 		plugin.register(() => {
 			document.body.removeClass(ENABLED_BODY_CLASS);
-			document.querySelectorAll(`.${HEADER_CLASS}`).forEach((el) => el.remove());
+			document.querySelectorAll(`.${ROOT_CLASS}`).forEach((el) => el.remove());
 		});
 		workspace.onLayoutReady(() => this.refreshAll());
 	}
@@ -54,43 +63,40 @@ export class NoteHeader {
 	private render(view: MarkdownView): void {
 		const sizer = view.contentEl.querySelector(".cm-sizer");
 		const file = view.file;
-		const existing = sizer?.querySelector<HTMLElement>(`:scope > .${HEADER_CLASS}`);
+		const existing = sizer?.querySelector<HTMLElement>(`:scope > .${ROOT_CLASS}`);
 
 		if (!sizer || !file || !this.isEnabled()) {
 			existing?.remove();
 			return;
 		}
 
-		// A repaint would blow away the caret; the DOM is already what the user typed.
+		// A repaint would blow away the caret; the DOM already holds what the user typed.
 		if (existing?.contains(document.activeElement)) return;
 
-		const header = existing ?? createDiv({ cls: HEADER_CLASS });
-		header.empty();
+		const root = existing ?? createDiv({ cls: ROOT_CLASS });
+		root.empty();
 
-		const cover = this.coverSource(file);
-		this.paintBanner(header, file, cover);
-		this.paintTitle(header, file, cover !== null);
-		this.paintProperties(header, file);
+		const component = root.createDiv({ cls: "mk-path-context-component" });
+		const label = component.createDiv({ cls: "mk-path-context-label" });
+		this.paintBanner(label, file);
+		this.paintTitle(label, file);
+		this.paintProperties(component, file);
 
-		// Prepend rather than append: Obsidian re-inserts its own children on view changes.
-		if (header.parentElement !== sizer || sizer.firstElementChild !== header) {
-			sizer.prepend(header);
-		}
+		if (sizer.firstElementChild !== root) sizer.prepend(root);
 	}
 
 	// --- banner -------------------------------------------------------------
 
-	private paintBanner(header: HTMLElement, file: TFile, cover: string | null): void {
+	private paintBanner(label: HTMLElement, file: TFile): void {
+		const cover = this.coverSource(file);
 		if (cover !== null) {
-			const banner = header.createDiv({ cls: "notioneer-banner" });
-			// An <img> rather than a CSS background: resource paths contain characters
-			// (spaces, #, %) that would need escaping inside url().
+			const banner = label.createDiv({ cls: "mk-space-banner" });
+			// An <img> rather than a CSS background: Obsidian's resource paths contain
+			// characters that would need escaping inside url().
 			banner.createEl("img", { attr: { src: cover, alt: "" } });
 		}
 
-		const buttons = header.createDiv({
-			cls: `notioneer-banner-buttons${cover !== null ? " notioneer-over-banner" : ""}`,
-		});
+		const buttons = label.createDiv({ cls: "mk-space-banner-buttons" });
 		this.addButton(buttons, "image", cover !== null ? "Change cover" : "Add cover", () =>
 			new CoverPicker(this.plugin.app, (image) =>
 				this.saveFrontmatter(file, (fm) => {
@@ -99,9 +105,13 @@ export class NoteHeader {
 			).open(),
 		);
 		if (cover !== null) {
-			this.addButton(buttons, "trash-2", "Remove cover", () =>
+			this.addButton(buttons, "file-minus", "Remove cover", () =>
 				this.saveFrontmatter(file, (fm) => delete fm[COVER_KEY]),
 			);
+			label.createDiv({
+				cls: "mk-spacer",
+				attr: { style: `--mk-header-height: ${SPACER_HEIGHT}px` },
+			});
 		}
 	}
 
@@ -111,15 +121,14 @@ export class NoteHeader {
 		label: string,
 		onClick: () => void,
 	): void {
-		const button = parent.createEl("button", { cls: "notioneer-hover-button" });
-		const iconEl = button.createSpan();
-		setIcon(iconEl, icon);
+		const button = parent.createEl("button", { cls: "mk-hover-button" });
+		setIcon(button.createDiv(), icon);
 		button.createSpan({ text: label });
 		button.addEventListener("click", onClick);
 	}
 
-	/** Resolves the `cover` value to something an `<img>` can load: an external URL as-is,
-	    a vault path (bare or wrapped in `[[ ]]`) through the resource path. */
+	/** Resolves the `cover` value to something an `<img>` can load: an external URL as-is, a
+	    vault path (bare or wrapped in `[[ ]]`) through the resource path. */
 	private coverSource(file: TFile): string | null {
 		const raw = this.plugin.app.metadataCache.getFileCache(file)?.frontmatter?.[COVER_KEY];
 		if (typeof raw !== "string" || raw.trim() === "") return null;
@@ -135,13 +144,10 @@ export class NoteHeader {
 
 	// --- title --------------------------------------------------------------
 
-	private paintTitle(header: HTMLElement, file: TFile, hasBanner: boolean): void {
-		const wrapper = header.createDiv({
-			cls: `notioneer-header-title${hasBanner ? " notioneer-has-banner" : ""}`,
-		});
-		// `inline-title` is Obsidian's own class, so the title picks up the active theme's
-		// note-title styling instead of an approximation of it.
-		const title = wrapper.createDiv({ cls: "notioneer-title inline-title" });
+	private paintTitle(label: HTMLElement, file: TFile): void {
+		// `inline-title` is Obsidian's own class: the title picks up the active theme's
+		// note-title styling rather than an approximation of it.
+		const title = label.createDiv({ cls: "mk-inline-title inline-title" });
 		title.contentEditable = "true";
 		title.setAttribute("data-ph", "Untitled");
 		title.textContent = file.basename;
@@ -181,18 +187,20 @@ export class NoteHeader {
 
 	// --- properties ---------------------------------------------------------
 
-	private paintProperties(header: HTMLElement, file: TFile): void {
-		const container = header.createDiv({ cls: "notioneer-properties" });
-		const frontmatter =
-			this.plugin.app.metadataCache.getFileCache(file)?.frontmatter ?? {};
+	private paintProperties(component: HTMLElement, file: TFile): void {
+		const properties = component.createDiv({ cls: "mk-path-context-properties" });
+		const frontmatter = this.plugin.app.metadataCache.getFileCache(file)?.frontmatter ?? {};
 
 		for (const key of Object.keys(frontmatter)) {
 			if (key === COVER_KEY) continue;
-			this.paintProperty(container, file, key, frontmatter[key]);
+			this.paintProperty(properties, file, key, frontmatter[key]);
 		}
 
-		const actions = container.createDiv({ cls: "notioneer-properties-actions" });
-		this.addButton(actions, "plus", "New property", () =>
+		const newRow = properties.createDiv({ cls: "mk-path-context-row-new" });
+		const newField = newRow.createDiv({ cls: "mk-path-context-new" });
+		setIcon(newField.createDiv({ cls: "mk-path-context-field-icon" }), "plus");
+		newField.createDiv({ cls: "mk-path-context-field-key", text: "New property" });
+		newField.addEventListener("click", () =>
 			new NewPropertyModal(this.plugin.app, (name) =>
 				this.saveFrontmatter(file, (fm) => {
 					if (!(name in fm)) fm[name] = "";
@@ -202,18 +210,17 @@ export class NoteHeader {
 	}
 
 	private paintProperty(
-		container: HTMLElement,
+		properties: HTMLElement,
 		file: TFile,
 		key: string,
 		value: unknown,
 	): void {
-		const row = container.createDiv({ cls: "notioneer-property-row" });
+		const row = properties.createDiv({ cls: "mk-path-context-row" });
 
-		const keyEl = row.createDiv({ cls: "notioneer-property-key" });
-		const iconEl = keyEl.createDiv({ cls: "notioneer-property-icon" });
-		setIcon(iconEl, iconForValue(value));
-		keyEl.createDiv({ cls: "notioneer-property-name", text: key });
-		keyEl.addEventListener("contextmenu", (event) => {
+		const field = row.createDiv({ cls: "mk-path-context-field" });
+		setIcon(field.createDiv({ cls: "mk-path-context-field-icon" }), iconForValue(value));
+		field.createDiv({ cls: "mk-path-context-field-key", text: key });
+		field.addEventListener("contextmenu", (event) => {
 			const menu = new Menu();
 			menu.addItem((item) =>
 				item
@@ -224,11 +231,8 @@ export class NoteHeader {
 			menu.showAtMouseEvent(event);
 		});
 
-		const input = row.createEl("input", {
-			cls: "notioneer-property-value",
-			type: "text",
-			value: displayValue(value),
-		});
+		const cell = row.createDiv({ cls: "mk-path-context-value" });
+		const input = cell.createEl("input", { type: "text", value: displayValue(value) });
 		input.placeholder = "Empty";
 		input.addEventListener("keydown", (event) => {
 			if (event.key === "Enter") input.blur();

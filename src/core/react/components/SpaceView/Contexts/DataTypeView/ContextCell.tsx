@@ -17,7 +17,7 @@ import {
   serializeMultiDisplayString,
   serializeMultiString,
 } from "utils/serializers";
-import { TableCellMultiProp } from "../TableView/TableView";
+import { TableCellMultiProp } from "shared/types/cellEditMode";
 import { OptionCellBase } from "./OptionCell";
 
 export const ContextCell = (

@@ -1,4 +1,5 @@
-import { SelectSection, UIManager } from "makemd-core";
+import { SelectSection } from "shared/types/menu";
+import { UIManager } from "core/middleware/ui";
 import React, {
   CSSProperties,
   forwardRef,

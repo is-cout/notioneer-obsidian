@@ -4,7 +4,7 @@ import { runFormulaWithContext } from "core/utils/formula/parser";
 import { ensureArray, ensureBoolean, ensureString, ensureStringValueFromSet } from "core/utils/strings";
 import { compareByField, compareByFieldCaseInsensitive, compareByFieldDeep, compareByFieldNumerical } from "core/utils/tree";
 import { isTouchScreen } from "core/utils/ui/screen";
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import i18n from "shared/i18n";
 import { SpaceProperty } from "shared/types/mdb";
 import { MDBFrame } from "shared/types/mframe";

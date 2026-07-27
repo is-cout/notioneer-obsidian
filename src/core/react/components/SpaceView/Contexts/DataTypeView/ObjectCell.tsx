@@ -7,7 +7,8 @@ import {
 } from "core/react/components/UI/Menus/menu/SelectionMenu";
 import { InputModal } from "core/react/components/UI/Modals/InputModal";
 import { parseFieldValue } from "core/schemas/parseFieldValue";
-import { SelectOption, Superstate } from "makemd-core";
+import { SelectOption } from "shared/types/menu";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import i18n from "shared/i18n";
@@ -16,7 +17,8 @@ import { MenuObject } from "shared/types/menu";
 import { windowFromDocument } from "shared/utils/dom";
 import { parseObject } from "utils/parsers";
 import { propertyIsObjectType } from "utils/properties";
-import { CellEditMode, TableCellMultiProp } from "../TableView/TableView";
+import { CellEditMode } from "shared/types/cellEditMode";
+import { TableCellMultiProp } from "shared/types/cellEditMode";
 import { DataPropertyView } from "./DataPropertyView";
 
 export type ObjectType = {

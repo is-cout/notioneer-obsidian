@@ -1,5 +1,6 @@
 import { PathProvider } from "core/react/context/PathContext";
-import { MarkdownHeaderView, Superstate } from "makemd-core";
+import { MarkdownHeaderView } from "core/react/components/MarkdownEditor/MarkdownHeaderView";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import React, { useEffect, useRef, useState } from "react";
 
 export const ReadingModeHeader = (props: {

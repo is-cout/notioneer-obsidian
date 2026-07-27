@@ -1,6 +1,7 @@
 import { parseFieldValue } from "core/schemas/parseFieldValue";
 import React, { useEffect, useMemo } from "react";
-import { CellEditMode, TableCellProp } from "../TableView/TableView";
+import { CellEditMode } from "shared/types/cellEditMode";
+import { TableCellProp } from "shared/types/cellEditMode";
 
 export const BooleanCell = (props: TableCellProp) => {
   const { initialValue, saveValue } = props;

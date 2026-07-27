@@ -8,7 +8,7 @@ import {
 import { renamePathByName } from "core/superstate/utils/path";
 import { savePathIcon } from "core/utils/emoji";
 import { isPhone } from "core/utils/ui/screen";
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import i18n from "shared/i18n";
 import React, {
   PropsWithChildren,

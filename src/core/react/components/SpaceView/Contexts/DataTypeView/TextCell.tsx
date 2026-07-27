@@ -1,7 +1,8 @@
 import i18n from "shared/i18n";
 
 import React, { useEffect, useRef } from "react";
-import { CellEditMode, TableCellProp } from "../TableView/TableView";
+import { CellEditMode } from "shared/types/cellEditMode";
+import { TableCellProp } from "shared/types/cellEditMode";
 
 export const TextCell = (props: TableCellProp) => {
   const { initialValue, saveValue } = props;

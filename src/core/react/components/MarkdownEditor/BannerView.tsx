@@ -6,7 +6,8 @@ import {
   saveProperties,
 } from "core/superstate/utils/spaces";
 import { isTouchScreen } from "core/utils/ui/screen";
-import { SelectOption, Superstate } from "makemd-core";
+import { SelectOption } from "shared/types/menu";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import React, {
   useCallback,
   useContext,
@@ -17,7 +18,9 @@ import React, {
 import i18n from "shared/i18n";
 import { URI } from "shared/types/path";
 import { windowFromDocument } from "shared/utils/dom";
-import { InputModifier } from "../SpaceView/Frames/Setters/StepSetter";
+// Notioneer: inlined from SpaceView/Frames/Setters/StepSetter, whose module would otherwise
+// pull the whole frame editor into the bundle for a four-string union.
+type InputModifier = "shiftKey" | "altKey" | "ctrlKey" | "metaKey";
 import { defaultMenu } from "../UI/Menus/menu/SelectionMenu";
 
 export const BannerView = (props: {

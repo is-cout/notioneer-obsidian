@@ -1,6 +1,6 @@
 
 import { savePathColor } from "core/superstate/utils/label";
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import { savePathSticker } from "shared/utils/sticker";
 
 

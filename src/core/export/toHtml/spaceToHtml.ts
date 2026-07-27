@@ -1,7 +1,7 @@
 import { RootContent } from "hast";
 import { toHtml } from "hast-util-to-html";
 import { encode } from "he";
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import { StyleAst } from "shared/types/frameExec";
 import { generateNav } from "../nav/generateNav";
 import { generateStyleAst } from "../styleAst/generateStyleAst";

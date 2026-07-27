@@ -1,9 +1,9 @@
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import React from "react";
 import { fieldTypeForType } from "schemas/mdb";
 import { PathPropertyName } from "shared/types/context";
 import { DBRow, SpaceTableColumn, SpaceTables } from "shared/types/mdb";
-import { CellEditMode } from "../TableView/TableView";
+import { CellEditMode } from "shared/types/cellEditMode";
 import { BooleanCell } from "./BooleanCell";
 import { ColorCell } from "./ColorCell";
 import { ContextCell } from "./ContextCell";

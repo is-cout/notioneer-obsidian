@@ -1,6 +1,7 @@
 import i18n from "shared/i18n";
 
-import { SelectOption, Superstate } from "makemd-core";
+import { SelectOption } from "shared/types/menu";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import { Rect } from "shared/types/Pos";
 import { SpaceProperty } from "shared/types/mdb";
 import { defaultMenu, menuInput, menuSeparator } from "../menu/SelectionMenu";

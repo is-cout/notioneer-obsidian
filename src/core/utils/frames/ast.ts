@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import { rootToFrame } from "schemas/frames";
 import { FrameDragMode, FrameDropMode, FrameEditorMode, FrameEditorProps, FrameExecutable, FrameResizeMode, FrameState, FrameTreeNode, defaultFrameEditorProps } from "shared/types/frameExec";
 import { SpaceProperty } from "shared/types/mdb";

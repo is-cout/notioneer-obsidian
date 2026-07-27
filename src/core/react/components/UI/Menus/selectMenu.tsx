@@ -1,4 +1,5 @@
-import { SelectMenu, SelectMenuProps } from "makemd-core";
+import { default as SelectMenu } from "core/react/components/UI/Menus/menu/SelectMenu";
+import { SelectMenuProps } from "shared/types/menu";
 import React from "react";
 import { Anchors, Rect } from "shared/types/Pos";
 import { showMenu } from "./menu";

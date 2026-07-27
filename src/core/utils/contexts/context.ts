@@ -12,7 +12,7 @@ import { arrayMove } from "@dnd-kit/sortable";
 import { DefaultSpaceCols } from "core/react/components/SpaceView/Frames/DefaultFrames/DefaultFrames";
 import { SpaceManager } from "core/spaceManager/spaceManager";
 import { metadataPathForSpace } from "core/superstate/utils/spaces";
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import { defaultContextFields } from "shared/schemas/fields";
 import { safelyParseJSON } from "shared/utils/json";
 import { serializeMultiString } from "utils/serializers";

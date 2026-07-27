@@ -1,5 +1,5 @@
 import { ensureArray } from "core/utils/strings";
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import { parseMDBStringValue } from "utils/properties";
 import { serializeMultiDisplayString } from "utils/serializers";
 import { saveProperties } from "./spaces";

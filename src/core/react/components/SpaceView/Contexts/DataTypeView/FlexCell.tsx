@@ -6,7 +6,7 @@ import { PathPropertyName } from "shared/types/context";
 import { DBRow, SpaceTableColumn, SpaceTables } from "shared/types/mdb";
 import { Rect } from "shared/types/Pos";
 import { safelyParseJSON } from "shared/utils/json";
-import { TableCellProp } from "../TableView/TableView";
+import { TableCellProp } from "shared/types/cellEditMode";
 import { DataTypeView } from "./DataTypeView";
 
 export const FlexCell = (

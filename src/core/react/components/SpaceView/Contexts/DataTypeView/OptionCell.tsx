@@ -8,7 +8,8 @@ import { parseFieldValue } from "core/schemas/parseFieldValue";
 import { getColorPaletteById, getColors } from "core/utils/colorPalette";
 import { serializeOptionValue } from "core/utils/serializer";
 import { uniq } from "lodash";
-import { SelectMenuProps, SelectOption, Superstate } from "makemd-core";
+import { SelectMenuProps, SelectOption } from "shared/types/menu";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import React, {
   PropsWithChildren,
   useEffect,
@@ -24,7 +25,8 @@ import {
   serializeMultiDisplayString,
   serializeMultiString,
 } from "utils/serializers";
-import { CellEditMode, TableCellMultiProp } from "../TableView/TableView";
+import { CellEditMode } from "shared/types/cellEditMode";
+import { TableCellMultiProp } from "shared/types/cellEditMode";
 
 export const OptionCell = (
   props: TableCellMultiProp & {

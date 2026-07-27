@@ -3,7 +3,8 @@ import StickerModal from "shared/components/StickerModal";
 import i18n from "shared/i18n";
 import { windowFromDocument } from "shared/utils/dom";
 import { parseMultiString } from "utils/parsers";
-import { CellEditMode, TableCellMultiProp } from "../TableView/TableView";
+import { CellEditMode } from "shared/types/cellEditMode";
+import { TableCellMultiProp } from "shared/types/cellEditMode";
 
 export const IconCell = (props: TableCellMultiProp) => {
   const value = useMemo(

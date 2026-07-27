@@ -21,7 +21,8 @@ import { windowFromDocument } from "shared/utils/dom";
 import { safelyParseJSON } from "shared/utils/json";
 
 import { startOfDay } from "date-fns";
-import { CellEditMode, TableCellProp } from "../TableView/TableView";
+import { CellEditMode } from "shared/types/cellEditMode";
+import { TableCellProp } from "shared/types/cellEditMode";
 
 export const DateCell = (props: TableCellProp) => {
   const [value, setValue] = useState(props.initialValue);

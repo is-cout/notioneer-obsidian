@@ -9,7 +9,8 @@ import {
   predicateFnsForType,
 } from "core/utils/contexts/predicate/predicate";
 import { format } from "date-fns";
-import { SelectSection, Superstate } from "makemd-core";
+import { SelectSection } from "shared/types/menu";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import React, { PropsWithChildren, useEffect } from "react";
 import i18n from "shared/i18n";
 import { SpaceProperty } from "shared/types/mdb";

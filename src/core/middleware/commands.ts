@@ -1,4 +1,4 @@
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import i18n from "shared/i18n";
 import { ActionInstance, CLIAdapter, ICLIManager } from "shared/types/actions";
 import { Command, CommandWithPath } from "shared/types/commands";

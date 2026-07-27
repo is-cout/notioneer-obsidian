@@ -2,7 +2,8 @@ import i18n from "shared/i18n";
 
 import { normalizedSortForType } from "core/utils/contexts/predicate/sort";
 import { nameForField } from "core/utils/frames/frames";
-import { SelectOption, SelectOptionType, Superstate } from "makemd-core";
+import { SelectOption, SelectOptionType } from "shared/types/menu";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import React, { useState } from "react";
 import { fieldTypeForType, fieldTypes } from "schemas/mdb";
 import { SpaceTableColumn } from "shared/types/mdb";

@@ -3,7 +3,8 @@ import React, { useMemo, useRef } from "react";
 import { windowFromDocument } from "shared/utils/dom";
 import { parseMultiString } from "utils/parsers";
 import { serializeMultiString } from "utils/serializers";
-import { CellEditMode, TableCellMultiProp } from "../TableView/TableView";
+import { CellEditMode } from "shared/types/cellEditMode";
+import { TableCellMultiProp } from "shared/types/cellEditMode";
 
 export const ImageCell = (props: TableCellMultiProp) => {
   const { initialValue, multi } = props;

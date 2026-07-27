@@ -1,5 +1,5 @@
 import { useSpaceManager } from "core/react/context/SpaceManagerContext";
-import type { Superstate } from "makemd-core";
+import type { ISuperstate as Superstate } from "shared/types/superstate";
 import React, { PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { PathState } from "shared/types/PathState";
 import { windowFromDocument } from "shared/utils/dom";

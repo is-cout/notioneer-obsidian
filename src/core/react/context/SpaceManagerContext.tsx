@@ -4,7 +4,7 @@ import {
   propertyDependencies,
 } from "core/utils/contexts/linkContextRow";
 import { formulas } from "core/utils/formula/formulas";
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import i18n from "shared/i18n";
 import * as math from "mathjs";
 import { all } from "mathjs";

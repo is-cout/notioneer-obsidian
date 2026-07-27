@@ -1,4 +1,4 @@
-import { SelectOption } from "makemd-core";
+import { SelectOption } from "shared/types/menu";
 import React from "react";
 
 const SelectMenuPillComponent = (props: {

@@ -1,7 +1,7 @@
 import { UIManager } from "core/middleware/ui";
 import { Sticker } from "core/react/components/UI/Stickers/Sticker";
 import { PointerModifiers } from "core/types/ui";
-import { SelectOption, SelectOptionType } from "makemd-core";
+import { SelectOption, SelectOptionType } from "shared/types/menu";
 import i18n from "shared/i18n";
 import React, { useEffect, useRef, useState } from "react";
 import { MenuObject } from "shared/types/menu";

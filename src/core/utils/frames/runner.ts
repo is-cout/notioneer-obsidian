@@ -1,6 +1,6 @@
 
 import { ensureArray } from 'core/utils/strings';
-import { API } from 'makemd-core';
+import { IAPI as API } from "shared/types/api";
 import { FrameContexts, FrameExecProp, FrameExecutable, FrameExecutableContext, FrameNodeState, FrameRunInstance, FrameState, StyleAst } from "shared/types/frameExec";
 import { FrameNode, FrameTreeProp } from 'shared/types/mframe';
 import { uniq } from 'shared/utils/array';

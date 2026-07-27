@@ -1,5 +1,5 @@
 import { UIManager } from "core/middleware/ui";
-import { SelectMenuProps, SelectOption, SelectOptionType } from "makemd-core";
+import { SelectMenuProps, SelectOption, SelectOptionType } from "shared/types/menu";
 import React from "react";
 import { windowFromDocument } from "shared/utils/dom";
 import { parseMultiString } from "utils/parsers";

@@ -1,5 +1,5 @@
 import { SpaceManager } from "core/spaceManager/spaceManager";
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import { PathState } from "shared/types/PathState";
 import { MakeMDSettings } from "shared/types/settings";
 

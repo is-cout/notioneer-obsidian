@@ -1,9 +1,10 @@
 import { contextPathFromPath } from "core/utils/contexts/context";
-import { SelectMenuProps } from "makemd-core";
+import { SelectMenuProps } from "shared/types/menu";
 import React, { useEffect, useRef, useState } from "react";
 import i18n from "shared/i18n";
 import { windowFromDocument } from "shared/utils/dom";
-import { CellEditMode, TableCellProp } from "../TableView/TableView";
+import { CellEditMode } from "shared/types/cellEditMode";
+import { TableCellProp } from "shared/types/cellEditMode";
 
 export const SpaceCell = (props: TableCellProp & { isTable: boolean }) => {
   const openLink = async () => {

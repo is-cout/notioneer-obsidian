@@ -1,6 +1,7 @@
 import { saveSpaceCache } from "core/superstate/utils/spaces";
 import { tagSpacePathFromTag } from "core/utils/strings";
-import { SelectOption, SelectOptionType, Superstate } from "makemd-core";
+import { SelectOption, SelectOptionType } from "shared/types/menu";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import i18n from "shared/i18n";
 import React from "react";
 import { SpaceState } from "shared/types/PathState";

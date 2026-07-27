@@ -2,7 +2,7 @@ import {
   addPathToSpaceAtIndex,
   removePathsFromSpace,
 } from "core/superstate/utils/spaces";
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import React, { createContext, useEffect, useState } from "react";
 import { PathState } from "shared/types/PathState";
 import { genId } from "shared/utils/uuid";

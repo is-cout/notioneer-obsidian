@@ -2,7 +2,10 @@ import { Warning } from "shared/types/Warning";
 import { InteractionType, ScreenType } from "shared/types/ui";
 
 import MakeMDPlugin from "main";
-import { Sticker, Superstate, UIAdapter, UIManager } from "makemd-core";
+import { Sticker } from "shared/types/ui";
+import { ISuperstate as Superstate } from "shared/types/superstate";
+import { UIAdapter } from "shared/types/uiManager";
+import { UIManager } from "core/middleware/ui";
 import i18n from "shared/i18n";
 import { Menu, Notice, Platform, TFile, getIcon } from "obsidian";
 import React from "react";
@@ -25,13 +28,10 @@ import { removeSpace } from "core/superstate/utils/spaces";
 import { BlinkMode } from "shared/types/blink";
 import { editableRange } from "shared/utils/codemirror/selectiveEditor";
 import { getLineRangeFromRef } from "shared/utils/obsidian";
-import { SPACE_VIEW_TYPE } from "../SpaceViewContainer";
 import { getAbstractFileAtPath, getLeaf } from "../utils/file";
-import { modifyTabSticker } from "../utils/modifyTabSticker";
 import { WindowManager } from "./WindowManager";
 import { lucideIcons } from "./icons";
 import { showModal } from "./modal";
-import { showMainMenu } from "./showMainMenu";
 import { stickerFromString } from "./sticker";
 
 export class ObsidianUI implements UIAdapter {
@@ -77,24 +77,25 @@ export class ObsidianUI implements UIAdapter {
       );
       return;
     }
-    if (this.manager.superstate.settings.blinkEnabled) {
-      this.plugin.quickOpen(this.manager.superstate, mode, onSelect, source);
+    // Notioneer: the Blink palette is removed; this is upstream's own fallback for when
+    // blinkEnabled is off.
+    if (!offset) {
+      return;
+    }
+    if (mode == BlinkMode.Open) {
+      showLinkMenu(offset, win, this.manager.superstate, onSelect);
     } else {
-      if (!offset) {
-        return;
-      }
-      if (mode == BlinkMode.Open) {
-        showLinkMenu(offset, win, this.manager.superstate, onSelect);
-      } else {
-        showSpacesMenu(offset, win, this.manager.superstate, onSelect);
-      }
+      showSpacesMenu(offset, win, this.manager.superstate, onSelect);
     }
   };
-  public mainMenu = (el: HTMLElement, superstate: Superstate) => {
-    showMainMenu(el, superstate, this.plugin);
+  // Notioneer: the vault main menu was navigator and space entries only.
+  public mainMenu = () => {
+    return;
   };
+  // Notioneer: upstream repainted the tab icon with the note sticker; stickers are a
+  // spaces feature and are removed.
   public onMetadataRefresh = () => {
-    modifyTabSticker(this.plugin);
+    return;
   };
   public navigationHistory = () => {
     return this.plugin.app.workspace.getLastOpenFiles();
@@ -411,24 +412,9 @@ export class ObsidianUI implements UIAdapter {
           };
         });
     } else {
-      return this.plugin.app.workspace
-        .getLeavesOfType(SPACE_VIEW_TYPE)
-        .filter((f) => {
-          return f.view.getState().path == path;
-        })
-        .map((f) => {
-          return {
-            path: f.view.getState().path as string,
-            openPath: (path: string) => {
-              f.setViewState({
-                type: SPACE_VIEW_TYPE,
-                state: { path: path },
-              });
-            },
-            parent: null as any,
-            children: [] as any[],
-          };
-        });
+      // Notioneer: this branch listed open space views. Space views are removed, and the
+      // import of their container was dragging the whole frame editor into the bundle.
+      return [];
     }
   };
   public isEverViewOpen = () => {

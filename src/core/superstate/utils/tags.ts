@@ -1,4 +1,4 @@
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import { ensureTag } from "utils/tags";
 import { metadataPathForSpace } from "./spaces";
 

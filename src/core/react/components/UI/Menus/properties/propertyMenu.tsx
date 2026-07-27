@@ -2,7 +2,7 @@ import { ObjectCell } from "core/react/components/SpaceView/Contexts/DataTypeVie
 import { parseSourceOptions } from "core/schemas/fieldValueUtils";
 import { parseFieldValue } from "core/schemas/parseFieldValue";
 import { RepeatTemplate } from "core/utils/contexts/fields/presets";
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import i18n from "shared/i18n";
 import React from "react";
 import { Rect } from "shared/types/Pos";

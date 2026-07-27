@@ -1,7 +1,10 @@
 import { addTagToProperties, getAllFilesForTag, loadTags, removeTagFromMarkdownFile, renameTagInMarkdownFile } from "adapters/obsidian/utils/tags";
 import _ from "lodash";
 import MakeMDPlugin from "main";
-import { AFile, FileCache, FileSystemAdapter, FileTypeCache, FilesystemMiddleware, PathLabel } from "makemd-core";
+import { AFile } from "shared/types/afile";
+import { FileCache, FileSystemAdapter, FilesystemMiddleware } from "core/middleware/filesystem";
+import { FileTypeCache } from "core/middleware/filetypes";
+import { PathLabel } from "shared/types/caches";
 import { FileSystemAdapter as ObsidianFileSystemAdapter, Platform, TAbstractFile, TFile, TFolder, normalizePath } from "obsidian";
 
 import { LocalStorageCache } from "adapters/mdb/localCache/localCache";

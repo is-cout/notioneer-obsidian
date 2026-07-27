@@ -1,4 +1,4 @@
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import React from "react";
 export const CollapseToggle = (props: {
   superstate: Superstate;

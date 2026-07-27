@@ -6,7 +6,8 @@ import { addRowInTable, updateTableRow, updateValueInContext } from "core/utils/
 import { formatDate } from "core/utils/date";
 import { runFormulaWithContext } from "core/utils/formula/parser";
 import { parseContextNode, parseLinkedNode } from "core/utils/frames/frame";
-import { SelectOption, SpaceManager } from "makemd-core";
+import { SelectOption } from "shared/types/menu";
+import { SpaceManager } from "core/spaceManager/spaceManager";
 import { SpaceManagerInterface } from "shared/types/spaceManager";
 import { PathState } from "shared/types/superstate";
 import { SpaceTable } from "shared/types/mdb";

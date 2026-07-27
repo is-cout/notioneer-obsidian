@@ -12,7 +12,7 @@ import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import classNames from "classnames";
 import { calculateBoundsBasedOnPosition } from "core/utils/ui/menu";
 import { isPhone } from "core/utils/ui/screen";
-import { UIManager } from "makemd-core";
+import { UIManager } from "core/middleware/ui";
 import React, { cloneElement, useEffect } from "react";
 import { MenuObject } from "shared/types/menu";
 import { Anchors, Rect } from "shared/types/Pos";

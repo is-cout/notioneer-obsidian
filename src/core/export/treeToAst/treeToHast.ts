@@ -3,7 +3,7 @@ import { buildExecutable } from "core/utils/frames/executable";
 import { executeTreeNode } from "core/utils/frames/runner";
 import { Element, Literal, Node, Parent, Root } from "hast";
 import { fromHtml } from "hast-util-from-html";
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import { stickerForField } from "schemas/mdb";
 import { FrameContexts, FrameRunInstance, FrameTreeNode } from "shared/types/frameExec";
 import { DBRows, SpaceProperty } from "shared/types/mdb";

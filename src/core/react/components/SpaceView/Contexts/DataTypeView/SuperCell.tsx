@@ -7,7 +7,7 @@ import {
 import React, { useEffect, useMemo, useState } from "react";
 import { DBRow, SpaceTableColumn } from "shared/types/mdb";
 import { windowFromDocument } from "shared/utils/dom";
-import { TableCellProp } from "../TableView/TableView";
+import { TableCellProp } from "shared/types/cellEditMode";
 import { ParameterSetter } from "./SuperCell/ParameterSetter";
 
 export const SuperCell = (

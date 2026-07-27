@@ -8,7 +8,8 @@ import {
   saveProperties,
 } from "core/superstate/utils/spaces";
 import { updateContextValue } from "core/utils/contexts/context";
-import { SelectOption, Superstate } from "makemd-core";
+import { SelectOption } from "shared/types/menu";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import i18n from "shared/i18n";
 
 import { linkContextRow, syncContextRow } from "core/utils/contexts/linkContextRow";
@@ -25,7 +26,7 @@ import {
   parseMDBStringValue,
 } from "utils/properties";
 import { DataPropertyView } from "../SpaceView/Contexts/DataTypeView/DataPropertyView";
-import { CellEditMode } from "../SpaceView/Contexts/TableView/TableView";
+import { CellEditMode } from "shared/types/cellEditMode";
 import { showPropertyMenu } from "../UI/Menus/contexts/spacePropertyMenu";
 
 export const PropertiesView = (props: {

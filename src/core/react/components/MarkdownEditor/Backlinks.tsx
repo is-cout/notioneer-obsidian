@@ -1,5 +1,5 @@
 import { eventTypes } from "core/types/types";
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import React, { useEffect, useState } from "react";
 import i18n from "shared/i18n";
 import { uniq } from "shared/utils/array";

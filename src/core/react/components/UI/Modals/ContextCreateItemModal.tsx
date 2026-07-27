@@ -1,5 +1,5 @@
 import { DataPropertyView } from "core/react/components/SpaceView/Contexts/DataTypeView/DataPropertyView";
-import { CellEditMode } from "core/react/components/SpaceView/Contexts/TableView/TableView";
+import { CellEditMode } from "shared/types/cellEditMode";
 import {
   ContextEditorContext,
   ContextEditorProvider,
@@ -7,7 +7,7 @@ import {
 import { FramesMDBProvider } from "core/react/context/FramesMDBContext";
 import { PathProvider } from "core/react/context/PathContext";
 import { SpaceProvider } from "core/react/context/SpaceContext";
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import i18n from "shared/i18n";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { defaultContextSchemaID } from "shared/schemas/context";

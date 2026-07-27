@@ -1,9 +1,9 @@
 import { frontMatterKeys } from "adapters/obsidian/filetypes/frontmatter/frontMatterKeys";
 import { BannerView } from "core/react/components/MarkdownEditor/BannerView";
 import { DataPropertyView } from "core/react/components/SpaceView/Contexts/DataTypeView/DataPropertyView";
-import { CellEditMode } from "core/react/components/SpaceView/Contexts/TableView/TableView";
+import { CellEditMode } from "shared/types/cellEditMode";
 import { PathProvider } from "core/react/context/PathContext";
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import React, { useEffect, useMemo, useState } from "react";
 import { SpaceTableColumn } from "shared/types/mdb";
 import { PathState } from "shared/types/PathState";

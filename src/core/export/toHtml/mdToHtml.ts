@@ -3,7 +3,7 @@ import { buildExecutable } from 'core/utils/frames/executable';
 import { executeTreeNode } from 'core/utils/frames/runner';
 import { RootContent } from 'hast';
 import { toHtml } from 'hast-util-to-html';
-import { Superstate } from 'makemd-core';
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import { treeNodeToHast } from '../treeToAst/treeToHast';
 import { mdToTree } from './mdToTree';
 import { HTMLExportOptions } from './spaceToHtml';

@@ -1,9 +1,9 @@
 import { removeQuotes, wrapQuotes } from "core/utils/strings";
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import React, { useState } from "react";
 import { Command } from "shared/types/commands";
 import { DBRow, SpaceProperty } from "shared/types/mdb";
-import { CellEditMode } from "../../TableView/TableView";
+import { CellEditMode } from "shared/types/cellEditMode";
 import { DataPropertyView } from "../DataPropertyView";
 
 export const ParameterSetter = (props: {

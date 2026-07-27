@@ -1,5 +1,6 @@
 import { deleteRowInTable } from "core/utils/contexts/context";
-import { SelectOption, Superstate } from "makemd-core";
+import { SelectOption } from "shared/types/menu";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import i18n from "shared/i18n";
 import React from "react";
 import { PathPropertyName } from "shared/types/context";

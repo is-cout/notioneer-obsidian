@@ -9,7 +9,8 @@ import {
 import { removePathIcon, savePathIcon } from "core/utils/emoji";
 import { isTouchScreen } from "core/utils/ui/screen";
 import { isString } from "lodash";
-import { SelectOption, SelectOptionType, Superstate } from "makemd-core";
+import { SelectOption, SelectOptionType } from "shared/types/menu";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import i18n from "shared/i18n";
 import React, { useContext, useMemo } from "react";
 import StickerModal from "shared/components/StickerModal";

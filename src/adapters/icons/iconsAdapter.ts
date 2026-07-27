@@ -1,5 +1,7 @@
 import MakeMDPlugin from "main";
-import { AFile, FileTypeAdapter, FilesystemMiddleware } from "makemd-core";
+import { AFile } from "shared/types/afile";
+import { FileTypeAdapter } from "core/middleware/filetypes";
+import { FilesystemMiddleware } from "core/middleware/filesystem";
 
 type IconTypeCache = {
     svg: string;

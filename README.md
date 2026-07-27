@@ -5,8 +5,9 @@ but deliberately narrower: the note header, slash commands and the selection too
 
 ## Features
 
-- **Note header** — an inline header at the top of a note showing its title, an optional
-  cover image, and its frontmatter properties, editable in place.
+- **Note header** — a cover image and an editable title at the top of a note. The cover is a
+  plain `cover` frontmatter key; renaming from the title updates links. Properties are left to
+  Obsidian's native panel, which renders right below the header.
 - **Slash commands** — typing `/` in the editor opens a menu of basic block commands
   (heading, table, list, callout, code block, …). Every command inserts **plain Markdown**,
   never a plugin-specific format — a table command produces a real Markdown table.

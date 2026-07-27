@@ -1,25 +1,30 @@
 import { App, Plugin, PluginSettingTab, Setting } from "obsidian";
+import { NoteHeader } from "./header/noteHeader";
 import { SlashSuggest } from "./slash/suggest";
 import { SelectionToolbar } from "./toolbar/selectionToolbar";
 
 interface NotioneerPluginSettings {
 	slashCommands: boolean;
 	selectionToolbar: boolean;
+	noteHeader: boolean;
 }
 
 const DEFAULT_SETTINGS: NotioneerPluginSettings = {
 	slashCommands: true,
 	selectionToolbar: true,
+	noteHeader: true,
 };
 
 export default class NotioneerPlugin extends Plugin {
 	settings: NotioneerPluginSettings;
+	noteHeader: NoteHeader;
 
 	async onload() {
 		await this.loadSettings();
 		this.addSettingTab(new NotioneerPluginSettingTab(this.app, this));
 		this.registerEditorSuggest(new SlashSuggest(this.app, () => this.settings.slashCommands));
 		new SelectionToolbar(this, () => this.settings.selectionToolbar);
+		this.noteHeader = new NoteHeader(this, () => this.settings.noteHeader);
 	}
 
 	onunload() {}
@@ -63,6 +68,17 @@ class NotioneerPluginSettingTab extends PluginSettingTab {
 				toggle.setValue(this.plugin.settings.selectionToolbar).onChange(async (value) => {
 					this.plugin.settings.selectionToolbar = value;
 					await this.plugin.saveSettings();
+				}),
+			);
+
+		new Setting(containerEl)
+			.setName("Note header")
+			.setDesc("Show the cover image and editable title at the top of a note.")
+			.addToggle((toggle) =>
+				toggle.setValue(this.plugin.settings.noteHeader).onChange(async (value) => {
+					this.plugin.settings.noteHeader = value;
+					await this.plugin.saveSettings();
+					this.plugin.noteHeader.refreshAll();
 				}),
 			);
 	}

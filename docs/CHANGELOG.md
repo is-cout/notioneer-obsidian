@@ -4,6 +4,16 @@ Living log of significant changes to the project. This is **not** optional bookk
 
 Format: `YYYY-MM-DD — short description. Why (if not obvious). Files touched.`
 
+## 2026-07-27 (0.4.0)
+
+- **Note header.** Cover image and editable title at the top of every Markdown editor. The
+  cover is a plain `cover` frontmatter key (vault path or external URL); the title renames the
+  file through `fileManager.renameFile` so links follow. Properties are deliberately left to
+  Obsidian's native panel, which renders in the same container just below. Added a
+  `Note header` setting. Files: `src/header/noteHeader.ts`, `src/header/coverPicker.ts`,
+  `src/main.ts`, `src/styles/index.css`, `docs/ARCHITECTURE.md`, `docs/FAQ.md`, `README.md`,
+  `package.json`, `manifest.json`, `versions.json`.
+
 ## 2026-07-27 (0.3.0)
 
 - **Selection toolbar.** Selecting text in the editor pops up a floating toolbar for bold,

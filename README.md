@@ -22,11 +22,20 @@ Copy `main.js`, `manifest.json` and `styles.css` into
 `YOUR_VAULT/.obsidian/plugins/notioneer/`, then enable **Notioneer** under
 Settings → Community plugins.
 
+## Status
+
+As of 0.7.0 Notioneer is a **fork of [make.md](https://github.com/Make-md/makemd)** being
+trimmed down to the three features above. Right now the upstream code is all still there with
+spaces, the navigator and the space views switched off by default; removing them is the work
+in progress. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#fork-status).
+
+The Markdown-native slash commands and the selection toolbar are parked in `legacy/` while
+that happens — until they are wired back in, the ones you get are make.md's.
+
 ## Credits
 
-The note header is ported from [make.md](https://github.com/Make-md/makemd) (MIT, Copyright
-(c) 2022 JP Cen) — same layout and CSS, reimplemented in plain DOM without spaces or the rest
-of its feature set. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#credits).
+Fork of [make.md](https://github.com/Make-md/makemd), MIT licensed, Copyright (c) 2022 JP Cen
+— licence kept in `LICENSE-makemd`. Notioneer itself is GPLv3.
 
 ## Development
 

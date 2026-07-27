@@ -4,6 +4,28 @@ Living log of significant changes to the project. This is **not** optional bookk
 
 Format: `YYYY-MM-DD — short description. Why (if not obvious). Files touched.`
 
+## 2026-07-27 (0.7.0)
+
+- **Became a fork of make.md** (stage 1 of 3). Reimplementing the header from their source
+  kept landing visibly different from the real thing, so the approach changed: the upstream
+  tree is imported wholesale and will be trimmed down instead. What this stage does:
+  - Upstream `src/` (619 files) imported; builds under the Notioneer identity. `main.js` goes
+    from 21 KB to 5.4 MB, `styles.css` to 149 KB — both now gitignored as generated output.
+  - 55 runtime + 42 dev dependencies added (939 packages). Upstream ships 94 of 97 as ranges;
+    all resolved to exact pins per the dependency policy. Approved explicitly by the owner.
+    One open high-severity `lodash` advisory is recorded, not fixed — see `docs/DEPENDENCIES.md`.
+  - Spaces-related settings default to off (`spacesEnabled`, `navigatorEnabled`,
+    `spaceViewEnabled`, `contextEnabled`, `enableFolderNote`, `spacesStickers`, `sidebarTabs`,
+    `showRibbon`, `vaultSelector`, `blinkEnabled`). The header settings stay on.
+  - Fixed upstream paths that were hardcoded to `plugins/make-md/` (`Spaces.mdb`, `data.json`)
+    and would resolve to a folder that does not exist under our plugin id — now `manifest.dir`.
+  - Fixed upstream's build: `target` `es6` -> `es2020` (their own `textCacher.ts` does not
+    compile at `es6`), and esbuild output goes to the repo root instead of `process.env.buildDir`,
+    which is unset upstream and produced a literal `undefined/` directory.
+  - The 0.1.0–0.6.0 vanilla implementation moved to `legacy/`, out of the build, to be restored
+    in stage 3 (Markdown slash commands, selection toolbar).
+- Files: everything. `LICENSE-makemd` added (MIT notice, required to redistribute their code).
+
 ## 2026-07-27 (0.6.0)
 
 - **Note header ported from make.md instead of re-derived.** `src/styles/header.css` is now

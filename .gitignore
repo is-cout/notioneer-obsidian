@@ -26,3 +26,6 @@ Thumbs.db
 
 # TypeScript build info
 *.tsbuildinfo
+
+# Build output (now 5.4MB / 149KB — generated, not reviewed in diffs)
+styles.css

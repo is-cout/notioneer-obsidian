@@ -26,6 +26,9 @@ Scope decisions, set at scaffold time:
 | `src/main.ts` | Plugin entry point: `onload`/`onunload`, settings load/save, settings tab. |
 | `src/slash/commands.ts` | The slash command list (each one a plain-Markdown snippet) and the filter used by the menu. |
 | `src/slash/suggest.ts` | `EditorSuggest` subclass: when `/` opens the menu, and how the chosen snippet is inserted. |
+| `src/toolbar/format.ts` | The inline formats and the wrap/unwrap logic they apply to the selection. |
+| `src/toolbar/selectionToolbar.ts` | The floating toolbar element: when to show it, where to place it, wiring buttons to formats. |
+| `src/editorUtils.ts` | Shared editor-position math (`positionAfter`). |
 
 <!-- Add a row per new src/*.ts file as the project grows past a single file — this
      table is the map a new contributor (or future Claude session) reads first. -->
@@ -43,6 +46,23 @@ Adding a command means adding an entry to that array — there is no registratio
 The suggester is registered unconditionally and reads the `slashCommands` setting at
 trigger time. Unregistering would need `workspace.editorSuggest`, which is not in the
 public API.
+
+## Selection toolbar
+
+The toolbar deliberately does **not** use CodeMirror: it reads the browser selection
+(`window.getSelection()`) for positioning and Obsidian's `Editor` API for edits. That keeps
+`@codemirror/*` out of the dependency list, and the rendered editor text is real DOM anyway,
+so `Range.getBoundingClientRect()` is enough to place the element.
+
+It shows on `mouseup`/`keyup` rather than `selectionchange`, which would fire mid-drag and
+make the toolbar jump while the user is still selecting. Buttons act on `mousedown` with
+`preventDefault()` — a normal click would move focus out of the editor and drop the selection
+before the action ran. Only source/Live Preview mode is handled; reading view has no editor.
+
+`toggleInlineFormat` unwraps markers whether they are inside the selection (`**word**`
+selected) or around it (`word` selected inside `**word**`), and refuses to match a marker
+whose neighbouring character repeats it — so italic on `**bold**` nests to `***bold***`
+instead of eating one of the bold asterisks.
 
 ## Build pipeline
 

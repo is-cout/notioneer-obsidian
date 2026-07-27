@@ -16,6 +16,16 @@ else needs registering.
 
 Settings → Community plugins → Notioneer → **Slash commands**.
 
+### How do I add a button to the selection toolbar?
+
+Add an entry to `INLINE_FORMATS` in [src/toolbar/format.ts](../src/toolbar/format.ts) — `icon`
+is an Obsidian icon name, `marker` the Markdown wrapper. Buttons that aren't a simple wrapper
+(like the link button) are wired individually in `SelectionToolbar.buildElement`.
+
+### How do I turn the selection toolbar off?
+
+Settings → Community plugins → Notioneer → **Selection toolbar**.
+
 ### Can I bump a dependency version?
 
 Only with explicit approval — versions are pinned on purpose. See [DEPENDENCIES.md](DEPENDENCIES.md).

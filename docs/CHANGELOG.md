@@ -4,6 +4,16 @@ Living log of significant changes to the project. This is **not** optional bookk
 
 Format: `YYYY-MM-DD — short description. Why (if not obvious). Files touched.`
 
+## 2026-07-27 (0.3.0)
+
+- **Selection toolbar.** Selecting text in the editor pops up a floating toolbar for bold,
+  italic, strikethrough, highlight, inline code and link. Toggling removes existing markers
+  instead of stacking them. Built on the browser selection + Obsidian's `Editor` API so no
+  CodeMirror dependency is needed. Added a `Selection toolbar` setting. Files:
+  `src/toolbar/format.ts`, `src/toolbar/selectionToolbar.ts`, `src/editorUtils.ts` (new shared
+  position helper, also used by the slash suggester), `src/main.ts`, `src/styles/index.css`,
+  `docs/ARCHITECTURE.md`, `docs/FAQ.md`, `package.json`, `manifest.json`, `versions.json`.
+
 ## 2026-07-27 (0.2.0)
 
 - **Slash commands.** Typing `/` at the start of a line (or after whitespace) opens a menu of

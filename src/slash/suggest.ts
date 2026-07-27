@@ -7,6 +7,7 @@ import {
 	EditorSuggestTriggerInfo,
 	TFile,
 } from "obsidian";
+import { positionAfter } from "../editorUtils";
 import { SlashCommand, filterCommands } from "./commands";
 
 /** `/` only opens the menu at the start of a line or after whitespace, so URLs and
@@ -63,23 +64,8 @@ export class SlashSuggest extends EditorSuggest<SlashCommand> {
 		const markerIndex = command.snippet.indexOf(CURSOR_MARKER);
 		const text = command.snippet.replace(CURSOR_MARKER, "");
 		context.editor.replaceRange(text, context.start, context.end);
-		context.editor.setCursor(
-			cursorAfterInsert(context.start, text, markerIndex < 0 ? text.length : markerIndex),
-		);
+		const caretOffset = markerIndex < 0 ? text.length : markerIndex;
+		context.editor.setCursor(positionAfter(context.start, text.slice(0, caretOffset)));
 		this.close();
 	}
-}
-
-/** Translate an offset inside the inserted text back into an editor position. */
-function cursorAfterInsert(
-	start: EditorPosition,
-	text: string,
-	offset: number,
-): EditorPosition {
-	const before = text.slice(0, offset);
-	const newlines = before.split("\n");
-	const lastLine = newlines[newlines.length - 1];
-	return newlines.length === 1
-		? { line: start.line, ch: start.ch + lastLine.length }
-		: { line: start.line + newlines.length - 1, ch: lastLine.length };
 }

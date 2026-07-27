@@ -1,5 +1,5 @@
 import { PointerModifiers } from "core/types/ui";
-import { SelectMenuProps, SelectOption, SelectOptionType } from "makemd-core";
+import { SelectMenuProps, SelectOption, SelectOptionType } from "shared/types/menu";
 import React, { useCallback, useEffect, useState } from "react";
 import SelectMenuComponent from "./SelectMenuComponent";
 

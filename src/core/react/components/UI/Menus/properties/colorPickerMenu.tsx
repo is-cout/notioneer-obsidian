@@ -1,6 +1,6 @@
 import { Rect } from "shared/types/Pos";
 
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 
 import {
   Gradient,

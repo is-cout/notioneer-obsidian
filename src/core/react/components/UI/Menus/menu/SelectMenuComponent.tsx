@@ -3,7 +3,7 @@
 import { UIManager } from "core/middleware/ui";
 import { PointerModifiers } from "core/types/ui";
 import Fuse from "fuse.js";
-import { SelectOption, SelectSection } from "makemd-core";
+import { SelectOption, SelectSection } from "shared/types/menu";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import i18n from "shared/i18n";
 import { MenuObject } from "shared/types/menu";

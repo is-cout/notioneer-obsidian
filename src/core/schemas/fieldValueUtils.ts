@@ -1,4 +1,4 @@
-import { SelectOption } from "makemd-core";
+import { SelectOption } from "shared/types/menu";
 import i18n from "shared/i18n";
 import { ISuperstate as Superstate } from "shared/types/superstate";
 import { parseFieldValue } from "./parseFieldValue";

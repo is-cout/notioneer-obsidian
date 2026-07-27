@@ -1,7 +1,12 @@
-import { EMBED_SPACE_VIEW_TYPE } from "adapters/obsidian/ui/editors/EmbedSpaceView";
-import { LINK_VIEW_TYPE } from "adapters/obsidian/ui/editors/markdownView/FileView";
+// Notioneer: view type ids kept as literals. The views themselves are removed, but these
+// helpers still reference the ids, and importing the view modules for a string constant
+// would pull the space views and frame editor back into the bundle.
+const EMBED_SPACE_VIEW_TYPE = "mk-space-embed";
+const SPACE_VIEW_TYPE = "mk-space";
+const LINK_VIEW_TYPE = "mk-uri-view";
+
 import MakeMDPlugin from "main";
-import { AFile } from "makemd-core";
+import { AFile } from "shared/types/afile";
 import {
   App,
   Platform,
@@ -12,14 +17,12 @@ import {
   normalizePath
 } from "obsidian";
 
-import { SPACE_VIEW_TYPE } from "adapters/obsidian/SpaceViewContainer";
 import { isTouchScreen } from "core/utils/ui/screen";
 import { TargetLocation } from "shared/types/path";
 import { selectElementContents } from "shared/utils/dom";
 import { removeTrailingSlashFromFolder } from "shared/utils/paths";
 import { sanitizeFileName, sanitizeFolderName } from "shared/utils/sanitizers";
 import { folderPathToString } from "utils/path";
-import { EVER_VIEW_TYPE } from "../ui/navigator/EverLeafView";
   
 
 export const tFileToAFile = (file: TAbstractFile | TFile) : AFile => {
@@ -209,7 +212,8 @@ export const getLeaf = (app: App, location: TargetLocation) => {
   } else if (location == 'left') {
     leaf = app.workspace.getLeftLeaf(false);
   } else if (location == 'overview') {
-    leaf = app.workspace.getLeavesOfType(EVER_VIEW_TYPE)[0];
+    // Notioneer: this was the navigator's overview leaf, which is removed.
+    leaf = app.workspace.getLeaf(false);
   } else {
     leaf = app.workspace.getLeaf(location)
   }

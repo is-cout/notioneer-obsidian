@@ -16,7 +16,7 @@ import {
 } from "core/superstate/utils/spaces";
 import { isTouchScreen } from "core/utils/ui/screen";
 import { isString } from "lodash";
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import React, {
   CSSProperties,
   useCallback,

@@ -3,7 +3,7 @@ import React, { PropsWithChildren, useEffect, useState } from "react";
 import i18n from "shared/i18n";
 import { parseMultiString } from "utils/parsers";
 import { serializeMultiString } from "utils/serializers";
-import { TableCellProp } from "../TableView/TableView";
+import { TableCellProp } from "shared/types/cellEditMode";
 import { OptionCellBase } from "./OptionCell";
 
 export const TagCell = (props: TableCellProp) => {

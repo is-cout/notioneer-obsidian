@@ -8,6 +8,8 @@ import { MakeMDSettings } from "../../shared/types/settings";
 export const DEFAULT_SETTINGS: MakeMDSettings = {
   newNotePlaceholder: i18n.settings.untitled,
   defaultInitialization: false,
+  notioneerSlashCommands: true,
+  notioneerSelectionToolbar: true,
   navigatorEnabled: false,
   filePreviewOnHover: false,
   blinkEnabled: false,

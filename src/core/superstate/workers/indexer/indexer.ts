@@ -1,6 +1,6 @@
 
 import { stringifyJob } from "core/utils/superstate/serializer";
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import { WorkerJobType } from "shared/types/PathState";
 import { BatchContextWorkerPayload, BatchPathWorkerPayload, ContextWorkerPayload, PathWorkerPayload } from "./impl";
 //@ts-ignore

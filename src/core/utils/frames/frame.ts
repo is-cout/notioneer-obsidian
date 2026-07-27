@@ -1,7 +1,7 @@
 import * as acorn from "acorn";
 import { simple } from "acorn-walk";
 import _ from "lodash";
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import { defaultFrameSchema } from "schemas/frames";
 import { fieldSchema } from "shared/schemas/fields";
 import { FrameExecutable, LinkedContext, LinkedNode } from "shared/types/frameExec";

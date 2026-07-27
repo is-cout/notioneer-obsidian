@@ -3,7 +3,10 @@ import { HTMLExportOptions, noteToHtml, spaceToHtml } from "core/export/toHtml/s
 import { hyphenate } from "core/export/treeToAst/treeToHast";
 import { hashCode } from "core/utils/hash";
 import MakeMDPlugin from "main";
-import { AFile, FileTypeAdapter, FilesystemMiddleware, PathLabel } from "makemd-core";
+import { AFile } from "shared/types/afile";
+import { FileTypeAdapter } from "core/middleware/filetypes";
+import { FilesystemMiddleware } from "core/middleware/filesystem";
+import { PathLabel } from "shared/types/caches";
 import { App, CachedMetadata, Platform, TFile, TFolder } from "obsidian";
 import { StyleAst } from "shared/types/frameExec";
 import { IndexMap } from "shared/types/indexMap";

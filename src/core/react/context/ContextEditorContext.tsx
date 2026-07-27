@@ -11,7 +11,7 @@ import { sortReturnForCol } from "core/utils/contexts/predicate/sort";
 import { serializeOptionValue } from "core/utils/serializer";
 import { tagSpacePathFromTag } from "core/utils/strings";
 import _, { isEqual } from "lodash";
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import React, {
   createContext,
   useCallback,

@@ -1,7 +1,7 @@
 import { runFormulaWithContext } from "core/utils/formula/parser";
 import { executeCode } from "core/utils/frames/runner";
 import { debounce } from "lodash";
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import i18n from "shared/i18n";
 import React, { useEffect, useState } from "react";
 import { SpaceProperty } from "shared/types/mdb";

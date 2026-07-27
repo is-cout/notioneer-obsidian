@@ -1,4 +1,4 @@
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import { uniq } from "shared/utils/array";
 import { movePath, renamePathWithExtension, renamePathWithoutExtension } from "shared/utils/uri";
 import { renameTag } from "utils/tags";

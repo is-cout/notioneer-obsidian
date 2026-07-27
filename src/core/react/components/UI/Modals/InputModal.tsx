@@ -1,4 +1,4 @@
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import React, { useEffect, useRef, useState } from "react";
 import { default as i18n } from "shared/i18n";
 type Action = "rename" | "create folder" | "create note";

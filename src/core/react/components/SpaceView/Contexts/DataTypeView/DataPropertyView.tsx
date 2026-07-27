@@ -5,8 +5,8 @@ import React, { useMemo } from "react";
 import { windowFromDocument } from "shared/utils/dom";
 import { parseObject } from "utils/parsers";
 import { propertyIsObjectType } from "utils/properties";
-import { PropertyField } from "../ContextBuilder/ContextListEditSelector";
-import { CellEditMode } from "../TableView/TableView";
+import { PropertyField } from "../ContextBuilder/PropertyField";
+import { CellEditMode } from "shared/types/cellEditMode";
 import { DataTypeView, DataTypeViewProps } from "./DataTypeView";
 import { ObjectType } from "./ObjectCell";
 export type DataPropertyViewProps = DataTypeViewProps & {

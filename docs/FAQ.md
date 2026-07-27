@@ -8,54 +8,48 @@ Practical "where do I go to change X" answers. For the how-things-fit-together v
 
 ### How do I add or edit a slash command?
 
-Add an entry to `SLASH_COMMANDS` in [src/slash/commands.ts](../src/slash/commands.ts). The
+Add an entry to `SLASH_COMMANDS` in [src/notioneer-slash/commands.ts](../src/notioneer-slash/commands.ts). The
 `snippet` field is literal Markdown; put `${cursor}` where the caret should land. Nothing
 else needs registering.
 
 ### How do I turn the slash menu off?
 
-Settings → Community plugins → Notioneer → **Slash commands**.
+Settings → Notioneer → **Slash commands**.
 
 ### How do I add a button to the selection toolbar?
 
-Add an entry to `INLINE_FORMATS` in [src/toolbar/format.ts](../src/toolbar/format.ts) — `icon`
+Add an entry to `INLINE_FORMATS` in [src/notioneer-toolbar/format.ts](../src/notioneer-toolbar/format.ts) — `icon`
 is an Obsidian icon name, `marker` the Markdown wrapper. Buttons that aren't a simple wrapper
 (like the link button) are wired individually in `SelectionToolbar.buildElement`.
 
 ### How do I turn the selection toolbar off?
 
-Settings → Community plugins → Notioneer → **Selection toolbar**.
+Settings → Notioneer → **Selection toolbar**.
 
 ### How do I set a cover image?
 
-Hover the top of a note and click **Add cover**, then pick an image from the vault. It is
-stored as a `cover` key in the note's frontmatter, so you can also type it by hand — an
-external `https://` URL works too.
+Hover the header and click **Add Cover**, then pick an image. It is stored under the `banner`
+frontmatter key (make.md’s; rename it in Settings → Notioneer → **Cover**), so you can type it
+by hand too.
 
 ### How do I edit properties in the header?
 
-Every frontmatter key except `cover` gets a row. Click a value to edit it, right-click a key
-to delete it, and use **New property** (visible on hover) to add one. Obsidian's own
-properties panel is hidden in the editor while the header is on, so nothing shows twice —
-reading view still uses the native one.
+Click a value to edit, **New Property** to add one — make.md’s property editor, kept as is.
+Obsidian’s native panel is hidden in the editor so the two do not stack; reading view keeps it.
 
 ### How do I change the cover height?
 
-`--mk-banner-height` on `.mk-inline-context` in
-[src/styles/header.css](../src/styles/header.css) — or override it in a CSS snippet. Rebuild
-after editing the source; the root `styles.css` is generated.
+Settings → Notioneer → **Cover height**. It is make.md’s `bannerHeight` setting.
 
-### Why does the header use make.md's `mk-` class names?
+### Why do the header classes start with `mk-`?
 
-So make.md's CSS can be copied verbatim instead of re-derived — see
-[ARCHITECTURE.md](ARCHITECTURE.md#note-header). If you also have make.md installed, its rules
-will match these elements too; they are the same rules, so it looks the same.
+The header is make.md’s code — this plugin is a fork of it. See
+[ARCHITECTURE.md](ARCHITECTURE.md#fork-status).
 
 ### I have a snippet hiding the native properties panel — do I still need it?
 
-No. Notioneer hides `.metadata-container` inside the editor on its own. A snippet that also
-hides it in *reading* view will leave you with no properties there at all, since the header
-only renders in the editor.
+No, and it will hurt: Notioneer already hides `.metadata-container` inside the editor. A
+snippet that also hides it in *reading* view leaves you with no properties there at all.
 
 ### Can I bump a dependency version?
 

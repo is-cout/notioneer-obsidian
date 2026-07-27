@@ -8,7 +8,7 @@ import { savePathBanner } from "core/superstate/utils/label";
 import { createSpace, saveProperties } from "core/superstate/utils/spaces";
 import { addTagToPath } from "core/superstate/utils/tags";
 import { isTouchScreen } from "core/utils/ui/screen";
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import React, { useContext, useLayoutEffect, useMemo } from "react";
 import { mainFrameID } from "schemas/mdb";
 import i18n from "shared/i18n";

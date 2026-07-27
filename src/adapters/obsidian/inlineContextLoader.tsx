@@ -2,7 +2,8 @@ import { PathProvider } from "core/react/context/PathContext";
 import { SpaceManagerProvider } from "core/react/context/SpaceManagerContext";
 import { FMMetadataKeys } from "core/types/space";
 import MakeMDPlugin from "main";
-import { Backlinks, MarkdownHeaderView } from "makemd-core";
+import { Backlinks } from "core/react/components/MarkdownEditor/Backlinks";
+import { MarkdownHeaderView } from "core/react/components/MarkdownEditor/MarkdownHeaderView";
 import React from "react";
 import { Root } from "react-dom/client";
 

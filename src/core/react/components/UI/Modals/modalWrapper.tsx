@@ -1,5 +1,5 @@
 import { useDndMonitor, useDroppable } from "@dnd-kit/core";
-import { UIManager } from "makemd-core";
+import { UIManager } from "core/middleware/ui";
 import React, { useEffect, useTransition } from "react";
 import { Transition } from "react-transition-group";
 

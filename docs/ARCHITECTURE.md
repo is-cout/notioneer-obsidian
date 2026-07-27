@@ -24,23 +24,51 @@ description of what currently ships.
 
 ## Fork status
 
-Since 0.7.0 this repo is a **fork of make.md**, not a plugin that borrows from it. The whole
-upstream source tree lives in `src/` and the work happens by removing from it.
+Since 0.7.0 this repo is a **fork of make.md**, trimmed down rather than written from scratch.
 
-Stages:
+| Stage | State | Result |
+|---|---|---|
+| 1. Import upstream, build as Notioneer | done (0.7.0) | 619 files, 5.7 MB bundle |
+| 2. Remove what the header does not need | done (0.8.0) | 305 files, 4.4 MB, CSS 149 KB -> 57 KB |
+| 3. Restore the Markdown slash commands and selection toolbar | done (0.8.0) | `src/notioneer-slash/`, `src/notioneer-toolbar/` |
+| 4. Shed the remaining heavy dependencies | not started | see [DEPENDENCIES.md](DEPENDENCIES.md) |
 
-1. **Done (0.7.0)** — upstream imported and building under the Notioneer identity, with the
-   spaces-related settings defaulted off and the hardcoded `plugins/make-md/` data paths
-   pointed at our own plugin folder.
-2. **Next** — remove the subsystems we do not ship (navigator, spaces/space views, frames,
-   `.mdb`/sql.js, blink, backlinks) and the dependencies that go with them.
-3. **After that** — restore the Markdown-native slash commands and the selection toolbar,
-   which are parked in `legacy/` (see below), in place of make.md's equivalents.
+### How stage 2 was done
 
-`legacy/` holds the pre-fork vanilla implementation (0.1.0–0.6.0): slash commands, selection
-toolbar, note header, and their CSS. It is not wired into the build; it is kept because
-stage 3 restores the first two, and because the Markdown-snippet slash commands are the one
-behaviour this plugin exists to do differently from make.md.
+Deleting directories by hand does not work on a tree this size — everything is reachable from
+something. Instead `src/main.ts` was rewritten to wire up only the header, and
+`scripts/unreachable.mjs` computes what the entry point can still reach and deletes the rest.
+Whatever the build and typecheck still pass without was, by definition, not needed.
+
+Four edges kept nearly the whole tree alive. They are worth knowing about, because this is the
+kind of thing that will happen again in stage 4:
+
+- `src/makemd-core.ts` was a barrel re-exporting the entire plugin, and 205 files imported
+  from it — so importing it once pulled everything. `scripts/debarrel.mjs` rewrote those
+  imports to the real modules; the barrel is gone.
+- `BannerView` imported a four-string union type (`InputModifier`) from the frame editor,
+  dragging the frame editor, table view and D3 charts in with it. Inlined.
+- 25 modules imported the `CellEditMode` enum and the table cell prop types from `TableView`,
+  doing the same for `@tanstack/react-table`. Moved to `shared/types/cellEditMode.ts`.
+- The property chip in the header (`PropertyField`) lived inside the context-list editor.
+  Moving it to its own module made 132 files unreachable at once.
+
+Type-only imports cost real bundle size here: the module still gets pulled in.
+
+### What was removed
+
+Navigator and its views, space views and the space editor, frames and the frame editor, the
+context and table views, the Blink palette, inline backlinks, D3 visualizations, the
+`.mdb`/`.mkit`/`.html` file editors, kit installation, export, the dataview adapter, tab
+stickers, and make.md's own settings tab — replaced by
+`adapters/obsidian/notioneerSettings.ts`, which only exposes settings that still do something.
+
+### What had to stay
+
+The header is a React component that reads from make.md's `Superstate`, so the Superstate, its
+space manager, the filesystem middleware and the Obsidian adapters underneath it all stay,
+along with the property cell views the header renders. That is what still makes the bundle
+4.4 MB, and why "just delete spaces" was never on the table: the header sits on top of it.
 
 ## Source layout
 
@@ -55,9 +83,10 @@ for the features Notioneer keeps:
 | `src/core/react/components/SpaceView/TitleComponent.tsx` | The editable title. |
 | `src/core/react/components/SpaceView/Contexts/SpaceEditor/HeaderPropertiesView.tsx` | The property rows. |
 | `src/core/schemas/settings.ts` | `DEFAULT_SETTINGS` — where the spaces subsystems are switched off. |
-| `src/basics/` | make.md's slash commands and selection menu. To be replaced in stage 3. |
-| `src/css/` | All styling, bundled into `styles.css`. |
-| `legacy/` | Pre-fork vanilla implementation. Not built. |
+| `src/adapters/obsidian/notioneerSettings.ts` | Our settings tab, replacing make.md's. |
+| `src/notioneer-slash/` | Slash commands that insert plain Markdown. Ours, no React. |
+| `src/notioneer-toolbar/` | Selection formatting toolbar. Ours, no React. |
+| `src/css/` | All styling, bundled into `styles.css`; `css/notioneer.css` is ours. |
 
 ## What changed from upstream
 
@@ -67,7 +96,7 @@ Kept deliberately small so upstream changes can still be merged:
   `spaceViewEnabled`, `spacesEnabled`, `enableFolderNote`, `spacesStickers`, `sidebarTabs`,
   `showRibbon` and `vaultSelector` default to `false`. `inlineContext`, `banners` and
   `inlineContextProperties` stay on — those are the header.
-- `src/main.ts`, `src/adapters/obsidian/filesystem/filesystem.ts` — `plugins/make-md/Spaces.mdb`
+- `src/adapters/obsidian/filesystem/filesystem.ts` — `plugins/make-md/Spaces.mdb`
   and `plugins/make-md/data.json` were hardcoded; they now use `manifest.dir`, so they resolve
   inside our own plugin folder instead of a make.md folder that does not exist.
 - `tsconfig.json` — `target` raised from `es6` to `es2020`. Upstream's `es6` target fails to
@@ -83,8 +112,8 @@ and therefore absent from the clone; our build script does not.
 ## Build pipeline
 
 - TypeScript (`tsconfig.json`) type-checks the tree (`tsc -noEmit -skipLibCheck`) — no `.js` is emitted by `tsc` itself.
-- [esbuild](https://esbuild.github.io/) (`esbuild.config.mjs`, upstream's) bundles `src/main.ts` into a single CommonJS `main.js` (~5.4 MB), externalizing `obsidian`, `electron`, part of CodeMirror and Node builtins. It also inlines the three web workers and compiles `.wat`.
-- The same pass emits `main.css` from the CSS imported by the source; a rename plugin turns it into the root `styles.css` (~149 KB) that Obsidian loads. Both are generated and gitignored.
+- [esbuild](https://esbuild.github.io/) (`esbuild.config.mjs`, upstream's) bundles `src/main.ts` into a single CommonJS `main.js` (~4.4 MB), externalizing `obsidian`, `electron`, part of CodeMirror and Node builtins. It also inlines the three web workers and compiles `.wat`.
+- The same pass emits `main.css` from the CSS imported by the source; a rename plugin turns it into the root `styles.css` (~58 KB) that Obsidian loads. Both are generated and gitignored.
 - `scripts/copy-to-vault.mjs` copies `main.js`, `manifest.json` and `styles.css` into the vault named in `.env.local`.
 - `manifest.json` + `versions.json` follow the standard Obsidian plugin conventions (`minAppVersion` compatibility map).
 

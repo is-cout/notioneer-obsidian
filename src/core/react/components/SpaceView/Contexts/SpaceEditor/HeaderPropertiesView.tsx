@@ -17,7 +17,8 @@ import {
 import { addTagToPath } from "core/superstate/utils/tags";
 import { FMMetadataKeys } from "core/types/space";
 import { updateContextValue } from "core/utils/contexts/context";
-import { SelectOption, Superstate } from "makemd-core";
+import { SelectOption } from "shared/types/menu";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import i18n from "shared/i18n";
 import React, {
   PropsWithChildren,
@@ -33,7 +34,7 @@ import { SpaceProperty, SpaceTables } from "shared/types/mdb";
 import { windowFromDocument } from "shared/utils/dom";
 import { parseMDBStringValue } from "utils/properties";
 import { DataPropertyView } from "../DataTypeView/DataPropertyView";
-import { CellEditMode } from "../TableView/TableView";
+import { CellEditMode } from "shared/types/cellEditMode";
 import { uniq } from "shared/utils/array";
 
 type PathContextProperty = {

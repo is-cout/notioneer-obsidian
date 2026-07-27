@@ -3,7 +3,7 @@ import { getMDBTables } from "adapters/mdb/utils/mdb";
 import { regexYaml } from "adapters/text/textCacher";
 import { createSpace, newPathInSpace, parseSpaceMetadata, saveProperties } from "core/superstate/utils/spaces";
 import MakeMDPlugin from "main";
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import { parseYaml } from "obsidian";
 import { defaultFrameSchema } from "schemas/frames";
 import { defaultContextSchemaID } from "shared/schemas/context";

@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import { defaultFrameListViewSchema } from "schemas/mdb";
 
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import i18n from "shared/i18n";
 import { defaultPredicate } from "shared/schemas/predicate";
 import {

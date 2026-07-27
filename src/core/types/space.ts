@@ -1,5 +1,5 @@
 import { fileSystemSpaceInfoFromFolder } from "core/spaceManager/filesystemAdapter/spaceInfo"
-import { SpaceManager } from "makemd-core"
+import { SpaceManager } from "core/spaceManager/spaceManager";
 
 
 import { PathState, SpaceState } from "shared/types/PathState"

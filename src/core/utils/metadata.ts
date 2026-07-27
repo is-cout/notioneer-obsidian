@@ -1,4 +1,4 @@
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import i18n from "shared/i18n"
 import { fieldTypeForField } from "schemas/mdb"
 import { Metadata, fileProperties, labelProperties, pathCacheMetadata } from "shared/types/metadata"

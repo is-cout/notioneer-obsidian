@@ -1,4 +1,4 @@
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import React, { useEffect } from "react";
 import i18n from "shared/i18n";
 

@@ -1,5 +1,5 @@
 import { ContextEditorContext } from "core/react/context/ContextEditorContext";
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import React, { useContext } from "react";
 import { stickerForDBSchema } from "schemas/mdb";
 import StickerModal from "shared/components/StickerModal";

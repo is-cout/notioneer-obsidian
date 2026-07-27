@@ -7,7 +7,7 @@ import ReactCodeMirror, {
 } from "@uiw/react-codemirror";
 import { FormulaInfo, formulasInfos } from "core/utils/formula/formulasInfos";
 import { mathjs } from "core/utils/formula/syntax";
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import i18n from "shared/i18n";
 import React, { useEffect, useRef, useState } from "react";
 import { fieldTypeForField } from "schemas/mdb";

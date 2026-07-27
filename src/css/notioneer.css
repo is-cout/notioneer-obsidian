@@ -1,0 +1,64 @@
+/* Notioneer's own UI — the slash command menu and the selection toolbar. The note header is
+   make.md's and is styled by css/Panels/FileContext.css. */
+
+
+/* --- Slash command menu --- */
+
+.notioneer-slash-item {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.notioneer-slash-name {
+	font-weight: var(--font-medium);
+}
+
+.notioneer-slash-desc {
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+}
+
+/* --- Selection toolbar --- */
+
+.notioneer-selection-toolbar {
+	position: fixed;
+	z-index: var(--layer-popover);
+	display: flex;
+	gap: 2px;
+	padding: 4px;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--radius-m);
+	background-color: var(--background-secondary);
+	box-shadow: var(--shadow-s);
+}
+
+.notioneer-toolbar-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	padding: 0;
+	border: none;
+	border-radius: var(--radius-s);
+	background: transparent;
+	box-shadow: none;
+	color: var(--text-muted);
+	cursor: pointer;
+}
+
+.notioneer-toolbar-button:hover {
+	background-color: var(--background-modifier-hover);
+	color: var(--text-normal);
+}
+
+
+/* --- Native properties panel ---
+   make.md only hides Obsidian's frontmatter block in reading view (FileContext.css), so in
+   the editor its own property rows and the native panel render one above the other. Hidden
+   here instead of leaving it to a user snippet. Reading view keeps the native panel. */
+
+.mk-inline-context-enabled .markdown-source-view.mod-cm6 .metadata-container {
+	display: none;
+}

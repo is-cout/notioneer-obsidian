@@ -5,7 +5,9 @@ import { commandToDBTables, mdbSchemaToCommandSchema } from 'core/utils/commands
 import { mdbFrameToDBTables } from "core/utils/frames/frame";
 import _ from 'lodash';
 import MakeMDPlugin from 'main';
-import { AFile, FileTypeAdapter, FilesystemMiddleware } from 'makemd-core';
+import { AFile } from "shared/types/afile";
+import { FileTypeAdapter } from "core/middleware/filetypes";
+import { FilesystemMiddleware } from "core/middleware/filesystem";
 import { fieldSchema } from "shared/schemas/fields";
 import { Command } from 'shared/types/commands';
 import { DBTable, DBTables, MDB, SpaceProperty, SpaceTable, SpaceTableSchema, SpaceTables } from 'shared/types/mdb';

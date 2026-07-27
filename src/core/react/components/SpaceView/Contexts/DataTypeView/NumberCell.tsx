@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef } from "react";
 import { safelyParseJSON } from "shared/utils/json";
-import { CellEditMode, TableCellProp } from "../TableView/TableView";
+import { CellEditMode } from "shared/types/cellEditMode";
+import { TableCellProp } from "shared/types/cellEditMode";
 import { parseFieldValue } from "core/schemas/parseFieldValue";
 import { safeFormatNumber } from "core/utils/number";
 

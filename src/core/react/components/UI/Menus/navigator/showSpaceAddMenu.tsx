@@ -7,7 +7,8 @@ import {
 } from "core/superstate/utils/spaces";
 import { addTag } from "core/superstate/utils/tags";
 import { isString } from "lodash";
-import { SelectOption, Superstate } from "makemd-core";
+import { SelectOption } from "shared/types/menu";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import React from "react";
 import { default as i18n } from "shared/i18n";
 import { tagsSpacePath } from "shared/schemas/builtin";

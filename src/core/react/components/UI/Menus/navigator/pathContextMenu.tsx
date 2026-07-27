@@ -25,7 +25,8 @@ import { removeIconsForPaths } from "shared/utils/sticker";
 
 import { deletePath, movePathToSpace } from "core/superstate/utils/path";
 import { isTouchScreen } from "core/utils/ui/screen";
-import { SelectOption, SelectOptionType, Superstate } from "makemd-core";
+import { SelectOption, SelectOptionType } from "shared/types/menu";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import { Anchors, Rect } from "shared/types/Pos";
 import { windowFromDocument } from "shared/utils/dom";
 import { movePath } from "shared/utils/uri";

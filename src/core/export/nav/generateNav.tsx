@@ -1,6 +1,6 @@
 import { defaultSpaceSort, spaceSortFn } from "core/superstate/utils/spaces";
 import { encode } from "he";
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import { transformPath } from "../treeHelpers";
 
 type NavItem = {

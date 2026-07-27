@@ -1,4 +1,4 @@
-import { Superstate } from "makemd-core";
+import { ISuperstate as Superstate } from "shared/types/superstate";
 import { safelyParseJSON } from "shared/utils/json";
 
 export const defaultString = (value: any, string: string) => {

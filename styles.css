@@ -40,59 +40,172 @@
   background-color: var(--background-modifier-hover);
   color: var(--text-normal);
 }
-.notioneer-note-header {
-  margin-bottom: 0.5em;
-}
-.notioneer-cover {
-  height: 200px;
+.notioneer-inline-context {
+  --notioneer-banner-height: 200px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   margin-bottom: 8px;
-  border-radius: var(--radius-m);
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
 }
-.notioneer-header-actions {
+body.notioneer-inline-context-enabled .markdown-source-view.mod-cm6 > .cm-editor > .cm-scroller > .cm-sizer > .inline-title,
+body.notioneer-inline-context-enabled .markdown-source-view.mod-cm6 .metadata-container {
+  display: none;
+}
+.notioneer-banner {
+  width: 100%;
+  max-width: 100vw;
+  height: var(--notioneer-banner-height);
+  user-select: none;
+}
+.notioneer-banner img {
+  width: 100%;
+  height: var(--notioneer-banner-height);
+  object-fit: cover;
+  opacity: 1 !important;
+}
+.notioneer-banner-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: var(--file-line-width);
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 var(--file-margins);
+  opacity: 0;
+  transition: opacity 100ms ease-in-out;
+}
+.notioneer-banner-buttons.notioneer-over-banner {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  left: auto;
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+.notioneer-inline-context:hover .notioneer-banner-buttons,
+.notioneer-banner-buttons:focus-within {
+  opacity: 1;
+}
+button.notioneer-hover-button {
+  --icon-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border: thin solid var(--background-modifier-border);
+  border-radius: 4px;
+  background: var(--background-primary);
+  box-shadow: none;
+  color: var(--text-muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+button.notioneer-hover-button:hover {
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+}
+.notioneer-hover-button .svg-icon {
+  width: var(--icon-size);
+  height: var(--icon-size);
+}
+.notioneer-header-title {
+  max-width: var(--file-line-width);
+  width: 100%;
+  margin: 20px auto 0;
+  padding: 0 var(--file-margins);
+}
+.notioneer-header-title.notioneer-has-banner {
+  margin-top: -34px;
+}
+.notioneer-title {
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+.notioneer-title:focus {
+  outline: none;
+}
+.notioneer-title:empty::before {
+  content: attr(data-ph);
+  position: absolute;
+  color: var(--text-faint);
+}
+.notioneer-properties {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: var(--file-line-width);
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 var(--file-margins);
+  font-size: 14px;
+}
+.notioneer-property-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 2px;
+}
+.notioneer-property-key {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 140px;
+  max-width: 140px;
+  min-height: 24px;
+  padding: 0 4px;
+  border-radius: 4px;
+  color: var(--text-faint);
+}
+.notioneer-property-key:hover {
+  color: var(--text-normal);
+}
+.notioneer-property-icon {
+  --icon-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--icon-size);
+  height: var(--icon-size);
+}
+.notioneer-property-icon .svg-icon {
+  width: var(--icon-size);
+  height: var(--icon-size);
+}
+.notioneer-property-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+input.notioneer-property-value {
+  flex-grow: 1;
+  min-height: 24px;
+  height: 24px;
+  padding: 0 4px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-normal);
+  font-size: 13px;
+  font-family: inherit;
+}
+input.notioneer-property-value:hover {
+  background: var(--background-modifier-hover);
+}
+input.notioneer-property-value:focus {
+  background: var(--background-modifier-hover);
+  box-shadow: none !important;
+}
+.notioneer-properties-actions {
   display: flex;
   gap: 4px;
   opacity: 0;
   transition: opacity 100ms ease-in-out;
 }
-.notioneer-note-header:hover .notioneer-header-actions,
-.notioneer-header-actions:focus-within {
+.notioneer-inline-context:hover .notioneer-properties-actions,
+.notioneer-properties-actions:focus-within {
   opacity: 1;
-}
-.notioneer-header-action {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 8px;
-  border: none;
-  background: transparent;
-  box-shadow: none;
-  color: var(--text-muted);
-  font-size: var(--font-ui-smaller);
-  cursor: pointer;
-}
-.notioneer-header-action:hover {
-  background-color: var(--background-modifier-hover);
-  color: var(--text-normal);
-}
-.notioneer-header-action .svg-icon {
-  width: 14px;
-  height: 14px;
-}
-.notioneer-title {
-  width: 100%;
-  padding: 0;
-  border: none;
-  background: transparent;
-  box-shadow: none;
-  color: var(--text-normal);
-  font-family: var(--font-text);
-  font-size: 2em;
-  font-weight: var(--bold-weight);
-  line-height: 1.2;
-}
-.notioneer-title:focus {
-  box-shadow: none;
 }

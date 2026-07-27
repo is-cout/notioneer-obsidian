@@ -4,6 +4,20 @@ Living log of significant changes to the project. This is **not** optional bookk
 
 Format: `YYYY-MM-DD — short description. Why (if not obvious). Files touched.`
 
+## 2026-07-27 (0.5.0)
+
+- **Note header rebuilt to match make.md.** The 0.4.0 header was an approximation written
+  without reading make.md; this one ports its actual layout and CSS (`MarkdownHeaderView.tsx`,
+  `BannerView.tsx`, `FileContext.css` — MIT, credited in `docs/ARCHITECTURE.md`): full-width
+  banner, title overlapping its bottom edge, property rows below. Property rows are now part
+  of the header (add, edit, right-click to delete) and Obsidian's native properties panel is
+  hidden in the editor so nothing renders twice. Colours use Obsidian's theme variables and
+  the title reuses the native `inline-title` class, so themes apply automatically.
+  Fixes the cover never appearing: it is an `<img>` now, not a CSS `background-image` whose
+  `url()` broke on resource paths. Files: `src/header/noteHeader.ts`,
+  `src/header/newPropertyModal.ts` (new), `src/styles/index.css`, `README.md`,
+  `docs/ARCHITECTURE.md`, `docs/FAQ.md`, `package.json`, `manifest.json`, `versions.json`.
+
 ## 2026-07-27 (0.4.0)
 
 - **Note header.** Cover image and editable title at the top of every Markdown editor. The

@@ -5,9 +5,9 @@ but deliberately narrower: the note header, slash commands and the selection too
 
 ## Features
 
-- **Note header** — a cover image and an editable title at the top of a note. The cover is a
-  plain `cover` frontmatter key; renaming from the title updates links. Properties are left to
-  Obsidian's native panel, which renders right below the header.
+- **Note header** — cover image, editable title and property rows at the top of a note, laid
+  out like make.md's. The cover is a plain `cover` frontmatter key, the title renames the file
+  (links follow), and the property rows read and write ordinary frontmatter.
 - **Slash commands** — typing `/` in the editor opens a menu of basic block commands
   (heading, table, list, callout, code block, …). Every command inserts **plain Markdown**,
   never a plugin-specific format — a table command produces a real Markdown table.
@@ -21,6 +21,12 @@ Explicitly **not** included: spaces, custom file formats, or any make.md-specifi
 Copy `main.js`, `manifest.json` and `styles.css` into
 `YOUR_VAULT/.obsidian/plugins/notioneer/`, then enable **Notioneer** under
 Settings → Community plugins.
+
+## Credits
+
+The note header is ported from [make.md](https://github.com/Make-md/makemd) (MIT, Copyright
+(c) 2022 JP Cen) — same layout and CSS, reimplemented in plain DOM without spaces or the rest
+of its feature set. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#credits).
 
 ## Development
 

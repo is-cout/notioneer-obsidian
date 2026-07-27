@@ -28,8 +28,9 @@ Scope decisions, set at scaffold time:
 | `src/slash/suggest.ts` | `EditorSuggest` subclass: when `/` opens the menu, and how the chosen snippet is inserted. |
 | `src/toolbar/format.ts` | The inline formats and the wrap/unwrap logic they apply to the selection. |
 | `src/toolbar/selectionToolbar.ts` | The floating toolbar element: when to show it, where to place it, wiring buttons to formats. |
-| `src/header/noteHeader.ts` | The per-view note header: cover image, editable title, cover add/remove actions. |
+| `src/header/noteHeader.ts` | The per-view note header: banner, editable title, property rows, and the writes they trigger. |
 | `src/header/coverPicker.ts` | Fuzzy modal listing the vault's image files, used to pick a cover. |
+| `src/header/newPropertyModal.ts` | Prompt for a new frontmatter key name (Obsidian has no built-in prompt). |
 | `src/editorUtils.ts` | Shared editor-position math (`positionAfter`). |
 
 <!-- Add a row per new src/*.ts file as the project grows past a single file — this
@@ -68,19 +69,40 @@ instead of eating one of the bold asterisks.
 
 ## Note header
 
-The header element is prepended to each Markdown editor's `.cm-sizer`, so it scrolls with
-the note and inherits the reading width. Obsidian's native properties panel already sits in
-that same container just below — which is why Notioneer renders cover + title only and does
-**not** reimplement a properties editor. Reading view has no `.cm-sizer` and is left alone.
+Structured after make.md's `MarkdownHeaderView` (MIT — see [Credits](#credits)): banner
+image, the note title overlapping its bottom edge, then the note's properties.
 
-State lives entirely in the note: the cover is a `cover` frontmatter key (an external URL,
-or a vault path resolved through `metadataCache.getFirstLinkpathDest` +
-`vault.getResourcePath`), and the title is the filename, renamed through
-`fileManager.renameFile` so links update.
+The element is prepended to each Markdown editor's `.cm-sizer`, the same mount point make.md
+uses (`inlineContextLoader.tsx`). `.cm-sizer` spans the full editor width, which is what lets
+the banner bleed past the reading width while the title and property rows stay inside it via
+`--file-line-width` / `--file-margins`. With a banner the title block is pulled up 34px so it
+overlaps the image.
 
-Rendering is a full repaint of the header on `layout-change` / `file-open` /
-`active-leaf-change` / `metadataCache.changed`. Repainting is skipped while focus is inside
-the header, otherwise editing the title would be interrupted by its own rename event.
+Obsidian's own inline title and `.metadata-container` are hidden by the
+`notioneer-inline-context-enabled` body class while the header is on, so nothing renders
+twice. That is scoped to `.markdown-source-view` — reading view has no `.cm-sizer`, gets no
+header, and keeps the native panel.
+
+Colours and metrics come from Obsidian's theme variables (`--text-faint`,
+`--background-modifier-hover`, `--file-line-width`, …), so the header follows the active
+theme. make.md aliases those into `--mk-ui-*` in `DefaultVibe.css` first; Notioneer uses the
+Obsidian variables directly rather than carrying the alias layer. The title reuses Obsidian's
+own `inline-title` class for the same reason.
+
+State lives entirely in the note:
+
+- **Cover** — the `cover` frontmatter key (same key make.md's banner uses). An external URL is
+  used as-is; a vault path (bare or `[[wrapped]]`) resolves through
+  `metadataCache.getFirstLinkpathDest` and is rendered as an `<img>` rather than a CSS
+  `background-image`, because resource paths contain characters that would need escaping
+  inside `url()`.
+- **Title** — the filename, renamed through `fileManager.renameFile` so links follow.
+- **Properties** — every other frontmatter key, edited through
+  `fileManager.processFrontMatter`. A value that was a list stays a list (split on commas).
+
+Rendering is a full repaint on `layout-change` / `file-open` / `active-leaf-change` /
+`metadataCache.changed`, skipped while focus is inside the header — otherwise typing in the
+title or a property value would be interrupted by the write it triggers.
 
 ## Build pipeline
 
@@ -90,3 +112,12 @@ the header, otherwise editing the title would be interrupted by its own rename e
 - `manifest.json` + `versions.json` follow the standard Obsidian plugin conventions (`minAppVersion` compatibility map).
 
 See [DEVELOPMENT.md](DEVELOPMENT.md) for how to actually run the build.
+
+## Credits
+
+The note header's layout and CSS are ported from [make.md](https://github.com/Make-md/makemd)
+(`src/core/react/components/MarkdownEditor/MarkdownHeaderView.tsx`, `BannerView.tsx`,
+`src/css/Panels/FileContext.css`, `src/adapters/obsidian/inlineContextLoader.tsx`), MIT
+licensed, Copyright (c) 2022 JP Cen. make.md is React-based; Notioneer reimplements the same
+structure in plain DOM, without spaces, stickers, banner repositioning, or the `--mk-ui-*`
+variable layer.

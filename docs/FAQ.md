@@ -32,16 +32,18 @@ Hover the top of a note and click **Add cover**, then pick an image from the vau
 stored as a `cover` key in the note's frontmatter, so you can also type it by hand — an
 external `https://` URL works too.
 
-### Why doesn't the header show my properties?
+### How do I edit properties in the header?
 
-Obsidian's own properties panel renders right below the header, in the same container. See
-[ARCHITECTURE.md](ARCHITECTURE.md#note-header). If you don't see it: Settings → Editor →
-**Properties in document** → *Visible*.
+Every frontmatter key except `cover` gets a row. Click a value to edit it, right-click a key
+to delete it, and use **New property** (visible on hover) to add one. Obsidian's own
+properties panel is hidden in the editor while the header is on, so nothing shows twice —
+reading view still uses the native one.
 
 ### How do I change the cover height?
 
-`.notioneer-cover` in [src/styles/index.css](../src/styles/index.css) (rebuild after editing;
-the root `styles.css` is generated).
+`--notioneer-banner-height` on `.notioneer-inline-context` in
+[src/styles/index.css](../src/styles/index.css) — or override it in a CSS snippet. Rebuild
+after editing the source; the root `styles.css` is generated.
 
 ### Can I bump a dependency version?
 

@@ -106,15 +106,9 @@ body.mk-inline-context-enabled .markdown-source-view .metadata-container {
    Shape and colour come from make.md's own `.mk-props-contexts-space-name` (the chip they use
    for a note's spaces), so only the pointer is ours. */
 
-.notioneer-folder-crumb {
-	cursor: pointer;
-}
-
-/* The immediate parent reads as subordinate to the top-level folder: same pill, lighter. */
+/* The immediate parent reads as subordinate to the top-level folder: same pill, slightly
+   lighter. No hover state and no pointer — the chips are meant to read as a label, not as a
+   control, even though clicking one still reveals the folder. */
 .notioneer-folder-crumb-faded {
-	opacity: 0.6;
-}
-
-.notioneer-folder-crumb-faded:hover {
-	opacity: 1;
+	opacity: 0.8;
 }

@@ -23,14 +23,20 @@ export const FolderCrumb = (props: { superstate: Superstate; path: string }) => 
 
 	return (
 		<>
-			{paths.map((path) => (
-				<FolderChip key={path} superstate={props.superstate} path={path}></FolderChip>
+			{paths.map((path, index) => (
+				<FolderChip
+					key={path}
+					superstate={props.superstate}
+					path={path}
+					// The immediate parent is the subordinate one: same pill, lighter.
+					faded={index > 0}
+				></FolderChip>
 			))}
 		</>
 	);
 };
 
-const FolderChip = (props: { superstate: Superstate; path: string }) => {
+const FolderChip = (props: { superstate: Superstate; path: string; faded: boolean }) => {
 	const reveal = () => {
 		// `revealInFolder` is not part of the public API, so a version without it does nothing
 		// rather than throwing inside the header.
@@ -46,7 +52,9 @@ const FolderChip = (props: { superstate: Superstate; path: string }) => {
 
 	return (
 		<div
-			className="mk-props-contexts-space-name notioneer-folder-crumb"
+			className={`mk-props-contexts-space-name notioneer-folder-crumb${
+				props.faded ? " notioneer-folder-crumb-faded" : ""
+			}`}
 			onClick={reveal}
 			aria-label={props.path}
 		>

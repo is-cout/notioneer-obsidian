@@ -109,3 +109,12 @@ body.mk-inline-context-enabled .markdown-source-view .metadata-container {
 .notioneer-folder-crumb {
 	cursor: pointer;
 }
+
+/* The immediate parent reads as subordinate to the top-level folder: same pill, lighter. */
+.notioneer-folder-crumb-faded {
+	opacity: 0.6;
+}
+
+.notioneer-folder-crumb-faded:hover {
+	opacity: 1;
+}

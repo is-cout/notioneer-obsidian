@@ -60,9 +60,11 @@ while (queue.length) {
 	}
 }
 
-/* Never delete: ambient declarations are not imported by anyone, and sql.js's wasm shim is
-   loaded at runtime by path rather than by an import statement. */
-const KEEP = (f) => f.endsWith(".d.ts") || f.includes("sql-wasm");
+/* Never delete: ambient declarations are not imported by anyone; sql.js's wasm shim is loaded
+   at runtime by path rather than by an import statement; and stylesheets are kept even when
+   unreferenced — deleting the ones main.ts did not import is what left the note header
+   unstyled in 0.8.1. Drop a stylesheet by hand, after checking what still uses its classes. */
+const KEEP = (f) => f.endsWith(".d.ts") || f.includes("sql-wasm") || f.endsWith(".css");
 
 const all = walk(ROOT).filter((f) => EXTENSIONS.some((ext) => f.endsWith(ext)));
 const unreachable = all.filter((f) => !reachable.has(f) && !KEEP(f));

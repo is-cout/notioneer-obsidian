@@ -383,7 +383,9 @@ export const HeaderPropertiesView = (props: PropsWithChildren<{
           </div>
         </div>
       )}
-      {props.collapseSpaces && (
+      {/* Notioneer: the chips listing the spaces a note belongs to. Spaces are removed, so
+          this only renders if they are ever switched back on. */}
+      {props.collapseSpaces && props.superstate.settings.spacesEnabled && (
         <div className="mk-path-context-row">
           <div className="mk-props-contexts-space-list">
             {spacePathStates.map((f, i) => (
@@ -439,7 +441,8 @@ export const HeaderPropertiesView = (props: PropsWithChildren<{
             maxHeight: isPending ? "0px" : "unset",
           }}
         >
-          {!props.collapseSpaces && (
+          {/* Notioneer: same list as a property row; gated for the same reason. */}
+          {!props.collapseSpaces && props.superstate.settings.spacesEnabled && (
             <div className="mk-path-context-row">
               <div className="mk-path-context-field">
                 <div

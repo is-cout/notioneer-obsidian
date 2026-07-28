@@ -4,6 +4,18 @@ Living log of significant changes to the project. This is **not** optional bookk
 
 Format: `YYYY-MM-DD — short description. Why (if not obvious). Files touched.`
 
+## 2026-07-27 (0.8.2)
+
+- **Fixed the header rendering unstyled** (title with a stray icon button, an empty square and
+  a stray "Spaces" chip). `scripts/unreachable.mjs` treated stylesheets like source and deleted
+  every CSS file `main.ts` did not import — but make.md’s header borrows classes from
+  stylesheets its own entry point imports globally (buttons, menus, inline context). All 42
+  stylesheets restored and imported as upstream does; the script now never deletes CSS.
+- **Hid the spaces chips in the header.** `HeaderPropertiesView` rendered the "spaces this note
+  belongs to" row unconditionally; it is now gated on `spacesEnabled`, which is off.
+- Files: `src/css/` (restored), `src/main.ts`, `scripts/unreachable.mjs`,
+  `src/core/react/components/SpaceView/Contexts/SpaceEditor/HeaderPropertiesView.tsx`.
+
 ## 2026-07-27 (0.8.1)
 
 - **Fixed the note header rendering nothing after 0.8.0.** The header reads from

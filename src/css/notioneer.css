@@ -1,0 +1,132 @@
+/* Notioneer's own UI — the slash command menu and the selection toolbar. The note header is
+   make.md's and is styled by css/Panels/FileContext.css. */
+
+
+/* --- Slash command menu --- */
+
+.notioneer-slash-item {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.notioneer-slash-name {
+	font-weight: var(--font-medium);
+}
+
+.notioneer-slash-desc {
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+}
+
+/* --- Selection toolbar ---
+   Values taken from make.md's inline menu (`css/Menus/InlineMenu.css`, `.mk-style-menu` and
+   `.mk-mark`): one bordered container, and marks that carry no background of their own —
+   only on hover. Our elements are `<button>`, so Obsidian's default button styling has to be
+   reset explicitly, which is what made them look like chips inside a box. */
+
+.notioneer-selection-toolbar {
+	position: fixed;
+	z-index: var(--layer-menu);
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	padding: 4px;
+	border: 1px solid var(--background-modifier-border-hover);
+	border-radius: var(--radius-m);
+	background-color: var(--background-secondary);
+	box-shadow: var(--shadow-s);
+}
+
+button.notioneer-toolbar-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	padding: 6px;
+	border: none;
+	border-radius: 4px;
+	background: none;
+	background-color: transparent;
+	box-shadow: none;
+	color: var(--text-muted);
+	cursor: default;
+}
+
+button.notioneer-toolbar-button:hover {
+	background-color: var(--background-modifier-hover);
+	color: var(--text-normal);
+}
+
+.notioneer-toolbar-button .svg-icon {
+	width: 16px;
+	height: 16px;
+}
+
+
+/* --- Native properties panel ---
+   make.md only hides Obsidian's frontmatter block in reading view (FileContext.css), so in
+   the editor its own property rows and the native panel render one above the other. Hidden
+   here instead of leaving it to a user snippet. Reading view keeps the native panel. */
+
+/* `!important` and the `body` prefix because Obsidian styles this container itself and the
+   two properties lists rendering one above the other is the worst failure mode here. */
+body.mk-inline-context-enabled .markdown-source-view .metadata-container {
+	display: none !important;
+}
+
+/* --- Property values ---
+   make.md renders every multi-value cell as a neutral grey chip
+   (`rgba(var(--mono-rgb-100), 0.025)` in SpaceViewer/TableView.css). Inside the header we
+   want Obsidian's own property styling instead, so tags and select values pick up the
+   theme's tag/pill colours exactly like the native properties panel does. */
+
+.mk-path-context-value .mk-cell-tags-label {
+	background: var(--tag-background);
+	border: var(--tag-border-width) solid var(--tag-border-color);
+	border-radius: var(--tag-radius);
+	padding: var(--tag-padding-y) var(--tag-padding-x);
+	color: var(--tag-color);
+	font-size: var(--tag-size);
+	font-weight: var(--tag-weight);
+	height: auto;
+}
+
+.mk-path-context-value .mk-cell-tags .mk-cell-option-item {
+	background: none;
+	padding: 0;
+}
+
+.mk-path-context-value .mk-cell-option-item {
+	background: var(--pill-background);
+	border: var(--pill-border-width) solid var(--pill-border-color);
+	border-radius: var(--pill-radius);
+	padding: var(--pill-padding-y) var(--pill-padding-x);
+	color: var(--pill-color);
+	font-size: var(--font-smallest);
+	height: auto;
+}
+
+.mk-path-context-value .mk-cell-option-item:hover {
+	background: var(--pill-background-hover);
+	color: var(--pill-color-hover);
+}
+
+/* --- Folder crumb ---
+   Shape and colour come from make.md's own `.mk-props-contexts-space-name` (the chip they use
+   for a note's spaces), so only the pointer is ours. */
+
+/* The immediate parent reads as subordinate to the top-level folder: same pill, slightly
+   lighter. The chips are a label, not a control, so there is no hover state and no pointer —
+   `!important` because make.md's own `.mk-props-contexts-space-name:hover` sets
+   `opacity: 1 !important` (Editor/Flow/Properties.css) and would undo the fade. */
+.notioneer-folder-crumb-faded,
+.notioneer-folder-crumb-faded:hover {
+	opacity: 0.8 !important;
+}
+
+.notioneer-folder-crumb,
+.notioneer-folder-crumb:hover {
+	cursor: default;
+}

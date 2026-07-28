@@ -4,6 +4,13 @@ Living log of significant changes to the project. This is **not** optional bookk
 
 Format: `YYYY-MM-DD — short description. Why (if not obvious). Files touched.`
 
+## 2026-07-27 (0.8.5)
+
+- **Folder chips vary in weight**: the top-level folder keeps the full tag colour, the
+  immediate parent renders at 60% opacity (full on hover), so the two read as a hierarchy
+  rather than as two equal chips. Files: `src/notioneer-header/FolderCrumb.tsx`,
+  `src/css/notioneer.css`.
+
 ## 2026-07-27 (0.8.4)
 
 - **Folder chip matches make.md’s.** It now reuses their `mk-props-contexts-space-name` class

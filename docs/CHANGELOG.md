@@ -4,6 +4,17 @@ Living log of significant changes to the project. This is **not** optional bookk
 
 Format: `YYYY-MM-DD — short description. Why (if not obvious). Files touched.`
 
+## 2026-07-27 (0.8.7)
+
+- **Folder chip hover really gone.** Removing our own hover rule was not enough: make.md’s
+  `.mk-props-contexts-space-name:hover` sets `opacity: 1 !important`, which undid the fade on
+  hover. Ours now matches that weight, and the cursor stays an arrow.
+- **Selection toolbar restyled after make.md’s inline menu** (`css/Menus/InlineMenu.css`):
+  one bordered container, 28px marks with no background of their own — only on hover — and
+  16px icons. Our buttons are `<button>` elements, so Obsidian’s default button background had
+  to be reset explicitly; that is what made them look like chips inside a box.
+- Files: `src/css/notioneer.css`.
+
 ## 2026-07-27 (0.8.6)
 
 - **Folder chips: subtler fade, no hover.** The immediate parent goes from 60% to 80% opacity,

@@ -22,29 +22,28 @@ ones that carry weight:
 | Package | Pinned version | Why it is here |
 |---|---|---|
 | `react`, `react-dom` | `18.2.0` | make.md's entire UI, including the note header. |
-| `sql.js` | `1.8.0` | The `.mdb` context/space database. Removable once spaces are stripped. |
-| `@tanstack/react-table`, `@tanstack/react-virtual` | `8.14.0`, `3.2.0` | Table/space views. Removable with spaces. |
-| `@dnd-kit/*` | `6.1.0` / `6.0.1` / `7.0.2` | Drag-and-drop in the navigator and frames. |
+| `sql.js` | `1.8.0` | Backs the cache persister the Superstate index writes to. Replacing it with a JSON persister is the biggest remaining size win. |
+| `@tanstack/react-table`, `@tanstack/react-virtual` | `8.14.0`, `3.2.0` | Table views — removed in 0.8.0, still listed. Droppable in stage 4. |
+| `@dnd-kit/*` | `6.1.0` / `6.0.1` / `7.0.2` | Still imported by the property rows the header renders. |
 | `mathjs`, `numfmt`, `rrule`, `date-fns` | see `package.json` | Formula properties and date handling. |
-| `lodash` | `4.17.21` | **Has an open high-severity advisory — see below.** |
+| `lodash` | `4.18.1` | Bumped off `4.17.21` to clear a high-severity advisory (approved 2026-07-27). |
 | `esbuild` | `0.14.54` | Downgraded from our `0.28.1` by the fork; upstream’s config uses the old `watch:` API. |
 | `typescript` | `5.9.3` | Upstream’s pin, up from our `5.4.2`. |
 
 Trimming this list back down is the point of the fork's later stages — every subsystem that
 gets removed should take its dependencies with it, and this table should shrink with it.
 
-## Open advisory: lodash (high)
+## Resolved advisory: lodash (high)
 
-`npm audit --omit=dev` reports one high-severity finding against the pinned `lodash@4.17.21`
-(prototype pollution in `_.unset`/`_.omit`, code injection via `_.template`:
+`lodash@4.17.21`, inherited from upstream, carried a high-severity advisory (prototype
+pollution in `_.unset`/`_.omit`, code injection via `_.template`:
 [GHSA-r5fr-rjxr-66jc](https://github.com/advisories/GHSA-r5fr-rjxr-66jc),
 [GHSA-f23m-r3pf-42rh](https://github.com/advisories/GHSA-f23m-r3pf-42rh),
-[GHSA-xxjr-mmjv-4gpg](https://github.com/advisories/GHSA-xxjr-mmjv-4gpg)). The fix is
-`lodash@4.18.1`, which is outside the range upstream states.
+[GHSA-xxjr-mmjv-4gpg](https://github.com/advisories/GHSA-xxjr-mmjv-4gpg)).
 
-**Not applied** — per the rule above, a version bump needs explicit approval, and this one
-also risks diverging from upstream. Flagged here so the decision is recorded rather than made
-silently.
+Bumped to `4.18.1` on 2026-07-27 with the owner's approval; `npm audit --omit=dev` reports no
+vulnerabilities. This is a deliberate divergence from upstream, which still states the older
+range — worth re-checking when merging from make.md.
 
 ## Known advisory: esbuild dev server (GHSA-67mh-4wv8-2f99)
 

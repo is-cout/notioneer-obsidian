@@ -126,12 +126,15 @@ export default class NotioneerPlugin extends Plugin implements IMakeMDPlugin {
 		this.addSettingTab(new NotioneerSettingsTab(this.app, this));
 	}
 
-	/** make.md indexes the whole vault when spaces are enabled; with spaces off it loads the
-	    cached index instead, which is the only path this plugin takes. */
+	/** The header renders from `superstate.pathsIndex`, and `loadCacheFromObsidianCache` is
+	    what fills the file cache the indexer reads, registers the vault listeners that keep it
+	    current, and calls `superstate.initialize()` at the end — so it is required, not part of
+	    spaces. Upstream only calls it when spaces are enabled, which is why skipping it left
+	    the index empty and the header blank. */
 	private loadSuperstate(): void {
 		this.app.workspace.onLayoutReady(async () => {
-			await this.superstate.loadFromCache();
-			this.superstate.initialize();
+			await this.superstate.initializeIndex();
+			await this.obsidianAdapter.loadCacheFromObsidianCache();
 
 			this.registerEvent(this.app.vault.on("delete", this.onFileChange));
 			this.registerEvent(this.app.vault.on("rename", this.onFileChange));

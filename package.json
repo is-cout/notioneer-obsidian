@@ -1,6 +1,6 @@
 {
   "name": "notioneer",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Note header with title, cover and properties, markdown slash commands, and a selection formatting toolbar",
   "main": "main.js",
   "scripts": {
@@ -82,7 +82,7 @@
     "he": "1.2.0",
     "inline-style-parser": "0.2.9",
     "jszip": "3.10.1",
-    "lodash": "4.17.21",
+    "lodash": "4.18.1",
     "mathjs": "12.4.1",
     "mdast-util-from-markdown": "2.0.3",
     "mdast-util-frontmatter": "2.0.1",

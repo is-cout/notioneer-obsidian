@@ -1,5 +1,6 @@
 import { PropertiesView } from "core/react/components/Explorer/PropertiesView";
 import { PathCrumb } from "core/react/components/UI/Crumbs/PathCrumb";
+import { FolderCrumb } from "../../../../../../notioneer-header/FolderCrumb";
 import { showNewPropertyMenu } from "core/react/components/UI/Menus/contexts/newSpacePropertyMenu";
 import { showPropertyMenu } from "core/react/components/UI/Menus/contexts/spacePropertyMenu";
 import { defaultMenu } from "core/react/components/UI/Menus/menu/SelectionMenu";
@@ -380,6 +381,19 @@ export const HeaderPropertiesView = (props: PropsWithChildren<{
               collapsed={collapsed}
               onToggle={(c) => toggleCollapsed()}
             ></CollapseToggle>
+          </div>
+        </div>
+      )}
+      {/* Notioneer: the folder chip, in place of the spaces chips below. */}
+      {props.collapseSpaces && !props.superstate.settings.spacesEnabled && (
+        <div className="mk-path-context-row">
+          <div className="mk-props-contexts-space-list">
+            <FolderCrumb
+              superstate={props.superstate}
+              path={pathState.path}
+            ></FolderCrumb>
+            <span style={{ flex: 1 }}></span>
+            {props.children}
           </div>
         </div>
       )}

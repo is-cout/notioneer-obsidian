@@ -32,6 +32,11 @@ Hover the header and click **Add Cover**, then pick an image. It is stored under
 frontmatter key (make.md’s; rename it in Settings → Notioneer → **Cover**), so you can type it
 by hand too.
 
+### What is the folder chip under the title?
+
+The note’s folder; clicking it reveals the folder in the file explorer. It sits where make.md
+showed the spaces a note belonged to. Source: [src/notioneer-header/FolderCrumb.tsx](../src/notioneer-header/FolderCrumb.tsx).
+
 ### How do I edit properties in the header?
 
 Click a value to edit, **New Property** to add one — make.md’s property editor, kept as is.

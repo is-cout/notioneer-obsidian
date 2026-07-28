@@ -59,6 +59,69 @@
    the editor its own property rows and the native panel render one above the other. Hidden
    here instead of leaving it to a user snippet. Reading view keeps the native panel. */
 
-.mk-inline-context-enabled .markdown-source-view.mod-cm6 .metadata-container {
-	display: none;
+/* `!important` and the `body` prefix because Obsidian styles this container itself and the
+   two properties lists rendering one above the other is the worst failure mode here. */
+body.mk-inline-context-enabled .markdown-source-view .metadata-container {
+	display: none !important;
+}
+
+/* --- Property values ---
+   make.md renders every multi-value cell as a neutral grey chip
+   (`rgba(var(--mono-rgb-100), 0.025)` in SpaceViewer/TableView.css). Inside the header we
+   want Obsidian's own property styling instead, so tags and select values pick up the
+   theme's tag/pill colours exactly like the native properties panel does. */
+
+.mk-path-context-value .mk-cell-tags-label {
+	background: var(--tag-background);
+	border: var(--tag-border-width) solid var(--tag-border-color);
+	border-radius: var(--tag-radius);
+	padding: var(--tag-padding-y) var(--tag-padding-x);
+	color: var(--tag-color);
+	font-size: var(--tag-size);
+	font-weight: var(--tag-weight);
+	height: auto;
+}
+
+.mk-path-context-value .mk-cell-tags .mk-cell-option-item {
+	background: none;
+	padding: 0;
+}
+
+.mk-path-context-value .mk-cell-option-item {
+	background: var(--pill-background);
+	border: var(--pill-border-width) solid var(--pill-border-color);
+	border-radius: var(--pill-radius);
+	padding: var(--pill-padding-y) var(--pill-padding-x);
+	color: var(--pill-color);
+	font-size: var(--font-smallest);
+	height: auto;
+}
+
+.mk-path-context-value .mk-cell-option-item:hover {
+	background: var(--pill-background-hover);
+	color: var(--pill-color-hover);
+}
+
+/* --- Folder crumb ---
+   Same chip make.md shows for the space a note lives in, kept for the note's folder. */
+
+.notioneer-folder-crumb {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	padding: 2px 8px;
+	border-radius: var(--radius-s);
+	background: var(--background-modifier-hover);
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+	cursor: pointer;
+}
+
+.notioneer-folder-crumb:hover {
+	color: var(--text-normal);
+}
+
+.notioneer-folder-crumb .svg-icon {
+	width: 14px;
+	height: 14px;
 }

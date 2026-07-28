@@ -11,16 +11,14 @@ for inserting blocks, and a formatting toolbar that appears on text selection.
 Scope decisions:
 
 - **No spaces / no vault-navigation features.** make.md's "spaces" concept is out of scope;
-  Notioneer only touches the editor and the note it is open on. As of the fork these are
-  switched off by default and will be removed outright — see [Fork status](#fork-status).
+  Notioneer only touches the editor and the note it is open on.
 - **Slash commands insert plain Markdown.** The reason this plugin exists rather than using
   make.md: its table command should produce a real Markdown table, not a plugin block.
 - **Cover images and properties live in frontmatter**, so a note degrades to normal Markdown.
 - **No network calls.**
 
-While the fork is being trimmed, upstream subsystems that contradict these decisions are
-present in the source but disabled by default. Treat the list above as the target, not as a
-description of what currently ships.
+These hold as of 0.8.2: the spaces subsystems are deleted, not merely switched off. What is
+left of upstream is the `Superstate` the header reads from — see [Fork status](#fork-status).
 
 ## Fork status
 
@@ -29,7 +27,7 @@ Since 0.7.0 this repo is a **fork of make.md**, trimmed down rather than written
 | Stage | State | Result |
 |---|---|---|
 | 1. Import upstream, build as Notioneer | done (0.7.0) | 619 files, 5.7 MB bundle |
-| 2. Remove what the header does not need | done (0.8.0) | 305 files, 4.4 MB, CSS 149 KB -> 57 KB |
+| 2. Remove what the header does not need | done (0.8.0) | 305 source files, 4.4 MB bundle (CSS kept whole — see below) |
 | 3. Restore the Markdown slash commands and selection toolbar | done (0.8.0) | `src/notioneer-slash/`, `src/notioneer-toolbar/` |
 | 4. Shed the remaining heavy dependencies | not started | see [DEPENDENCIES.md](DEPENDENCIES.md) |
 
@@ -97,10 +95,15 @@ for the features Notioneer keeps:
 
 Kept deliberately small so upstream changes can still be merged:
 
+- `src/main.ts` — rewritten. Upstream's bootstrap sequence kept in order; everything that
+  registered a view, command or file editor removed; our slash commands and selection toolbar
+  wired in. `loadCacheFromObsidianCache()` is called unconditionally — upstream calls it only
+  when spaces are on, and without it the path index stays empty and the header renders nothing.
 - `src/core/schemas/settings.ts` — `navigatorEnabled`, `blinkEnabled`, `contextEnabled`,
   `spaceViewEnabled`, `spacesEnabled`, `enableFolderNote`, `spacesStickers`, `sidebarTabs`,
   `showRibbon` and `vaultSelector` default to `false`. `inlineContext`, `banners` and
-  `inlineContextProperties` stay on — those are the header.
+  `inlineContextProperties` stay on — those are the header. Two keys added for our features.
+- `HeaderPropertiesView` — the "spaces this note belongs to" rows are gated on `spacesEnabled`.
 - `src/adapters/obsidian/filesystem/filesystem.ts` — `plugins/make-md/Spaces.mdb`
   and `plugins/make-md/data.json` were hardcoded; they now use `manifest.dir`, so they resolve
   inside our own plugin folder instead of a make.md folder that does not exist.

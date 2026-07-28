@@ -4,6 +4,12 @@ Living log of significant changes to the project. This is **not** optional bookk
 
 Format: `YYYY-MM-DD — short description. Why (if not obvious). Files touched.`
 
+## 2026-07-27 (0.8.6)
+
+- **Folder chips: subtler fade, no hover.** The immediate parent goes from 60% to 80% opacity,
+  and the hover state and pointer cursor are gone — the chips read as a label rather than a
+  control. Clicking one still reveals the folder. Files: `src/css/notioneer.css`.
+
 ## 2026-07-27 (0.8.5)
 
 - **Folder chips vary in weight**: the top-level folder keeps the full tag colour, the

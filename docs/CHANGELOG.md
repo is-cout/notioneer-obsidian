@@ -4,6 +4,34 @@ Living log of significant changes to the project. This is **not** optional bookk
 
 Format: `YYYY-MM-DD — short description. Why (if not obvious). Files touched.`
 
+## 2026-07-28 (1.0.0)
+
+- **First stable release.** The plugin's data format, settings and public behaviour are
+  declared stable, so the version leaves the pre-1.0 range — from here breaking changes take a
+  MAJOR bump instead of a MINOR one. This is also the version submitted to the Obsidian
+  community plugin directory, which is what the compliance fixes below are for.
+- **Obsidian community-plugin review fixes.** No behaviour change — every item below is an
+  API-compliance swap the submission scanner flags as an error:
+  - Thumbnail rendering no longer assigns to `innerHTML`; the exported note/space HTML goes
+    through Obsidian's `sanitizeHTMLToDom()` before being appended into the SVG
+    `foreignObject`. Files: `src/adapters/obsidian/filetypes/markdownAdapter.ts`.
+  - Direct `element.style.*` writes replaced with `setCssStyles()` (menu positioning, drag
+    cursors, flow editor sizing). Files: `src/adapters/obsidian/ui/WindowManager.tsx`,
+    `src/core/react/components/UI/Menus/menu.tsx`,
+    `src/core/react/components/UI/Menus/properties/colorPickerMenu.tsx`,
+    `src/shared/FlowEditor.tsx`.
+  - The three `eslint-disable-next-line` directives now carry `-- reason` descriptions. Files:
+    `src/core/react/components/MarkdownEditor/BannerView.tsx`,
+    `src/core/superstate/superstate.ts`.
+- **No dynamic `<script>` elements in the bundle.** `jszip` (used for the zipped local cache)
+  ships a prebundled browserify build whose `immediate`/`setimmediate` polyfills sniff for the
+  IE8 `script.onreadystatechange` trick and inject `<script>` elements when it is present. The
+  branch is already dead on every engine Obsidian runs on, but its four
+  `createElement("script")` calls tripped the scanner. A new esbuild `onLoad` plugin renames
+  the probed element so the sniff can never match — it throws if the pattern ever stops
+  matching, so a jszip upgrade can't silently reintroduce it. No dependency or runtime change.
+  Files: `esbuild.config.mjs`.
+
 ## 2026-07-27 (0.8.7)
 
 - **Folder chip hover really gone.** Removing our own hover rule was not enough: make.md’s

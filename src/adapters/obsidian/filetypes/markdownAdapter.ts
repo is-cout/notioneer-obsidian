@@ -7,7 +7,7 @@ import { AFile } from "shared/types/afile";
 import { FileTypeAdapter } from "core/middleware/filetypes";
 import { FilesystemMiddleware } from "core/middleware/filesystem";
 import { PathLabel } from "shared/types/caches";
-import { App, CachedMetadata, Platform, TFile, TFolder } from "obsidian";
+import { App, CachedMetadata, Platform, sanitizeHTMLToDom, TFile, TFolder } from "obsidian";
 import { StyleAst } from "shared/types/frameExec";
 import { IndexMap } from "shared/types/indexMap";
 import { uniq } from "shared/utils/array";
@@ -174,7 +174,7 @@ public app: App;
           
             svg.appendChild(foreignObject)
             const node = document.createElement('div')
-            node.innerHTML = html;
+            node.appendChild(sanitizeHTMLToDom(html))
             foreignObject.appendChild(node)
             const dataURI = await Promise.resolve()
             .then(() => new XMLSerializer().serializeToString(svg))

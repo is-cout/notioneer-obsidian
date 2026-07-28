@@ -243,7 +243,7 @@ export const BannerView = (props: {
       document.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("keyup", handleKeyUp);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- listeners are bound once on mount; adding the handlers as deps would re-register them on every render
   }, []);
   return banner ? (
     <>

@@ -19,38 +19,49 @@
 	font-size: var(--font-ui-smaller);
 }
 
-/* --- Selection toolbar --- */
+/* --- Selection toolbar ---
+   Values taken from make.md's inline menu (`css/Menus/InlineMenu.css`, `.mk-style-menu` and
+   `.mk-mark`): one bordered container, and marks that carry no background of their own —
+   only on hover. Our elements are `<button>`, so Obsidian's default button styling has to be
+   reset explicitly, which is what made them look like chips inside a box. */
 
 .notioneer-selection-toolbar {
 	position: fixed;
-	z-index: var(--layer-popover);
+	z-index: var(--layer-menu);
 	display: flex;
-	gap: 2px;
+	align-items: center;
+	gap: 4px;
 	padding: 4px;
-	border: 1px solid var(--background-modifier-border);
+	border: 1px solid var(--background-modifier-border-hover);
 	border-radius: var(--radius-m);
 	background-color: var(--background-secondary);
 	box-shadow: var(--shadow-s);
 }
 
-.notioneer-toolbar-button {
+button.notioneer-toolbar-button {
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	width: 28px;
 	height: 28px;
-	padding: 0;
+	padding: 6px;
 	border: none;
-	border-radius: var(--radius-s);
-	background: transparent;
+	border-radius: 4px;
+	background: none;
+	background-color: transparent;
 	box-shadow: none;
 	color: var(--text-muted);
-	cursor: pointer;
+	cursor: default;
 }
 
-.notioneer-toolbar-button:hover {
+button.notioneer-toolbar-button:hover {
 	background-color: var(--background-modifier-hover);
 	color: var(--text-normal);
+}
+
+.notioneer-toolbar-button .svg-icon {
+	width: 16px;
+	height: 16px;
 }
 
 
@@ -107,8 +118,15 @@ body.mk-inline-context-enabled .markdown-source-view .metadata-container {
    for a note's spaces), so only the pointer is ours. */
 
 /* The immediate parent reads as subordinate to the top-level folder: same pill, slightly
-   lighter. No hover state and no pointer — the chips are meant to read as a label, not as a
-   control, even though clicking one still reveals the folder. */
-.notioneer-folder-crumb-faded {
-	opacity: 0.8;
+   lighter. The chips are a label, not a control, so there is no hover state and no pointer —
+   `!important` because make.md's own `.mk-props-contexts-space-name:hover` sets
+   `opacity: 1 !important` (Editor/Flow/Properties.css) and would undo the fade. */
+.notioneer-folder-crumb-faded,
+.notioneer-folder-crumb-faded:hover {
+	opacity: 0.8 !important;
+}
+
+.notioneer-folder-crumb,
+.notioneer-folder-crumb:hover {
+	cursor: default;
 }

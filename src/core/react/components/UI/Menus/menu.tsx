@@ -240,9 +240,11 @@ export const showMenu = (props: {
 
   updateRoot(props.props);
   if (!isDrawer) {
-    portalElement.style.position = "absolute";
-    portalElement.style.left = `${props.rect.x}px`;
-    portalElement.style.top = `${props.rect.y}px`;
+    portalElement.setCssStyles({
+      position: "absolute",
+      left: `${props.rect.x}px`,
+      top: `${props.rect.y}px`,
+    });
 
     const resizeObserver = new ResizeObserver((entries) => {
       const newPos = calculateBoundsBasedOnPosition(
@@ -254,8 +256,10 @@ export const showMenu = (props: {
         },
         props.anchor
       );
-      portalElement.style.left = `${newPos.x}px`;
-      portalElement.style.top = `${newPos.y}px`;
+      portalElement.setCssStyles({
+        left: `${newPos.x}px`,
+        top: `${newPos.y}px`,
+      });
 
       // portalElement.style.height = `${newPos.height}px`;
       // portalElement.style.height = `${newPos.height}px`;

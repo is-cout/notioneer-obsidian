@@ -4,6 +4,19 @@ Living log of significant changes to the project. This is **not** optional bookk
 
 Format: `YYYY-MM-DD — short description. Why (if not obvious). Files touched.`
 
+## 2026-07-27 (0.8.1)
+
+- **Fixed the note header rendering nothing after 0.8.0.** The header reads from
+  `superstate.pathsIndex`, and `ObsidianFileSystem.loadCacheFromObsidianCache()` is what fills
+  the file cache the indexer consumes, registers the vault listeners that keep it current, and
+  calls `superstate.initialize()`. Upstream only calls it when spaces are enabled, so the
+  rewritten entry point skipped it — leaving the index empty, `pathState` null and the header
+  (title, cover and properties) blank. It is not a spaces concern and is now always called.
+  Files: `src/main.ts`.
+- **Bumped `lodash` 4.17.21 -> 4.18.1**, clearing the high-severity advisory recorded in 0.7.0.
+  Approved by the owner. `npm audit --omit=dev` is clean. Files: `package.json`,
+  `package-lock.json`, `docs/DEPENDENCIES.md`.
+
 ## 2026-07-27 (0.8.0)
 
 - **Stripped the fork down to the header (stage 2).** `src/main.ts` rewritten to wire up only

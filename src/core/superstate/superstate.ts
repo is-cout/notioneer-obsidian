@@ -171,11 +171,11 @@ public api: API;
                 return a + b
               }),
             createEqual: math.factory('equal', [], () => function equal (a: unknown, b: unknown) {
-                // eslint-disable-next-line eqeqeq
+                // eslint-disable-next-line eqeqeq -- formula equality is intentionally loose so "1" == 1 across property types
                 return a == b
               }),
               createUnequal: math.factory('unequal', [], () => function unequal (a: unknown, b: unknown) {
-                // eslint-disable-next-line eqeqeq
+                // eslint-disable-next-line eqeqeq -- formula inequality is intentionally loose so "1" != 1 is false across property types
                 return a != b
               })
             

@@ -166,8 +166,7 @@ export class FlowEditor extends nosuper(HoverPopover) {
 
     this.containerEl = this.hoverEl.createDiv("popover-content");
     this.setTitleBar();
-    this.hoverEl.style.height = "auto";
-    this.hoverEl.style.width = "100%";
+    this.hoverEl.setCssStyles({ height: "auto", width: "100%" });
     this.hoverEl.addEventListener("keydown", (e) => e.stopPropagation());
   }
   onunload(): void {

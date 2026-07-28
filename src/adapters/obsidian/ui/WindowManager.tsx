@@ -49,7 +49,7 @@ export const WindowManager = (props: { ui: ObsidianUI }) => {
       }}
       onDragEnd={() => {
         setDragActive(false);
-        document.body.style.setProperty("cursor", "");
+        document.body.setCssStyles({ cursor: "" });
       }}
       onDragCancel={() => {
         setDragActive(false);

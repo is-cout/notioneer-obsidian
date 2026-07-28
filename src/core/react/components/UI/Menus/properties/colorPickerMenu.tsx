@@ -109,8 +109,7 @@ const GradientStop: React.FC<{
       container
     };
     
-    document.body.style.cursor = 'grabbing';
-    document.body.style.userSelect = 'none';
+    document.body.setCssStyles({ cursor: 'grabbing', userSelect: 'none' });
   };
 
   useEffect(() => {
@@ -132,8 +131,7 @@ const GradientStop: React.FC<{
 
     const handleMouseUp = () => {
       setIsDragging(false);
-      document.body.style.cursor = '';
-      document.body.style.userSelect = '';
+      document.body.setCssStyles({ cursor: '', userSelect: '' });
     };
 
     document.addEventListener('mousemove', handleMouseMove);

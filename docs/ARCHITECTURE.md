@@ -126,6 +126,7 @@ and therefore absent from the clone; our build script does not.
 - TypeScript (`tsconfig.json`) type-checks the tree (`tsc -noEmit -skipLibCheck`) — no `.js` is emitted by `tsc` itself.
 - [esbuild](https://esbuild.github.io/) (`esbuild.config.mjs`, upstream's) bundles `src/main.ts` into a single CommonJS `main.js` (~4.4 MB), externalizing `obsidian`, `electron`, part of CodeMirror and Node builtins. It also inlines the three web workers and compiles `.wat`.
 - The same pass emits `main.css` from the CSS imported by the source; a rename plugin turns it into the root `styles.css` (~147 KB) that Obsidian loads. Both are generated and gitignored.
+- A `strip-jszip-script-polyfill` esbuild plugin rewrites `jszip`'s prebundled `dist/jszip.min.js` as it is loaded, renaming the element its `immediate`/`setimmediate` polyfills probe for the IE8 `script.onreadystatechange` trick. That branch is dead on every engine Obsidian runs on, but its `createElement("script")` calls are flagged as dynamic script injection by the Obsidian community-plugin scanner. The plugin throws if the pattern stops matching, so a jszip upgrade cannot silently put it back.
 - `scripts/copy-to-vault.mjs` copies `main.js`, `manifest.json` and `styles.css` into the vault named in `.env.local`.
 - `manifest.json` + `versions.json` follow the standard Obsidian plugin conventions (`minAppVersion` compatibility map).
 

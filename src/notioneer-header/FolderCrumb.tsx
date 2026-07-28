@@ -1,24 +1,43 @@
 import { ISuperstate as Superstate } from "shared/types/superstate";
 import React from "react";
 
-/** The folder a note lives in, shown as a chip under the title.
+/** The folders a note lives in, shown as chips under the title.
 
-    make.md put the note's spaces here; spaces are removed, but the chip that showed which
-    folder you are in was worth keeping. Clicking it reveals the folder in Obsidian's file
-    explorer. */
+    This is where make.md showed the spaces a note belonged to. Spaces are removed, but the
+    chip was worth keeping, so it renders folders instead — the top-level folder first, then
+    the note's immediate parent (skipped when they are the same folder). Clicking one reveals
+    it in Obsidian's file explorer.
+
+    It reuses make.md's `mk-props-contexts-space-name` class, so it keeps their pill shape and
+    the theme's tag colours rather than a lookalike of our own. */
 export const FolderCrumb = (props: { superstate: Superstate; path: string }) => {
 	const parent = props.path.includes("/")
 		? props.path.slice(0, props.path.lastIndexOf("/"))
 		: "";
-	const name = parent === "" ? "Vault" : parent.split("/").pop();
+	if (parent === "") return null;
 
+	const segments = parent.split("/");
+	const paths = [segments[0], parent].filter(
+		(path, index, all) => all.indexOf(path) === index,
+	);
+
+	return (
+		<>
+			{paths.map((path) => (
+				<FolderChip key={path} superstate={props.superstate} path={path}></FolderChip>
+			))}
+		</>
+	);
+};
+
+const FolderChip = (props: { superstate: Superstate; path: string }) => {
 	const reveal = () => {
-		// `revealInFolder` is not in the public API, so a version without it just does nothing
+		// `revealInFolder` is not part of the public API, so a version without it does nothing
 		// rather than throwing inside the header.
 		try {
 			const app = (props.superstate.ui as unknown as { plugin?: { app?: any } }).plugin?.app;
 			const explorer = app?.internalPlugins?.plugins?.["file-explorer"]?.instance;
-			const folder = app?.vault?.getAbstractFileByPath(parent === "" ? "/" : parent);
+			const folder = app?.vault?.getAbstractFileByPath(props.path);
 			if (explorer && folder) explorer.revealInFolder(folder);
 		} catch (error) {
 			console.error("Notioneer: could not reveal folder", error);
@@ -26,14 +45,18 @@ export const FolderCrumb = (props: { superstate: Superstate; path: string }) => 
 	};
 
 	return (
-		<div className="notioneer-folder-crumb" onClick={reveal} aria-label={parent || "/"}>
+		<div
+			className="mk-props-contexts-space-name notioneer-folder-crumb"
+			onClick={reveal}
+			aria-label={props.path}
+		>
 			<div
 				className="mk-icon-xsmall"
 				dangerouslySetInnerHTML={{
 					__html: props.superstate.ui.getSticker("ui//folder"),
 				}}
 			></div>
-			{name}
+			{props.path.split("/").pop()}
 		</div>
 	);
 };

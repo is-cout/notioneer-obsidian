@@ -4,6 +4,15 @@ Living log of significant changes to the project. This is **not** optional bookk
 
 Format: `YYYY-MM-DD — short description. Why (if not obvious). Files touched.`
 
+## 2026-07-27 (0.8.4)
+
+- **Folder chip matches make.md’s.** It now reuses their `mk-props-contexts-space-name` class
+  — pill shape, `--tag-background`/`--tag-color` — instead of the lookalike written for 0.8.3,
+  which used muted greys and a square radius.
+- **Shows two levels**: the top-level folder and the note’s immediate parent, deduplicated when
+  they are the same, and nothing at all for a note at the vault root.
+- Files: `src/notioneer-header/FolderCrumb.tsx`, `src/css/notioneer.css`.
+
 ## 2026-07-27 (0.8.3)
 
 - **Obsidian’s native properties panel no longer renders below the header’s.** The rule hiding

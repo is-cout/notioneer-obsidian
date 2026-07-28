@@ -1,6 +1,6 @@
 {
   "name": "notioneer",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "description": "Note header with title, cover and properties, markdown slash commands, and a selection formatting toolbar",
   "main": "main.js",
   "scripts": {

@@ -103,7 +103,11 @@ Kept deliberately small so upstream changes can still be merged:
   `spaceViewEnabled`, `spacesEnabled`, `enableFolderNote`, `spacesStickers`, `sidebarTabs`,
   `showRibbon` and `vaultSelector` default to `false`. `inlineContext`, `banners` and
   `inlineContextProperties` stay on — those are the header. Two keys added for our features.
-- `HeaderPropertiesView` — the "spaces this note belongs to" rows are gated on `spacesEnabled`.
+- `HeaderPropertiesView` — the "spaces this note belongs to" rows are gated on `spacesEnabled`
+  and replaced by our folder chip (`src/notioneer-header/FolderCrumb.tsx`).
+- `src/css/notioneer.css` — hides Obsidian’s properties panel inside the editor (the header
+  renders its own) and restyles the header’s value chips with the theme’s `--tag-*`/`--pill-*`
+  variables, so they match the native panel instead of make.md’s neutral grey.
 - `src/adapters/obsidian/filesystem/filesystem.ts` — `plugins/make-md/Spaces.mdb`
   and `plugins/make-md/data.json` were hardcoded; they now use `manifest.dir`, so they resolve
   inside our own plugin folder instead of a make.md folder that does not exist.

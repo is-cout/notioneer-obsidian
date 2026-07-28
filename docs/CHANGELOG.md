@@ -4,6 +4,20 @@ Living log of significant changes to the project. This is **not** optional bookk
 
 Format: `YYYY-MM-DD — short description. Why (if not obvious). Files touched.`
 
+## 2026-07-27 (0.8.3)
+
+- **Obsidian’s native properties panel no longer renders below the header’s.** The rule hiding
+  it was too weak to beat Obsidian’s own styling of `.metadata-container`; it now carries
+  `body` and `!important`. Two identical property lists stacked is the worst failure mode
+  here, so this one is worth the `!important`.
+- **Property values use the theme’s own tag and pill colours.** make.md renders every
+  multi-value cell as a neutral grey chip (`rgba(var(--mono-rgb-100), .025)`); inside the
+  header they now use `--tag-*` and `--pill-*`, so they match the native properties panel.
+- **Added the folder chip** under the title (`src/notioneer-header/FolderCrumb.tsx`), in place
+  of make.md’s spaces chips: shows the note’s folder and reveals it in the file explorer.
+- Files: `src/css/notioneer.css`, `src/notioneer-header/FolderCrumb.tsx` (new),
+  `src/core/react/components/SpaceView/Contexts/SpaceEditor/HeaderPropertiesView.tsx`.
+
 ## 2026-07-27 (0.8.2)
 
 - **Fixed the header rendering unstyled** (title with a stray icon button, an empty square and

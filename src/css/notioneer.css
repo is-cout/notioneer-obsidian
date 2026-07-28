@@ -103,25 +103,9 @@ body.mk-inline-context-enabled .markdown-source-view .metadata-container {
 }
 
 /* --- Folder crumb ---
-   Same chip make.md shows for the space a note lives in, kept for the note's folder. */
+   Shape and colour come from make.md's own `.mk-props-contexts-space-name` (the chip they use
+   for a note's spaces), so only the pointer is ours. */
 
 .notioneer-folder-crumb {
-	display: flex;
-	align-items: center;
-	gap: 4px;
-	padding: 2px 8px;
-	border-radius: var(--radius-s);
-	background: var(--background-modifier-hover);
-	color: var(--text-muted);
-	font-size: var(--font-ui-smaller);
 	cursor: pointer;
-}
-
-.notioneer-folder-crumb:hover {
-	color: var(--text-normal);
-}
-
-.notioneer-folder-crumb .svg-icon {
-	width: 14px;
-	height: 14px;
 }

@@ -55,6 +55,11 @@ kind of thing that will happen again in stage 4:
 
 Type-only imports cost real bundle size here: the module still gets pulled in.
 
+Stylesheets are exempt from the reachability sweep. make.md's header borrows classes from
+stylesheets that its entry point imports globally rather than from a file per component, so
+"not imported by a reachable module" does not mean "unused" for CSS — deleting them on that
+basis is what left the header unstyled in 0.8.1.
+
 ### What was removed
 
 Navigator and its views, space views and the space editor, frames and the frame editor, the
@@ -113,7 +118,7 @@ and therefore absent from the clone; our build script does not.
 
 - TypeScript (`tsconfig.json`) type-checks the tree (`tsc -noEmit -skipLibCheck`) — no `.js` is emitted by `tsc` itself.
 - [esbuild](https://esbuild.github.io/) (`esbuild.config.mjs`, upstream's) bundles `src/main.ts` into a single CommonJS `main.js` (~4.4 MB), externalizing `obsidian`, `electron`, part of CodeMirror and Node builtins. It also inlines the three web workers and compiles `.wat`.
-- The same pass emits `main.css` from the CSS imported by the source; a rename plugin turns it into the root `styles.css` (~58 KB) that Obsidian loads. Both are generated and gitignored.
+- The same pass emits `main.css` from the CSS imported by the source; a rename plugin turns it into the root `styles.css` (~147 KB) that Obsidian loads. Both are generated and gitignored.
 - `scripts/copy-to-vault.mjs` copies `main.js`, `manifest.json` and `styles.css` into the vault named in `.env.local`.
 - `manifest.json` + `versions.json` follow the standard Obsidian plugin conventions (`minAppVersion` compatibility map).
 

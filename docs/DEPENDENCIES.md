@@ -11,7 +11,7 @@ All dependency versions in `package.json` are **pinned exactly** (no `^`, no `~`
 ## Current pins (as of 2026-10-12)
 
 Since 0.7.0 this project is a fork of [make.md](https://github.com/Make-md/makemd) and
-inherits its dependency tree: **55 runtime dependencies, 38 dev dependencies, 814 packages
+inherits its dependency tree: **52 runtime dependencies, 35 dev dependencies, 764 packages
 installed**. Upstream ships 94 of its 97 versions as `^`/`~` ranges; every one was resolved to
 the exact version that was installed and written back to `package.json`, so this repo still
 holds zero ranges. `package-lock.json` pins the transitive tree.
@@ -22,7 +22,6 @@ ones that carry weight:
 | Package | Pinned version | Why it is here |
 |---|---|---|
 | `react`, `react-dom` | `18.2.0` | make.md's entire UI, including the note header. |
-| `sql.js` | `1.8.0` | Backs the cache persister the Superstate index writes to. Replacing it with a JSON persister is the biggest remaining size win. |
 | `@tanstack/react-table`, `@tanstack/react-virtual` | `8.14.0`, `3.2.0` | Table views — removed in 0.8.0, still listed. Droppable in stage 4. |
 | `@dnd-kit/*` | `6.1.0` / `6.0.1` / `7.0.2` | Still imported by the property rows the header renders. |
 | `mathjs`, `numfmt`, `rrule`, `date-fns` | see `package.json` | Formula properties and date handling. |
@@ -48,6 +47,19 @@ they were removed with the owner's approval rather than replaced:
 
 `lodash` is flagged the same way but is a runtime dependency of make.md code throughout
 `src/`; dropping it is stage-4 work.
+
+## Removed: WASM and its loaders (2026-10-12)
+
+The scorecard disclosed three inline WASM blobs, a `.wasm` file and Node `fs` access. All
+came from packages whose features Notioneer does not need, so their code was replaced and the
+packages removed (approved):
+
+| Package | Was used for | Now |
+|---|---|---|
+| `sql.js` (+ `@types/sql.js`) | make.md's SQLite index cache and `.mdb` space files | `adapters/obsidian/jsonCachePersister.ts`; `.mdb` adapter is a read-empty stub |
+| `jszip` | Zipping that SQLite cache | Nothing — the JSON cache is not zipped |
+| `pica` (+ `@types/pica`) | Image thumbnail resizing (off by default) | Canvas `drawImage` scaling |
+| `esbuild-plugin-wat` | Bundling sql.js's `.wasm` | Nothing |
 
 ## Resolved advisory: lodash (high)
 

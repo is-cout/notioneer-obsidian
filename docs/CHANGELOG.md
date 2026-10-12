@@ -4,6 +4,34 @@ Living log of significant changes to the project. This is **not** optional bookk
 
 Format: `YYYY-MM-DD — short description. Why (if not obvious). Files touched.`
 
+## 2026-10-12 (1.0.3)
+
+- **No WASM, no Node `fs`, no network code left in the bundle.** The 1.0.2 scan (3,135
+  findings, still "Risks") disclosed WASM blobs, a `.wasm` file, Node `fs` access, base64 and
+  network calls. All of it came from libraries make.md used for things Notioneer does not:
+  - **Index cache is now JSON.** make.md persisted the Superstate index and file cache as
+    zipped SQLite (sql.js + jszip) under the vault's `.makemd/` folder. They now live as
+    `superstate-cache.json` and `file-cache.json` in the plugin folder. The first start after
+    updating rebuilds the index once; the old `.makemd/*.mdc` files are no longer read and
+    can be deleted (see [FAQ](FAQ.md)). Files: `src/adapters/obsidian/jsonCachePersister.ts`,
+    `src/main.ts`, `src/adapters/obsidian/filesystem/filesystem.ts`.
+  - **`.mdb` files are no longer read.** They hold make.md space data (context tables,
+    frames, commands) that Notioneer never shows. The adapter is now a stub that answers as if
+    the file were missing, so the Superstate still initializes. Installing a space kit skips
+    its frames/context tables. Files: `src/adapters/mdb/mdbAdapter.ts`,
+    `src/adapters/obsidian/ui/kit/kits.ts`.
+  - **Image thumbnails** (off by default) scale with canvas instead of `pica`. File:
+    `src/adapters/image/imageAdapter.ts`.
+  - A dead, never-called `XMLHttpRequest` image embedder removed from
+    `src/core/export/treeToAst/treeToHast.ts`.
+  - 11 files left unreachable deleted via `scripts/unreachable.mjs`, plus sql.js's
+    `sql-wasm.js`/`sql-wasm.wasm`.
+- **Dependencies removed** (approved): `sql.js`, `jszip`, `pica`, `@types/sql.js`,
+  `@types/pica`, `esbuild-plugin-wat`. `esbuild.config.mjs` drops the wat plugin and the jszip
+  patch from 1.0.2, which no longer has anything to patch. Bundle 4.4 MB → 3.4 MB.
+- Files: see above, plus `manifest.json`, `package.json`, `package-lock.json`,
+  `versions.json`, `docs/ARCHITECTURE.md`, `docs/DEPENDENCIES.md`, `docs/FAQ.md`.
+
 ## 2026-10-12 (1.0.2)
 
 - **Community scorecard cleanup.** The Obsidian scorecard rated the review "Risks" (12,193

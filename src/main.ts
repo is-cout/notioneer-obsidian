@@ -1,11 +1,10 @@
 import { IconFileTypeAdapter } from "adapters/icons/iconsAdapter";
 import { ImageFileTypeAdapter } from "adapters/image/imageAdapter";
-import { LocalStorageCache } from "adapters/mdb/localCache/localCache";
-import { MobileCachePersister } from "adapters/mdb/localCache/localCacheMobile";
 import { MDBFileTypeAdapter } from "adapters/mdb/mdbAdapter";
 import { ObsidianAssetManager } from "adapters/obsidian/assets/ObsidianAssetManager";
 import { ObsidianCommands } from "adapters/obsidian/commands/obsidianCommands";
 import { ObsidianFileSystem } from "adapters/obsidian/filesystem/filesystem";
+import { JSONCachePersister } from "adapters/obsidian/jsonCachePersister";
 import { ObsidianCanvasFiletypeAdapter } from "adapters/obsidian/filetypes/canvasAdapter";
 import { JSONFiletypeAdapter } from "adapters/obsidian/filetypes/jsonAdapter";
 import { ObsidianMarkdownFiletypeAdapter } from "adapters/obsidian/filetypes/markdownAdapter";
@@ -24,7 +23,6 @@ import { FilesystemSpaceAdapter } from "core/spaceManager/filesystemAdapter/file
 import { SpaceManager } from "core/spaceManager/spaceManager";
 import {
 	MarkdownView,
-	Platform,
 	Plugin,
 	TAbstractFile,
 	TFile,
@@ -138,9 +136,11 @@ export default class NotioneerPlugin extends Plugin implements IMakeMDPlugin {
 		this.superstate.saveSettings = () => this.saveSettings();
 
 		const cacheKeys = ["path", "space", "frame", "context", "icon"];
-		const cachePersister: LocalCachePersister = Platform.isMobile
-			? new MobileCachePersister(".makemd/superstate.mdc", this.mdbFileAdapter, cacheKeys)
-			: new LocalStorageCache(".makemd/superstate.mdc", this.mdbFileAdapter, cacheKeys);
+		const cachePersister: LocalCachePersister = new JSONCachePersister(
+			this.app.vault.adapter,
+			normalizePath(this.manifest.dir + "/superstate-cache.json"),
+			cacheKeys,
+		);
 		if (this.superstate.settings.cacheIndex) await cachePersister.initialize();
 		this.superstate.persister = cachePersister;
 		this.superstate.assets = new ObsidianAssetManager(

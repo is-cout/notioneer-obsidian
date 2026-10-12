@@ -5,17 +5,13 @@ import { AFile } from "shared/types/afile";
 import { FileTypeAdapter } from "core/middleware/filetypes";
 import { FilesystemMiddleware } from "core/middleware/filesystem";
 import { Platform } from "obsidian";
-import pica from "pica";
 type ImageTypeCache = Record<never, never>
 
 
 type ImageTypeContent = Record<never, never>
 export class ImageFileTypeAdapter implements FileTypeAdapter<ImageTypeCache, ImageTypeContent> {
-private picaInstance;
     public constructor (public plugin: MakeMDPlugin) {
         this.plugin = plugin;
-        
-this.picaInstance = pica();
     }
     public cacheDirectory = ".makemd/thumbnails";
     public supportedFileTypes = ["png", "jpg", "jpeg", "webp", "gif", "avif"];
@@ -33,18 +29,17 @@ this.picaInstance = pica();
             srcImage.src = this.middleware.resourcePathForPath(file.path);
             const result = await new Promise((resolve, reject) => { srcImage.onload = () => resolve(true); srcImage.onerror = () => resolve(false) });
             if (!result) return false;
-            const srcCanvas = createEl('canvas');
-            srcCanvas.width = srcImage.width;
-            srcCanvas.height = srcImage.height;
             const aspect_ratio = Math.max(size / srcImage.width, size / srcImage.height);
-            const ctx =  srcCanvas.getContext('2d');
-            ctx.drawImage(srcImage, 0, 0);
+            // Plain canvas scaling instead of make.md's pica, whose inline WASM and
+            // data-URL workers the community scanner flags.
             const resize = createEl("canvas");
-	        resize.width = aspect_ratio * srcCanvas.width; // 512
-	        resize.height = aspect_ratio * srcCanvas.height; // 288
-	        
-            await this.picaInstance.resize(srcCanvas, resize)
-            const resizedBlob = await this.picaInstance.toBlob(resize, 'image/jpeg', 0.8);
+            resize.width = aspect_ratio * srcImage.width;
+            resize.height = aspect_ratio * srcImage.height;
+            const ctx = resize.getContext('2d');
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(srcImage, 0, 0, resize.width, resize.height);
+            const resizedBlob = await new Promise<Blob | null>((resolve) => resize.toBlob(resolve, 'image/jpeg', 0.8));
+            if (!resizedBlob) return false;
             const resizedBinary = await resizedBlob.arrayBuffer();
             if (!(await this.middleware.fileExists(this.cacheDirectory))) {
                 await this.middleware.createFolder(this.cacheDirectory);

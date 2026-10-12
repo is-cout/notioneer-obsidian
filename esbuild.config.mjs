@@ -1,6 +1,5 @@
 import esbuild from "esbuild";
 import { copy } from 'esbuild-plugin-copy';
-import watPlugin from 'esbuild-plugin-wat';
 import fs from 'fs';
 import { builtinModules } from 'module';
 import path from 'path';
@@ -104,7 +103,6 @@ async function buildWorker(workerPath, extraConfig) {
 		},
     target: 'es2020',
     format: 'cjs',
-    plugins: [jszipScriptPolyfillPlugin],
     ...extraConfig,
   });
 
@@ -112,42 +110,6 @@ async function buildWorker(workerPath, extraConfig) {
 }
 
 
-
-// jszip ships a prebundled browserify build whose `immediate`/`setimmediate`
-// polyfills sniff for the IE8 `script.onreadystatechange` trick and, when it is
-// present, schedule tasks by injecting <script> elements. Every engine Obsidian
-// runs on reports that property as absent, so the branch is already dead code —
-// but its `createElement("script")` calls still trip the Obsidian community
-// plugin scanner. Renaming the probed element keeps the sniff false and leaves
-// no script element construction in the bundle.
-//
-// The same `setImmediate` polyfill compiles a non-function argument with
-// `new Function`. jszip only ever passes functions, so that branch is dead too;
-// it now throws instead, which keeps dynamic code execution out of the bundle.
-const jszipScriptPolyfillPlugin = {
-	name: 'strip-jszip-script-polyfill',
-	setup(build) {
-		build.onLoad({ filter: /jszip[\\/]dist[\\/]jszip(\.min)?\.js$/ }, async (args) => {
-			const source = await fs.promises.readFile(args.path, 'utf8');
-			const patches = [
-				[/createElement\("script"\)/g, 'createElement("span")'],
-				[/\(e=new Function\(""\+e\)\)/g, '(()=>{throw new TypeError("setImmediate expects a function")})()'],
-			];
-			let contents = source;
-			for (const [pattern, replacement] of patches) {
-				const next = contents.replace(pattern, replacement);
-				if (next === contents) {
-					throw new Error(
-						`strip-jszip-script-polyfill: ${pattern} not found in ${args.path}. ` +
-						`jszip probably changed — re-check the polyfill before shipping.`
-					);
-				}
-				contents = next;
-			}
-			return { contents, loader: 'js' };
-		});
-	},
-};
 
 let renamePlugin = {
     name: 'rename-styles',
@@ -198,9 +160,7 @@ esbuild.build({
   define: { 'process.env.NODE_ENV': prod ? '"production"' : '"development"' },
 	plugins: [renamePlugin,
 		// preactCompatPlugin,
-		jszipScriptPolyfillPlugin,
 		inlineWorkerPlugin(),
-		watPlugin(),
 		...(buildv ? [copy({
 			resolveFrom: 'cwd',
 			assets: {

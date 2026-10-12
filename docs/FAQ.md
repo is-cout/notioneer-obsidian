@@ -63,6 +63,14 @@ setting no longer hides the header's title.
 No, and it will hurt: Notioneer already hides `.metadata-container` inside the editor. A
 snippet that also hides it in *reading* view leaves you with no properties there at all.
 
+### There is a `.makemd` folder in my vault — can I delete it?
+
+Versions before 1.0.3 kept their index cache there (`superstate.mdc`, `fileCache.mdc`). From
+1.0.3 on, Notioneer keeps it as JSON in its own plugin folder, so you can delete it —
+**unless make.md itself is also installed**, which uses the same folder. (make.md's image and
+note thumbnails still go to `.makemd/thumbnails`, but both are off by default and not exposed
+in Notioneer's settings.)
+
 ### Can I bump a dependency version?
 
 Only with explicit approval — versions are pinned on purpose. See [DEPENDENCIES.md](DEPENDENCIES.md).

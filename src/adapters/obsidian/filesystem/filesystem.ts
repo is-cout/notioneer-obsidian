@@ -5,12 +5,11 @@ import { AFile } from "shared/types/afile";
 import { FileCache, FileSystemAdapter, FilesystemMiddleware } from "core/middleware/filesystem";
 import { FileTypeCache } from "core/middleware/filetypes";
 import { PathLabel } from "shared/types/caches";
-import { FileSystemAdapter as ObsidianFileSystemAdapter, Platform, TAbstractFile, TFile, TFolder, normalizePath } from "obsidian";
+import { FileSystemAdapter as ObsidianFileSystemAdapter, TAbstractFile, TFile, TFolder, normalizePath } from "obsidian";
 
-import { LocalStorageCache } from "adapters/mdb/localCache/localCache";
 import { LocalCachePersister } from "shared/types/persister";
 
-import { MobileCachePersister } from "adapters/mdb/localCache/localCacheMobile";
+import { JSONCachePersister } from "adapters/obsidian/jsonCachePersister";
 import { DEFAULT_SETTINGS } from "core/schemas/settings";
 import { defaultFocusFile } from "core/spaceManager/filesystemAdapter/filesystemAdapter";
 import { parsePathState } from "core/utils/superstate/parser";
@@ -56,11 +55,11 @@ export class ObsidianFileSystem implements FileSystemAdapter {
     public constructor (public plugin: MakeMDPlugin, middleware: FilesystemMiddleware, public vaultDBPath: string) {
         this.middleware = middleware
         this.plugin = plugin;
-    if (Platform.isMobile) {
-      this.persister = new MobileCachePersister(".makemd/fileCache.mdc", this.plugin.mdbFileAdapter, ['file']);
-    } else {
-        this.persister = new LocalStorageCache(".makemd/fileCache.mdc", this.plugin.mdbFileAdapter, ['file']);
-    }
+        this.persister = new JSONCachePersister(
+            this.plugin.app.vault.adapter,
+            normalizePath(this.plugin.manifest.dir + "/file-cache.json"),
+            ['file'],
+        );
         
     }
     public readAllTags () {

@@ -1,5 +1,4 @@
 
-import { getMDBTables } from "adapters/mdb/utils/mdb";
 import { regexYaml } from "adapters/text/textCacher";
 import { createSpace, newPathInSpace, parseSpaceMetadata, saveProperties } from "core/superstate/utils/spaces";
 import MakeMDPlugin from "main";
@@ -121,28 +120,8 @@ export const installSpaceKit = async (plugin: MakeMDPlugin, superstate: Supersta
     if (kit.content) {
         await plugin.files.writeTextToFile(newSpace.space.notePath, kit.content);
     }
-    if (kit.frames && Object.keys(kit.frames).length > 0) {
-        const framePath = (newSpace.space as FilesystemSpaceInfo).framePath;
-        void plugin.mdbFileAdapter.newContent({
-            path: framePath,
-            isFolder: false,
-            name: 'frames',
-            parent: '',
-            filename: 'views.mdb',
-        }, 'tables', '', mdbFramesToDBTables(kit.frames), {});
-    }
-    if (kit.context)
-        {
-            const dbPath = (newSpace.space as FilesystemSpaceInfo).dbPath;
-        void plugin.mdbFileAdapter.newContent({
-            path: dbPath,
-            isFolder: false,
-            name: 'context',
-            parent: '',
-            filename: 'context.mdb',
-        }, 'tables', '', mdbToDBTables(kit.context), {});
-
-        }
+    // A kit's frames and context tables are `.mdb` files, which Notioneer no longer writes
+    // (see adapters/mdb/mdbAdapter.ts); notes, templates and the space note still install.
         if (kit.templates?.length > 0) {
             await plugin.files.createFolder(`${space}/${plugin.superstate.settings.spaceSubFolder}/templates`);
             for (const template of kit.templates) {
@@ -183,6 +162,7 @@ export const absolutePathToRelativePath = (path: string, absolutePath: string) =
 }
 
 export const contextPathsToRelativePaths = (context: SpaceTables, contextPath: string) => {
+    if (!context?.[defaultContextSchemaID]) return context;
     const newContext = {...context};
         context[defaultContextSchemaID].rows = context[defaultContextSchemaID].rows.map((r) => {
             r[PathPropertyName] = absolutePathToRelativePath(r[PathPropertyName], contextPath);
@@ -268,8 +248,9 @@ export const exportSpaceKit = async (plugin: MakeMDPlugin, superstate: Superstat
         if (defContent) {
             definition = parseSpaceMetadata(safelyParseJSON(defContent), superstate.settings);
         }
-        context = await getMDBTables(plugin.mdbFileAdapter, (spaceInfo as FilesystemSpaceInfo).dbPath)
-        frames = await getMDBTables(plugin.mdbFileAdapter, (spaceInfo as FilesystemSpaceInfo).framePath)
+        // Context tables and frames live in `.mdb` files, which Notioneer does not read.
+        context = null;
+        frames = null;
 
         const subSpaces = await superstate.spaceManager.childrenForPath(space, 'folder');
         for(const f of subSpaces)  {

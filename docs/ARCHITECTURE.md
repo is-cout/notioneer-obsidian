@@ -71,7 +71,7 @@ stickers, and make.md's own settings tab — replaced by
 The header is a React component that reads from make.md's `Superstate`, so the Superstate, its
 space manager, the filesystem middleware and the Obsidian adapters underneath it all stay,
 along with the property cell views the header renders. That is what still makes the bundle
-4.4 MB, and why "just delete spaces" was never on the table: the header sits on top of it.
+3.4 MB, and why "just delete spaces" was never on the table: the header sits on top of it.
 
 ## Source layout
 
@@ -124,6 +124,16 @@ Kept deliberately small so upstream changes can still be merged:
 - `src/adapters/mdb/db/db.ts`, `src/core/spaceManager/webAdapter/webCache.ts` — no `fetch`.
   The remote `.mdb` branch was never called; web space kits now fail with an error instead of
   being downloaded, keeping the "no network calls" scope true.
+- `src/adapters/obsidian/jsonCachePersister.ts` — the Superstate index cache and the file
+  cache persist as JSON in the plugin folder (`superstate-cache.json`, `file-cache.json`)
+  instead of upstream's zipped SQLite files under the vault's `.makemd/` folder. Upstream's
+  persisters needed sql.js (WASM, Node `fs`) and jszip.
+- `src/adapters/mdb/mdbAdapter.ts` — a stub. It still claims `.mdb` files, because the
+  Superstate asks for `.mdb` fragments (actions, kits, contexts) during `initialize()`, but it
+  answers every read as upstream did for a missing file and ignores writes. make.md space data
+  (context tables, frames, commands) is therefore invisible to Notioneer.
+- `src/adapters/image/imageAdapter.ts` — thumbnails (off by default) are scaled with canvas
+  `drawImage` instead of `pica`, which embedded WASM and spawned data-URL workers.
 - Lint cleanup for the Obsidian community scorecard (2026-10-12): floating promises marked
   `void`, unused catch bindings and imports, useless regex escapes,
   `TFile`/`TFolder` casts replaced with `instanceof`, `document.createElement` with
@@ -136,9 +146,8 @@ and therefore absent from the clone; our build script does not.
 ## Build pipeline
 
 - TypeScript (`tsconfig.json`) type-checks the tree (`tsc -noEmit -skipLibCheck`) — no `.js` is emitted by `tsc` itself.
-- [esbuild](https://esbuild.github.io/) (`esbuild.config.mjs`, upstream's) bundles `src/main.ts` into a single CommonJS `main.js` (~4.4 MB), externalizing `obsidian`, `electron`, part of CodeMirror and Node builtins. It also inlines the three web workers and compiles `.wat`.
+- [esbuild](https://esbuild.github.io/) (`esbuild.config.mjs`, upstream's) bundles `src/main.ts` into a single CommonJS `main.js` (~3.4 MB), externalizing `obsidian`, `electron`, part of CodeMirror and Node builtins. It also inlines the indexer web worker.
 - The same pass emits `main.css` from the CSS imported by the source; a rename plugin turns it into the root `styles.css` (~147 KB) that Obsidian loads. Both are generated and gitignored.
-- A `strip-jszip-script-polyfill` esbuild plugin rewrites `jszip`'s prebundled `dist/jszip.min.js` as it is loaded, renaming the element its `immediate`/`setimmediate` polyfills probe for the IE8 `script.onreadystatechange` trick. That branch is dead on every engine Obsidian runs on, but its `createElement("script")` calls are flagged as dynamic script injection by the Obsidian community-plugin scanner. The same plugin turns the polyfill's `new Function(""+callback)` fallback (only reachable with a non-function argument, which jszip never passes) into a `TypeError`, so the bundle contains no `Function` constructor. It throws if either pattern stops matching, so a jszip upgrade cannot silently put them back.
 - `scripts/copy-to-vault.mjs` copies `main.js`, `manifest.json` and `styles.css` into the vault named in `.env.local`.
 - `manifest.json` + `versions.json` follow the standard Obsidian plugin conventions (`minAppVersion` compatibility map).
 

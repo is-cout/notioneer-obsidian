@@ -35,11 +35,12 @@ by hand too.
 ### What is the folder chip under the title?
 
 The note’s folder; clicking it reveals the folder in the file explorer. It sits where make.md
-showed the spaces a note belonged to. Source: [src/notioneer-header/FolderCrumb.tsx](../src/notioneer-header/FolderCrumb.tsx).
+showed the spaces a note belonged to. Source: `FolderCrumb` in [src/ui/header/HeaderProperties.tsx](../src/ui/header/HeaderProperties.tsx).
 
 ### How do I edit properties in the header?
 
-Click a value to edit, **New Property** to add one — make.md’s property editor, kept as is.
+Click a value to edit, **New Property** to add one — make.md’s property editor, ported as is
+([src/ui/properties/](../src/ui/properties/)).
 Obsidian’s native panel is hidden in the editor so the two do not stack; reading view keeps it.
 
 ### How do I change the cover height?
@@ -48,8 +49,9 @@ Settings → Notioneer → **Cover height**. It is make.md’s `bannerHeight` se
 
 ### Why do the header classes start with `mk-`?
 
-The header is make.md’s code — this plugin is a fork of it. See
-[ARCHITECTURE.md](ARCHITECTURE.md#fork-status).
+The header is ported from make.md and keeps its DOM and class names, so make.md’s stylesheets
+(and any snippet written for make.md’s header) style it exactly as before. See
+[ARCHITECTURE.md](ARCHITECTURE.md#history-from-fork-to-port).
 
 ### I see two titles — how do I keep just one?
 
@@ -65,11 +67,10 @@ snippet that also hides it in *reading* view leaves you with no properties there
 
 ### There is a `.makemd` folder in my vault — can I delete it?
 
-Versions before 1.0.3 kept their index cache there (`superstate.mdc`, `fileCache.mdc`). From
-1.0.3 on, Notioneer keeps it as JSON in its own plugin folder, so you can delete it —
-**unless make.md itself is also installed**, which uses the same folder. (make.md's image and
-note thumbnails still go to `.makemd/thumbnails`, but both are off by default and not exposed
-in Notioneer's settings.)
+Versions before 1.0.3 kept their index cache there (`superstate.mdc`, `fileCache.mdc`, and
+`thumbnails/` if make.md's thumbnail settings were on). Since 2.0.0 Notioneer keeps no index at
+all, so you can delete the folder — **unless make.md itself is also installed**, which uses
+the same folder. 2.0.0 removes the JSON caches 1.0.3 left in its own plugin folder by itself.
 
 ### Can I bump a dependency version?
 

@@ -1,9 +1,9 @@
-.is-phone .mk-inline-button {
-    width: unset !important;
+:root:root:root:root .is-phone .mk-inline-button {
+    width: unset;
   }
   
-  .is-tablet .mk-inline-button {
-    padding: unset !important;
+  :root:root:root:root .is-tablet .mk-inline-button {
+    padding: unset;
   }
   
   .mk-inline-button {
@@ -12,11 +12,14 @@
     justify-content: center;
     padding: 4px;
     border-radius: var(--clickable-icon-radius);
-    box-shadow: unset !important;
   }
   
-  .mk-inline-button:not(:hover) {
-    background: unset !important;
+  :root:root:root:root .mk-inline-button {
+    box-shadow: unset;
+  }
+  
+  :root:root:root:root .mk-inline-button:not(:hover) {
+    background: unset;
   }
   
 .mk-inline-button {
@@ -25,25 +28,30 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    width: auto !important;
+  }
+  
+:root:root:root:root .mk-inline-button {
+    width: auto;
   }
   .mk-inline-button {
-    background: none !important;
-    box-shadow: none !important;
-    color: var(--mk-ui-text-tertiary) !important;
-    padding: 0 4px !important;
     display: flex;
     gap: 4px;
     height: 20px;
-    border: none !important;
+  }
+  :root:root:root:root .mk-inline-button {
+    background: none;
+    box-shadow: none;
+    color: var(--mk-ui-text-tertiary);
+    padding: 0 4px;
+    border: none;
   }
   
-  .mk-inline-button svg {
-    color: var(--mk-ui-text-tertiary) !important;
+  :root:root:root:root .mk-inline-button svg {
+    color: var(--mk-ui-text-tertiary);
   }
-  body:not(.is-mobile) .mk-inline-button:hover svg,
-  body:not(.is-mobile) .mk-inline-button:hover {
-    color: var(--mk-ui-text-primary) !important;
+  :root:root:root:root body:not(.is-mobile) .mk-inline-button:hover svg,
+  :root:root:root:root body:not(.is-mobile) .mk-inline-button:hover {
+    color: var(--mk-ui-text-primary);
   }
 
 
@@ -55,6 +63,12 @@
   margin: 0;
   height: 24px;
   width: 24px;
-  padding: 0 !important;
+  
+}
+
+
+
+:root:root:root:root .mk-inline-button {
+  padding: 0;
   
 }

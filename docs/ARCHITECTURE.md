@@ -16,149 +16,95 @@ Scope decisions:
   make.md: its table command should produce a real Markdown table, not a plugin block.
 - **Cover images and properties live in frontmatter**, so a note degrades to normal Markdown.
 - **No network calls.**
+- **The header looks and behaves exactly like make.md's.** It is a port, not a redesign.
 
-These hold as of 0.8.2: the spaces subsystems are deleted, not merely switched off. What is
-left of upstream is the `Superstate` the header reads from — see [Fork status](#fork-status).
+## History: from fork to port
 
-## Fork status
+0.7.0–1.0.3 shipped make.md itself, trimmed: the header was make.md's React component reading
+from make.md's `Superstate` index, so the Superstate, its space manager, filesystem middleware
+and adapters all had to stay — ~300 modules, a 3–4 MB bundle and ~3k findings on the Obsidian
+community scorecard, nearly all in make.md code Notioneer never ran.
 
-Since 0.7.0 this repo is a **fork of make.md**, trimmed down rather than written from scratch.
-
-| Stage | State | Result |
-|---|---|---|
-| 1. Import upstream, build as Notioneer | done (0.7.0) | 619 files, 5.7 MB bundle |
-| 2. Remove what the header does not need | done (0.8.0) | 305 source files, 4.4 MB bundle (CSS kept whole — see below) |
-| 3. Restore the Markdown slash commands and selection toolbar | done (0.8.0) | `src/notioneer-slash/`, `src/notioneer-toolbar/` |
-| 4. Shed the remaining heavy dependencies | not started | see [DEPENDENCIES.md](DEPENDENCIES.md) |
-
-### How stage 2 was done
-
-Deleting directories by hand does not work on a tree this size — everything is reachable from
-something. Instead `src/main.ts` was rewritten to wire up only the header, and
-`scripts/unreachable.mjs` computes what the entry point can still reach and deletes the rest.
-Whatever the build and typecheck still pass without was, by definition, not needed.
-
-Four edges kept nearly the whole tree alive. They are worth knowing about, because this is the
-kind of thing that will happen again in stage 4:
-
-- `src/makemd-core.ts` was a barrel re-exporting the entire plugin, and 205 files imported
-  from it — so importing it once pulled everything. `scripts/debarrel.mjs` rewrote those
-  imports to the real modules; the barrel is gone.
-- `BannerView` imported a four-string union type (`InputModifier`) from the frame editor,
-  dragging the frame editor, table view and D3 charts in with it. Inlined.
-- 25 modules imported the `CellEditMode` enum and the table cell prop types from `TableView`,
-  doing the same for `@tanstack/react-table`. Moved to `shared/types/cellEditMode.ts`.
-- The property chip in the header (`PropertyField`) lived inside the context-list editor.
-  Moving it to its own module made 132 files unreachable at once.
-
-Type-only imports cost real bundle size here: the module still gets pulled in.
-
-Stylesheets are exempt from the reachability sweep. make.md's header borrows classes from
-stylesheets that its entry point imports globally rather than from a file per component, so
-"not imported by a reachable module" does not mean "unused" for CSS — deleting them on that
-basis is what left the header unstyled in 0.8.1.
-
-### What was removed
-
-Navigator and its views, space views and the space editor, frames and the frame editor, the
-context and table views, the Blink palette, inline backlinks, D3 visualizations, the
-`.mdb`/`.mkit`/`.html` file editors, kit installation, export, the dataview adapter, tab
-stickers, and make.md's own settings tab — replaced by
-`adapters/obsidian/notioneerSettings.ts`, which only exposes settings that still do something.
-
-### What had to stay
-
-The header is a React component that reads from make.md's `Superstate`, so the Superstate, its
-space manager, the filesystem middleware and the Obsidian adapters underneath it all stay,
-along with the property cell views the header renders. That is what still makes the bundle
-3.4 MB, and why "just delete spaces" was never on the table: the header sits on top of it.
+2.0.0 replaces that with a **port**: the header's React components were copied into
+`src/ui/` nearly line for line — same JSX, same DOM, same class names — and only what sat
+underneath changed. Instead of the Superstate, components get a small typed `HeaderApi` over
+Obsidian's API (`metadataCache`, `processFrontMatter`, `fileManager.renameFile`). Everything
+else of make.md was deleted. Visual identity was the constraint: make.md's stylesheets are
+still the styling, pruned to the rules the ported DOM can match.
 
 ## Source layout
 
-Upstream's layout, unchanged — see make.md's own docs for the full map. The parts that matter
-for the features Notioneer keeps:
-
 | Path | Responsibility |
 |---|---|
-| `src/main.ts` | Plugin entry: builds the `Superstate`, registers adapters, views and settings. |
-| `src/adapters/obsidian/inlineContextLoader.tsx` | Mounts the note header into the editor's `.cm-sizer`. |
-| `src/core/react/components/MarkdownEditor/` | The note header itself: `MarkdownHeaderView`, `BannerView`. |
-| `src/core/react/components/SpaceView/TitleComponent.tsx` | The editable title. |
-| `src/core/react/components/SpaceView/Contexts/SpaceEditor/HeaderPropertiesView.tsx` | The property rows. |
-| `src/core/schemas/settings.ts` | `DEFAULT_SETTINGS` — where the spaces subsystems are switched off. |
-| `src/adapters/obsidian/notioneerSettings.ts` | Our settings tab, replacing make.md's. |
-| `src/notioneer-slash/` | Slash commands that insert plain Markdown. Ours, no React. |
-| `src/notioneer-toolbar/` | Selection formatting toolbar. Ours, no React. |
-| `src/css/` | All styling, bundled into `styles.css`; `css/notioneer.css` is ours. |
+| `src/main.ts` | Plugin entry: settings, the header manager, slash commands, toolbar, settings tab. |
+| `src/settings.ts` | `NotioneerSettings` — make.md's key names and defaults, so `data.json` carries over. |
+| `src/settingsTab.ts` | The settings tab. |
+| `src/ui/header/mount.tsx` | `HeaderManager`: mounts the header into each editor's `.cm-sizer` (live preview) and each reading view's `.mod-header`. |
+| `src/ui/header/NoteContext.tsx` | The note's state (path, name, folder, frontmatter), kept current from Obsidian events. |
+| `src/ui/header/api.ts` | `HeaderApi`: every vault write the header makes (frontmatter, rename, alias, cover). |
+| `src/ui/header/` | The header: `MarkdownHeaderView`, `BannerView` (cover), `TitleComponent`, `HeaderProperties` (fold, folder chips, rows). |
+| `src/ui/properties/` | Property rows (`PropertyRow.tsx`), one cell per type (`cells/`), the date picker and the property menus. |
+| `src/ui/menus/`, `src/ui/modals/` | make.md's select menus, drawers, modals and pickers. |
+| `src/ui/i18n.ts`, `src/ui/icons.ts` | The make.md strings and `ui//` SVG icons the UI uses — generated subsets, so wording and icons are identical. |
+| `src/properties/` | Pure logic: type detection and value parsing (`parsers.ts`), field types, dates, tags. |
+| `src/notioneer-slash/` | Slash commands that insert plain Markdown. No React. |
+| `src/notioneer-toolbar/` | Selection formatting toolbar. No React. |
+| `src/css/` | make.md's stylesheets (pruned) plus `notioneer.css`, bundled into `styles.css`. |
 
-## What changed from upstream
+## How the header works
 
-Kept deliberately small so upstream changes can still be merged:
+`HeaderManager` reacts to `layout-change`, `active-leaf-change` and `file-open`, walks every
+Markdown leaf, and keeps one React root per editor in a `.mk-inline-context` element at the top
+of `.cm-sizer`. Reading view is reached through a Markdown post-processor, as make.md did. Each
+root renders `NoteProvider` → `MarkdownHeaderView`; the provider re-reads the note on
+`metadataCache` `changed` and follows renames.
 
-- `src/main.ts` — rewritten. Upstream's bootstrap sequence kept in order; everything that
-  registered a view, command or file editor removed; our slash commands and selection toolbar
-  wired in. `loadCacheFromObsidianCache()` is called unconditionally — upstream calls it only
-  when spaces are on, and without it the path index stays empty and the header renders nothing.
-- `src/core/schemas/settings.ts` — `navigatorEnabled`, `blinkEnabled`, `contextEnabled`,
-  `spaceViewEnabled`, `spacesEnabled`, `enableFolderNote`, `spacesStickers`, `sidebarTabs`,
-  `showRibbon` and `vaultSelector` default to `false`. `inlineContext`, `banners` and
-  `inlineContextProperties` stay on — those are the header. Two keys added for our features.
-- `HeaderPropertiesView` — the "spaces this note belongs to" rows are gated on `spacesEnabled`
-  and replaced by our folder chip (`src/notioneer-header/FolderCrumb.tsx`).
-- `src/css/notioneer.css` — hides Obsidian’s properties panel inside the editor (the header
-  renders its own) and restyles the header’s value chips with the theme’s `--tag-*`/`--pill-*`
-  variables, so they match the native panel instead of make.md’s neutral grey.
-- `src/adapters/obsidian/filesystem/filesystem.ts` — `plugins/make-md/Spaces.mdb`
-  and `plugins/make-md/data.json` were hardcoded; they now use `manifest.dir`, so they resolve
-  inside our own plugin folder instead of a make.md folder that does not exist.
-- `tsconfig.json` — `target` raised from `es6` to `es2020`. Upstream's `es6` target fails to
-  compile its own `src/adapters/text/textCacher.ts` (regex flag needing ES2018+).
-- `esbuild.config.mjs` — output goes to the repo root instead of `process.env.buildDir`, which
-  upstream leaves unset (it built to a literal `undefined/` directory).
-- `package.json` — upstream's 97 dependency ranges resolved to exact pins, per the project's
-  dependency policy. See [DEPENDENCIES.md](DEPENDENCIES.md).
-- `src/core/utils/frames/executable.ts`, `runner.ts` — no dynamic code execution. Upstream
-  compiles frame props/styles/actions and "script" commands with `new Function`; ours keeps
-  only literal values (quoted strings, numbers, booleans, JSON) and `executeCode()` throws.
-  Nothing Notioneer renders depends on evaluated frame code.
-- `src/adapters/mdb/db/db.ts`, `src/core/spaceManager/webAdapter/webCache.ts` — no `fetch`.
-  The remote `.mdb` branch was never called; web space kits now fail with an error instead of
-  being downloaded, keeping the "no network calls" scope true.
-- `src/adapters/obsidian/jsonCachePersister.ts` — the Superstate index cache and the file
-  cache persist as JSON in the plugin folder (`superstate-cache.json`, `file-cache.json`)
-  instead of upstream's zipped SQLite files under the vault's `.makemd/` folder. Upstream's
-  persisters needed sql.js (WASM, Node `fs`) and jszip.
-- `src/adapters/mdb/mdbAdapter.ts` — a stub. It still claims `.mdb` files, because the
-  Superstate asks for `.mdb` fragments (actions, kits, contexts) during `initialize()`, but it
-  answers every read as upstream did for a missing file and ignores writes. make.md space data
-  (context tables, frames, commands) is therefore invisible to Notioneer.
-- `src/adapters/image/imageAdapter.ts` — thumbnails (off by default) are scaled with canvas
-  `drawImage` instead of `pica`, which embedded WASM and spawned data-URL workers.
-- Lint cleanup for the Obsidian community scorecard (2026-10-12): floating promises marked
-  `void`, unused catch bindings and imports, useless regex escapes,
-  `TFile`/`TFolder` casts replaced with `instanceof`, `document.createElement` with
-  `createEl`/`createDiv`, bare timers with `window.*`, `alert` with a notice, and overridden
-  duplicate CSS declarations. Mechanical; no intended behaviour change.
+Frontmatter is read from `metadataCache` and written with `processFrontMatter`, with the same
+values make.md wrote (`parseMDBStringValue`), so files come out the same. Renaming a property
+re-adds it last, as make.md did. The tags row lists all of a note's tags, inline ones
+included, lowercased with `#` — again make.md's behaviour.
 
-Upstream's `npm run build` also calls `scripts/sync-version.mjs`, which is gitignored upstream
-and therefore absent from the clone; our build script does not.
+Faithfulness notes, deliberate and listed so they are not "fixed" by accident:
+
+- make.md quirks kept: the date picker opens on today rather than on the current value; the
+  type menu's "Special → Repeat" entry has no label and creates a property named `undefined`;
+  option colours picked in the menu last until the next save; `aliases` rows render no value.
+- Not ported, because they only led into removed make.md features: the right-click menus on
+  property-link chips and icons (path/sticker menus), and the "icon" entries of the mobile "…"
+  menu (the icon is never shown in Notioneer's header). Property rows are no longer
+  draggable — make.md's drag did nothing on drop.
+- Fixed instead of kept: deleting a field of one item in a list of objects no longer clears
+  the other items, and the cover picker's Enter key no longer writes an empty cover.
+
+## Styling
+
+`src/css/` is make.md's CSS, pruned in 2.0.0 by a one-off script: a selector was dropped when
+it needs an `mk-*` class (or `mk-*` attribute value) that no Notioneer source can render.
+Selectors without `mk-*` tokens — make.md's tweaks to Obsidian's own UI, such as tab-header
+icons or `mark` styling — were kept, since Notioneer has always shipped them.
+
+The Obsidian scanner flags `!important`, so make.md's important declarations were moved into
+copies of their rules prefixed with `:root:root:root:root`. Every element is a descendant of
+`:root`, so the copy matches exactly the same elements; the added (0,4,0) specificity makes it
+outrank ordinary rules the way `!important` did. Use the same prefix for any new rule that has
+to beat Obsidian or a theme.
 
 ## Build pipeline
 
 - TypeScript (`tsconfig.json`) type-checks the tree (`tsc -noEmit -skipLibCheck`) — no `.js` is emitted by `tsc` itself.
-- [esbuild](https://esbuild.github.io/) (`esbuild.config.mjs`, upstream's) bundles `src/main.ts` into a single CommonJS `main.js` (~3.4 MB), externalizing `obsidian`, `electron`, part of CodeMirror and Node builtins. It also inlines the indexer web worker.
-- The same pass emits `main.css` from the CSS imported by the source; a rename plugin turns it into the root `styles.css` (~147 KB) that Obsidian loads. Both are generated and gitignored.
+- [esbuild](https://esbuild.github.io/) (`esbuild.config.mjs`) bundles `src/main.ts` into a single CommonJS `main.js` (~380 KB), externalizing `obsidian`, `electron`, part of CodeMirror and Node builtins.
+- The same pass emits `main.css` from the CSS imported by the source; a rename plugin turns it into the root `styles.css` (~33 KB) that Obsidian loads. Both are generated and gitignored.
 - `scripts/copy-to-vault.mjs` copies `main.js`, `manifest.json` and `styles.css` into the vault named in `.env.local`.
+- `scripts/unreachable.mjs` lists (and with `--delete` removes) source files `src/main.ts` no longer reaches.
 - `manifest.json` + `versions.json` follow the standard Obsidian plugin conventions (`minAppVersion` compatibility map).
 
 See [DEVELOPMENT.md](DEVELOPMENT.md) for how to actually run the build.
 
 ## Credits
 
-This plugin is a fork of [make.md](https://github.com/Make-md/makemd) — MIT licensed,
-Copyright (c) 2022 JP Cen — whose licence is kept verbatim in `LICENSE-makemd`. Essentially
-all source under `src/` is theirs; see [What changed from upstream](#what-changed-from-upstream)
-for the delta.
+The header's components and stylesheets are ported from
+[make.md](https://github.com/Make-md/makemd) — MIT licensed, Copyright (c) 2022 JP Cen — whose
+licence is kept verbatim in `LICENSE-makemd`.
 
 Notioneer itself is GPLv3 (`LICENSE`). MIT code may be combined into a GPLv3 work provided the
 MIT notice is retained, which is what `LICENSE-makemd` is for.

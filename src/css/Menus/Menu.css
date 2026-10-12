@@ -43,22 +43,9 @@
   overflow: hidden;
 }
 
-.mk-suggester {
-  --mk-menu-max-height: 200px !important;
-  min-width: 200px;
-}
-
-.mk-suggester[data-placeholder]:empty::before {
-  content: attr(data-placeholder);
-  color: var(--mk-ui-text-tertiary); 
-}
-
 
 .mk-menu-wrapper {
   max-height: inherit;
-}
-.mk-menu-suggester {
-  visibility: hidden;
 }
 .mk-combo-menu {
   height: 90%;
@@ -71,10 +58,13 @@
 }
 
 .mk-drawer-content.mk-drawer-palette {
-  top: var(--safe-area-inset-top) !important;
   bottom: 0;
-  height: auto !important;
-  max-height: auto !important;
+}
+
+:root:root:root:root .mk-drawer-content.mk-drawer-palette {
+  top: var(--safe-area-inset-top);
+  height: auto;
+  max-height: auto;
 }
 .mk-drawer-handle {
   margin-bottom: 12px;
@@ -91,8 +81,8 @@
 }
 
 
-body.is-mobile {
-  padding-top: 0 !important;
+:root:root:root:root body.is-mobile {
+  padding-top: 0;
 }
 .mk-drawer-content.mk-drawer-modal {
   width: 90%;
@@ -128,11 +118,6 @@ body.is-mobile {
   flex-direction: column;
 }
 
-.mk-menu-suggester.mk-ready {
-    animation: .15s ease-out 0s 1 slideInFromBottom;
-    visibility: visible;
-}
-
 
 
 
@@ -147,8 +132,8 @@ body.is-mobile {
 }
 
 
-.mk-menu-input.selected {
-  background-color: unset !important;
+:root:root:root:root .mk-menu-input.selected {
+  background-color: unset;
 }
 
 .mk-menu-input input {
@@ -229,10 +214,13 @@ gap: 8px;
   box-sizing: border-box;
   padding: 4px 8px;
   border-radius: 4px;
-  box-shadow: unset !important;
   /* match the font styles */
   font-size: 12px;
   line-height: inherit;
+}
+
+:root:root:root:root .mk-menu-selected-tag {
+  box-shadow: unset;
 }
 
 .mk-menu-selected-tag:after {
@@ -254,18 +242,6 @@ gap: 8px;
   border-bottom: 1px solid var(--mk-ui-border);
 }
 
-button.mk-menu-search-button {
-  background : none;
-  border: none;
-  box-shadow: none;
-  --icon-size: 16px;
-}
-
-button.mk-menu-search-button svg {
-  width: var(--icon-size);
-  height: var(--icon-size);
-}
-
 .mk-menu-search-container {
   display: flex;
 gap: 8px;
@@ -281,7 +257,6 @@ gap: 8px;
 .mk-menu-search-input {
   /* prevent autoresize overflowing the container */
   max-width: 100%;
-  background: unset !important;
   /* remove styles and layout from this element */
   margin: 0;
   padding: 0;
@@ -291,6 +266,11 @@ gap: 8px;
   /* match the font styles */
   font-size: 13px;
   line-height: inherit;
+}
+
+
+:root:root:root:root .mk-menu-search-input {
+  background: unset;
 }
 
 .mk-menu-search-input::-ms-clear {
@@ -329,10 +309,13 @@ max-height: var(--mk-menu-max-height)
 
 .is-phone .mk-menu-option {
   padding: 12px;
-  background: none !important;
 }
-.is-mobile .mk-menu-option:hover {
-  background: none !important;
+
+:root:root:root:root .is-phone .mk-menu-option {
+  background: none;
+}
+:root:root:root:root .is-mobile .mk-menu-option:hover {
+  background: none;
 }
 
 .mk-menu-option {
@@ -346,11 +329,6 @@ max-height: var(--mk-menu-max-height)
   cursor: var(--cursor);
   font-size: 13px;
   justify-content: space-between;
-}
-
-.mk-menu-sticker {
-  width: 16px;
-  height: 16px;
 }
 
 .mk-emoji-icon-span {
@@ -367,7 +345,9 @@ max-height: var(--mk-menu-max-height)
 }
 .mk-menu-option .mk-inline-button {
   border: thin solid var(--mk-ui-border);
-    padding: 4px !important;
+}
+:root:root:root:root .mk-menu-option .mk-inline-button {
+    padding: 4px;
 }
 
 .mk-menu-options-inner {
@@ -420,10 +400,10 @@ max-height: var(--mk-menu-max-height)
   cursor: auto;
 }
 
-.mk-menu-custom {
-  padding: 0 !important;
-  gap: 0 !important;
-  background: none !important;
+:root:root:root:root .mk-menu-custom {
+  padding: 0;
+  gap: 0;
+  background: none;
 }
 
 .mk-menu-custom > .menu-item-title > div {

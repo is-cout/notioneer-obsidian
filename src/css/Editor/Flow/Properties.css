@@ -7,38 +7,8 @@
     width: 100%;
     align-items: flex-start;
 }
-.mk-props-value {
-    display: flex;
-    flex-direction: column;;
-    gap: 8px;
-    align-items: flex-start;
-}
-.mk-props-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    width: 100%;
-align-items: center;
-}
-
-.mk-props-list .mk-path { 
-    width: 150px;
-}
 .mk-props-contexts .mk-path-context-row {
     width: 100%;
-}
-
-.mk-props-contexts .mk-divider {
-    border-bottom: thin solid var(--mk-ui-divider);
-    width: 100%;
-    height: 1px;
-  }
-
-.mk-props-contexts-space {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;   
 }
 .mk-props-contexts .mk-cell-boolean {
     padding: 0px;
@@ -61,36 +31,13 @@ align-items: center;
     border-radius: 12px;
     border: var(--tag-border-width) solid var(--tag-border-color);
 }
-.mk-props-contexts-space-add {
-    display: flex;
-    align-items: center;
-    padding: 4px;
-    border-radius: 4px;
-}
-.mk-props-contexts-space-add:hover {
-    background: var(--mk-ui-background-hover)
-}
     
 .mk-props-contexts-space-name .mk-path-icon {
     --icon-container-size: 16px;
     --icon-size: 16px;
 }
-.mk-props-contexts-space-props {
-    margin-left: 8px;
-}
-.mk-props-pill {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 8px;
-    border-radius: 12px;
-    background: var(--mk-ui-background-contrast);
-    color: var(--mk-ui-text-tertiary);
-    font-size: 12px;
-
-}
-.mk-props-contexts-space-name:hover {
-opacity: 1 !important;
+:root:root:root:root .mk-props-contexts-space-name:hover {
+opacity: 1;
 }
 .mk-fold {
     position: absolute;

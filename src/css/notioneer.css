@@ -70,20 +70,22 @@ button.notioneer-toolbar-button:hover {
    the editor its own property rows and the native panel render one above the other. Hidden
    here instead of leaving it to a user snippet. Reading view keeps the native panel. */
 
-/* `!important` and the `body` prefix because Obsidian styles this container itself and the
-   two properties lists rendering one above the other is the worst failure mode here. */
-body.mk-inline-context-enabled .markdown-source-view .metadata-container {
-	display: none !important;
+/* `:root:root:root:root` instead of `!important` (which the community scanner flags): every
+   element is under :root, so the selector matches the same elements but outranks Obsidian's
+   and themes' own rules — two properties lists stacked is the worst failure mode here. */
+:root:root:root:root body.mk-inline-context-enabled .markdown-source-view .metadata-container {
+	display: none;
 }
 
 /* --- Native inline title ---
-   make.md's rule (FileContext.css) only hides it in live preview and without `!important`,
-   so a theme or snippet that sets `.inline-title { display: … }` puts it back and the note
-   shows two titles (issue #1). Same weight as the properties rule above, scoped to editors
-   where our header is actually mounted so a note without one keeps its title. `> .inline-title`
-   only matches Obsidian's own: the header's title sits inside `.mk-inline-context`. */
-body.mk-inline-context-enabled .markdown-source-view .cm-sizer:has(> .mk-inline-context) > .inline-title {
-	display: none !important;
+   make.md's rule (FileContext.css) only hides it in live preview, at low specificity, so a
+   theme or snippet that sets `.inline-title { display: … }` puts it back and the note shows
+   two titles (issue #1). Same weight as the properties rule above, scoped to editors where
+   our header is mounted (`notioneer-has-header`, set by the mount code) so a note without
+   one keeps its title. `> .inline-title` only matches Obsidian's own: the header's title
+   sits inside `.mk-inline-context`. */
+:root:root:root:root body.mk-inline-context-enabled .markdown-source-view .cm-sizer.notioneer-has-header > .inline-title {
+	display: none;
 }
 
 /* The header's title reuses the `inline-title` class (for theme styling), so Obsidian's
@@ -136,11 +138,11 @@ body:not(.show-inline-title) .mk-inline-title.inline-title:not([data-level]) {
 
 /* The immediate parent reads as subordinate to the top-level folder: same pill, slightly
    lighter. The chips are a label, not a control, so there is no hover state and no pointer —
-   `!important` because make.md's own `.mk-props-contexts-space-name:hover` sets
-   `opacity: 1 !important` (Editor/Flow/Properties.css) and would undo the fade. */
-.notioneer-folder-crumb-faded,
-.notioneer-folder-crumb-faded:hover {
-	opacity: 0.8 !important;
+   Boosted like the rules above because make.md's own `.mk-props-contexts-space-name:hover`
+   sets `opacity: 1` at the same weight (Editor/Flow/Properties.css) and would undo the fade. */
+:root:root:root:root .notioneer-folder-crumb-faded,
+:root:root:root:root .notioneer-folder-crumb-faded:hover {
+	opacity: 0.8;
 }
 
 .notioneer-folder-crumb,

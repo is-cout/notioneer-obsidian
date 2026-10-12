@@ -2,7 +2,7 @@
 import { wrapQuotes } from "core/utils/strings";
 import { uniqueId } from "lodash";
 import { ISuperstate as Superstate } from "shared/types/superstate";
-import { Html, Parent, Root, RootContent } from "mdast";
+import { Parent, Root, RootContent } from "mdast";
 import { fromMarkdown } from "mdast-util-from-markdown";
 import { frontmatterFromMarkdown } from "mdast-util-frontmatter";
 import { gfmFromMarkdown } from "mdast-util-gfm";
@@ -166,7 +166,7 @@ const parentPath = path.split('/').slice(0, -1).join('/');
 
             const html = htmlToTree(node.value);
             const tagName = node.value.match(/<\s*([a-zA-Z0-9]*)/)?.[1];
-            const endTagIndex = (parent as Parent).children.findIndex(f => f.type === 'html' && (f as Html).value.startsWith(`</${tagName}>`));
+            const endTagIndex = (parent as Parent).children.findIndex(f => f.type === 'html' && (f).value.startsWith(`</${tagName}>`));
             if (endTagIndex > -1) {
                 const walkHtml = (html: FrameTreeNode, tag: string, children: FrameTreeNode[]) => {
                     if (html.node.styles['sem'] === wrapQuotes(tag)) {

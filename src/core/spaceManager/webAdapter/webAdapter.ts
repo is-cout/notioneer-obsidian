@@ -35,7 +35,7 @@ export class WebSpaceAdapter implements SpaceAdapter {
 
     onNoteCreate = async (path: string, content: string) => {
 
-        this.spaceManager.onPathCreated(path)
+        void this.spaceManager.onPathCreated(path)
   
         }
 

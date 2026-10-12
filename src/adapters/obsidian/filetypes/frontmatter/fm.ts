@@ -84,7 +84,7 @@ export const changeFrontmatterType = (
   key: string,
   type: string
 ) => {
-  saveProperties(plugin.superstate, path, {
+  void saveProperties(plugin.superstate, path, {
     [key]: defaultValueForType(type),
   });
 };
@@ -105,7 +105,7 @@ export const saveFrontmatterValue = (
   type: string,
 ) => {
 
-  saveProperties(plugin.superstate, path, {
+  void saveProperties(plugin.superstate, path, {
     [key]: parseMDBStringValue(type, value, true),
   });
   

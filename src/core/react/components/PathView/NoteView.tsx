@@ -71,7 +71,7 @@ export const NoteView = forwardRef((props: NoteViewProps, ref) => {
 
   const toggleFlow = () => {
     if (props.load) {
-      loadPath();
+      void loadPath();
     } else {
       if (flowRef?.current) flowRef.current.innerHTML = "";
     }
@@ -89,7 +89,7 @@ export const NoteView = forwardRef((props: NoteViewProps, ref) => {
         props.load &&
         !existsPas
       ) {
-        loadPath();
+        void loadPath();
       }
     };
     props.superstate.ui.eventsDispatch.addListener(

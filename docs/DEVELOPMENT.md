@@ -43,6 +43,26 @@ This produces `main.js` at the project root but does not bundle `styles.css` —
 
 Copy `main.js`, `manifest.json` and `styles.css` into `YOUR_VAULT/.obsidian/plugins/notioneer/`, then enable **Notioneer** under Settings → Community plugins. Reload the plugin (or restart Obsidian) after each rebuild. (Set up `.env.local` as described above to have `npm run build` do this copy automatically.)
 
+## Community scorecard
+
+Every release is scanned by Obsidian's automated review, which lints the source with
+[`eslint-plugin-obsidianmd`](https://www.npmjs.com/package/eslint-plugin-obsidianmd)'s
+`recommended` config and shows the result on the plugin's
+[scorecard](https://community.obsidian.md/plugins/notioneer#scorecard). Two things to know when
+reading it:
+
+- The scanner lints **without installing dependencies**. Types from `obsidian`, `react` and
+  every other package resolve to `any`, so most of its `no-unsafe-*` warnings (~8.5k of
+  ~12k as of 1.0.0) do not appear when linting with `node_modules` present. They only go
+  away as make.md code is removed.
+- To reproduce locally without adding ESLint to this repo, install `eslint`,
+  `eslint-plugin-obsidianmd` and `typescript-eslint` in a scratch folder and point
+  `eslint -c <scratch>/eslint.config.mjs src` at the project. The developer dashboard can
+  also run a preview scan on any branch.
+
+The release workflow attaches GitHub build-provenance attestations to `main.js`,
+`manifest.json` and `styles.css`, which the scorecard checks for.
+
 ## Verifying a change
 
 There is no automated test suite yet. Before considering a change done:

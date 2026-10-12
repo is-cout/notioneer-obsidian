@@ -358,8 +358,7 @@ export const SpaceManagerProvider: React.FC<SpaceManagerProviderProps> = ({
 
         if (mkitSpaceData?.frameData?.[schema]) {
           return mkitSpaceData.frameData[schema];
-        } else {
-        }
+        } else { /* empty */ }
       }
 
       // Fallback to regular spaceManager
@@ -399,8 +398,7 @@ export const SpaceManagerProvider: React.FC<SpaceManagerProviderProps> = ({
 
         if (mkitSpaceData?.contextSchemas) {
           return mkitSpaceData.contextSchemas;
-        } else {
-        }
+        } else { /* empty */ }
       }
 
       // Fallback to regular spaceManager
@@ -428,8 +426,7 @@ export const SpaceManagerProvider: React.FC<SpaceManagerProviderProps> = ({
           return mkitSpaceData.frameSchemas.map(
             (fs) => fs as any as SpaceTableSchema
           );
-        } else {
-        }
+        } else { /* empty */ }
       }
 
       // Fallback to regular spaceManager
@@ -618,7 +615,7 @@ export const SpaceManagerProvider: React.FC<SpaceManagerProviderProps> = ({
   const createTable = useCallback(
     (path: string, schema: SpaceTableSchema): void => {
       if (superstate?.spaceManager) {
-        superstate.spaceManager.createTable(path, schema);
+        void superstate.spaceManager.createTable(path, schema);
       }
     },
     [superstate]
@@ -991,7 +988,7 @@ export const SpaceManagerProvider: React.FC<SpaceManagerProviderProps> = ({
       api: superstate?.api,
 
       // Fallback
-      spaceManager: superstate?.spaceManager as SpaceManagerInterface,
+      spaceManager: superstate?.spaceManager,
     }),
     [
       readTable,

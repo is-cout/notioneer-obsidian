@@ -63,7 +63,7 @@ export const OptionCell = (
     const schemeColors = palette ? palette.colors : null;
 
     const existingOptions =
-      ((_options as SelectOption[]) ?? [])
+      ((_options) ?? [])
         .filter((f) => f.value)
         .map((t, index) => ({
           ...t,

@@ -47,7 +47,7 @@ export const hidePath = async (superstate: Superstate, path: string) => {
     ]);
     superstate.ui.notify("Item is now hidden in the Navigator, you can manage hidden items in the Navigator menu.", );
     superstate.saveSettings();
-    superstate.reloadPath(path, true).then(f => superstate.dispatchEvent("superstateUpdated", null));
+    void superstate.reloadPath(path, true).then(f => superstate.dispatchEvent("superstateUpdated", null));
 }
 
 export const hidePaths = async (superstate: Superstate, paths: string[]) => {
@@ -56,8 +56,8 @@ export const hidePaths = async (superstate: Superstate, paths: string[]) => {
       ...paths,
     ]);
     superstate.saveSettings();
-    Promise.all(paths.map((path) => {
-        superstate.reloadPath(path, true);
+    void Promise.all(paths.map((path) => {
+        void superstate.reloadPath(path, true);
     })).then(f => superstate.dispatchEvent("superstateUpdated", null));
 }
 

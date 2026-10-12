@@ -50,7 +50,7 @@ const SelectMenuSearch = forwardRef(
     useEffect(() => {
       copyInputStyles();
       updateInputWidth();
-      setTimeout(() => {
+      window.setTimeout(() => {
         input.current?.focus();
       }, 50);
     }, []);

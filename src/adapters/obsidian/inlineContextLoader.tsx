@@ -24,7 +24,7 @@ export const modifyFlowDom = (plugin: MakeMDPlugin) => {
     let inlineContext = contentEl.querySelector(".mk-inline-context");
 
     if (!inlineContext) {
-      inlineContext = document.createElement("div");
+      inlineContext = createDiv();
       inlineContext.classList.add("mk-inline-context");
       inlineContext.classList.add("embedded-backlinks");
       sizerEl.prepend(inlineContext);
@@ -75,7 +75,7 @@ export const modifyFlowDom = (plugin: MakeMDPlugin) => {
     if (plugin.superstate.settings.inlineBacklinks) {
       let backlinksEl = contentEl.querySelector(".mk-backlinks");
       if (!backlinksEl) {
-        backlinksEl = document.createElement("div");
+        backlinksEl = createDiv();
         backlinksEl.classList.add("mk-backlinks");
         backlinksEl.classList.add("embedded-backlinks");
         sizerEl.appendChild(backlinksEl);

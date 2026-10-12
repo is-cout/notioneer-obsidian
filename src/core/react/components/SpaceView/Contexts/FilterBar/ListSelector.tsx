@@ -38,7 +38,7 @@ export const ListSelector = (props: {
       name: i18n.menu.copyEmbedLink,
       icon: "ui//link",
       onClick: (e) => {
-        navigator.clipboard.writeText(
+        void navigator.clipboard.writeText(
           contextViewEmbedStringFromContext(spaceState, _schema.id)
         );
       },
@@ -81,7 +81,7 @@ export const ListSelector = (props: {
               }
             }
           }
-          deleteSchema(_schema);
+          void deleteSchema(_schema);
         },
       });
     props.superstate.ui.openMenu(
@@ -114,7 +114,7 @@ export const ListSelector = (props: {
             id: value.replace(/ /g, "_"),
             name: value,
           };
-          saveSchema(newSchema).then((f) => selectView(newSchema.id));
+          void saveSchema(newSchema).then((f) => selectView(newSchema.id));
         }}
       ></InputModal>,
       windowFromDocument(e.view.document)

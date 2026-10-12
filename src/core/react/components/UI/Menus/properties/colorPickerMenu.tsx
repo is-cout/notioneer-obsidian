@@ -10,15 +10,7 @@ import {
 import { uniqueId, debounce } from "lodash";
 import i18n from "shared/i18n";
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import {
-  getColors,
-  getColorsBase,
-  getBackgroundColors,
-  getTextColors,
-  getColorPalettes,
-  getAllGradients,
-  createGradientCssValue,
-} from "core/utils/colorPalette";
+import { getColorPalettes } from "core/utils/colorPalette";
 
 // Color mode types
 type ColorMode = 'palettes' | 'solid' | 'gradient' | 'none';
@@ -620,7 +612,7 @@ export const ColorPicker = (props: {
 
           gradientObject.values = values;
         }
-      } catch (e) {
+      } catch {
         gradientObject = null;
       }
     }

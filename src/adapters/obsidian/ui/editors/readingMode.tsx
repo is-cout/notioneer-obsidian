@@ -3,7 +3,7 @@ export const replaceMarkdownForReadingMode = (
   callback: (dom: HTMLElement) => void
 ) => {
   let dom: HTMLElement = el;
-  setTimeout(async () => {
+  window.setTimeout(async () => {
     //wait for el to be attached to the displayed document
     let counter = 0;
     while (!el.parentElement && counter++ <= 50) await sleep(50);

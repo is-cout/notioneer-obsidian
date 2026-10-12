@@ -8,10 +8,10 @@ All dependency versions in `package.json` are **pinned exactly** (no `^`, no `~`
 
 **How to apply:** when a new dependency is needed, or an existing one needs a bump (security fix, feature, bug fix), propose the exact version and the reason, and wait for approval before editing `package.json`.
 
-## Current pins (as of 2026-07-27)
+## Current pins (as of 2026-10-12)
 
 Since 0.7.0 this project is a fork of [make.md](https://github.com/Make-md/makemd) and
-inherits its dependency tree: **55 runtime dependencies, 42 dev dependencies, 939 packages
+inherits its dependency tree: **55 runtime dependencies, 38 dev dependencies, 814 packages
 installed**. Upstream ships 94 of its 97 versions as `^`/`~` ranges; every one was resolved to
 the exact version that was installed and written back to `package.json`, so this repo still
 holds zero ranges. `package-lock.json` pins the transitive tree.
@@ -32,6 +32,22 @@ ones that carry weight:
 
 Trimming this list back down is the point of the fork's later stages — every subsystem that
 gets removed should take its dependencies with it, and this table should shrink with it.
+
+## Removed: build-only packages the community scanner bans (2026-10-12)
+
+The Obsidian community scorecard flags these as "should be replaced with an alternative
+package". All four were dev dependencies used only by `esbuild.config.mjs` (or not at all), so
+they were removed with the owner's approval rather than replaced:
+
+| Package | Replacement |
+|---|---|
+| `builtin-modules` | Node's own `builtinModules` from `node:module`. |
+| `dotenv` | `process.loadEnvFile('.env')`, only when a `.env` exists (Node 20.12+). |
+| `find-cache-dir` | A fixed `node_modules/.cache/esbuild-plugin-inline-worker` directory. |
+| `eslint-plugin-react` | Nothing — no ESLint config in the repo used it. |
+
+`lodash` is flagged the same way but is a runtime dependency of make.md code throughout
+`src/`; dropping it is stage-4 work.
 
 ## Resolved advisory: lodash (high)
 

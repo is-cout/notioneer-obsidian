@@ -40,13 +40,13 @@ export class SpaceManager implements SpaceManagerInterface {
         return;
       }
       if (type == 'context') {
-        this.superstate.reloadContextByPath(path);
+        void this.superstate.reloadContextByPath(path);
       }
       if (type == 'frame') {
         this.superstate.dispatchEvent("frameStateUpdated", {path})
       }
       if (type == 'action') {
-        this.superstate.reloadActions(this.spaceInfoForPath(path));
+        void this.superstate.reloadActions(this.spaceInfoForPath(path));
       }
 
     }
@@ -61,7 +61,7 @@ export class SpaceManager implements SpaceManagerInterface {
       return this.superstate.contextsIndex;
     }
     public onFocusesUpdated = () => {
-      this.readFocuses().then(f => {
+      void this.readFocuses().then(f => {
         this.superstate.focuses = f    
         this.superstate.dispatchEvent("focusesChanged", null)
       });
@@ -75,7 +75,7 @@ export class SpaceManager implements SpaceManagerInterface {
     }
 
     public onPathCreated = async (path: string) => {
-      this.superstate.onPathCreated(path);
+      void this.superstate.onPathCreated(path);
     }
 
     public onPathDeleted = async (path: string) => {
@@ -83,7 +83,7 @@ export class SpaceManager implements SpaceManagerInterface {
     }
 
     public onPathChanged = async (path: string, oldPath: string) => {
-      this.superstate.onPathRename(oldPath, path);
+      void this.superstate.onPathRename(oldPath, path);
     }
 
     public onSpaceCreated = async (path: string) => {

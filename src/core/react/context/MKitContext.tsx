@@ -205,7 +205,7 @@ const processSpaceRecursively = (
         // Remove root path and any separators
         let relPath = spacePath.slice(rootKitPath.length);
         // Remove leading separators
-        relPath = relPath.replace(/^[\\\/]+/, "");
+        relPath = relPath.replace(/^[\\/]+/, "");
         relativePath = relPath || spaceKit.name;
       } else {
         // Fallback to name if path doesn't start with root

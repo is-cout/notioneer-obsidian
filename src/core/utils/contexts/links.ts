@@ -30,7 +30,7 @@ export const valueContainsLink = (link: string, value: string) => {
     const deltaRow = cols.reduce((p, c) => {
       if (valueContainsLink(link, row[c.name])) {
         const newValue = removeLinkInValue(link, row[c.name]);
-        manager.saveProperties(row[PathPropertyName], {[c.name]: parseMDBStringValue(c.type, newValue, true)})
+        void manager.saveProperties(row[PathPropertyName], {[c.name]: parseMDBStringValue(c.type, newValue, true)})
       
       return {...p, [c.name]: newValue}
      } 
@@ -46,7 +46,7 @@ export const valueContainsLink = (link: string, value: string) => {
     const deltaRow = cols.reduce((p, c) => {
       if (valueContainsLink(link, row[c.name])) {
         const newValue = replaceLinkInValue(link,newLink, row[c.name]);
-        manager.saveProperties(row[PathPropertyName], {[c.name]: parseMDBStringValue(c.type, newValue, true)})
+        void manager.saveProperties(row[PathPropertyName], {[c.name]: parseMDBStringValue(c.type, newValue, true)})
       
       return {...p, [c.name]: newValue}
      } 

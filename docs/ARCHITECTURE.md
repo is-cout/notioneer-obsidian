@@ -117,6 +117,18 @@ Kept deliberately small so upstream changes can still be merged:
   upstream leaves unset (it built to a literal `undefined/` directory).
 - `package.json` — upstream's 97 dependency ranges resolved to exact pins, per the project's
   dependency policy. See [DEPENDENCIES.md](DEPENDENCIES.md).
+- `src/core/utils/frames/executable.ts`, `runner.ts` — no dynamic code execution. Upstream
+  compiles frame props/styles/actions and "script" commands with `new Function`; ours keeps
+  only literal values (quoted strings, numbers, booleans, JSON) and `executeCode()` throws.
+  Nothing Notioneer renders depends on evaluated frame code.
+- `src/adapters/mdb/db/db.ts`, `src/core/spaceManager/webAdapter/webCache.ts` — no `fetch`.
+  The remote `.mdb` branch was never called; web space kits now fail with an error instead of
+  being downloaded, keeping the "no network calls" scope true.
+- Lint cleanup for the Obsidian community scorecard (2026-10-12): floating promises marked
+  `void`, unused catch bindings and imports, useless regex escapes,
+  `TFile`/`TFolder` casts replaced with `instanceof`, `document.createElement` with
+  `createEl`/`createDiv`, bare timers with `window.*`, `alert` with a notice, and overridden
+  duplicate CSS declarations. Mechanical; no intended behaviour change.
 
 Upstream's `npm run build` also calls `scripts/sync-version.mjs`, which is gitignored upstream
 and therefore absent from the clone; our build script does not.
@@ -126,7 +138,7 @@ and therefore absent from the clone; our build script does not.
 - TypeScript (`tsconfig.json`) type-checks the tree (`tsc -noEmit -skipLibCheck`) — no `.js` is emitted by `tsc` itself.
 - [esbuild](https://esbuild.github.io/) (`esbuild.config.mjs`, upstream's) bundles `src/main.ts` into a single CommonJS `main.js` (~4.4 MB), externalizing `obsidian`, `electron`, part of CodeMirror and Node builtins. It also inlines the three web workers and compiles `.wat`.
 - The same pass emits `main.css` from the CSS imported by the source; a rename plugin turns it into the root `styles.css` (~147 KB) that Obsidian loads. Both are generated and gitignored.
-- A `strip-jszip-script-polyfill` esbuild plugin rewrites `jszip`'s prebundled `dist/jszip.min.js` as it is loaded, renaming the element its `immediate`/`setimmediate` polyfills probe for the IE8 `script.onreadystatechange` trick. That branch is dead on every engine Obsidian runs on, but its `createElement("script")` calls are flagged as dynamic script injection by the Obsidian community-plugin scanner. The plugin throws if the pattern stops matching, so a jszip upgrade cannot silently put it back.
+- A `strip-jszip-script-polyfill` esbuild plugin rewrites `jszip`'s prebundled `dist/jszip.min.js` as it is loaded, renaming the element its `immediate`/`setimmediate` polyfills probe for the IE8 `script.onreadystatechange` trick. That branch is dead on every engine Obsidian runs on, but its `createElement("script")` calls are flagged as dynamic script injection by the Obsidian community-plugin scanner. The same plugin turns the polyfill's `new Function(""+callback)` fallback (only reachable with a non-function argument, which jszip never passes) into a `TypeError`, so the bundle contains no `Function` constructor. It throws if either pattern stops matching, so a jszip upgrade cannot silently put them back.
 - `scripts/copy-to-vault.mjs` copies `main.js`, `manifest.json` and `styles.css` into the vault named in `.env.local`.
 - `manifest.json` + `versions.json` follow the standard Obsidian plugin conventions (`minAppVersion` compatibility map).
 

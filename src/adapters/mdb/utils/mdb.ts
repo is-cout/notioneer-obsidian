@@ -52,7 +52,7 @@ export const getMDB = async (
   path: string,
 ): Promise<MDB> => {
   const sqlJS = await plugin.sqlJS();
-  const buf = await getDBFile(plugin, path, false);
+  const buf = await getDBFile(plugin, path);
   if (!buf) {
     return null;
   }
@@ -68,7 +68,7 @@ export const getMDB = async (
     schemas = dbResultsToDBTables(
       db.exec(`SELECT * FROM m_schema`)
     )[0].rows as SpaceTableSchema[];
-  } catch (e) {
+  } catch {
     db.close();
     return null;
   }
@@ -80,7 +80,7 @@ export const getMDB = async (
     )
   )[0]})).reduce((p,c) => ({...p, ...c}), {});
   
-    } catch (e) {
+    } catch {
       db.close();
       return null
     }
@@ -103,7 +103,7 @@ export const getMDBTable = async (
 
   
   const sqlJS = await adapter.sqlJS();
-  const buf = await getDBFile(adapter, dbPath, false);
+  const buf = await getDBFile(adapter, dbPath);
   
   if (!buf) {
     return null;
@@ -138,7 +138,7 @@ export const getMDBTable = async (
         `SELECT * FROM "${table}"`
       )
     );
-      } catch (e) {
+      } catch {
       db.close();
       return {
         schema: schema,
@@ -157,7 +157,7 @@ export const getMDBTable = async (
 
 export const getMDBTables = async (plugin: MDBFileTypeAdapter, dbPath: string) => {
   const sqlJS = await plugin.sqlJS();
-    const buf = await getDBFile(plugin, dbPath, false);
+    const buf = await getDBFile(plugin, dbPath);
     if (!buf) {
       return null;
     }
@@ -169,14 +169,13 @@ export const getMDBTables = async (plugin: MDBFileTypeAdapter, dbPath: string) =
        schemas = (dbResultsToDBTables(
       db.exec(`SELECT * FROM m_schema`)
     )[0]?.rows ?? []) as SpaceTableSchema[];
-    } catch (e) {
-    }
+    } catch { /* empty */ }
     if (schemas.length == 0) {
       const tableResults = dbResultsToDBTables(
         db.exec(
             "SELECT name FROM sqlite_schema WHERE type ='table' AND name NOT LIKE 'sqlite_%';"
             ));
-      const tables = tableResults[0]?.rows?.map(f => f.name) as string[] ?? [];
+      const tables = tableResults[0]?.rows?.map(f => f.name) ?? [];
       schemas = tables.filter(f => !f.startsWith('m_')).map(f => (f == defaultContextSchemaID ? defaultContextDBSchema : { id: f, name: f, type: 'db', primary: ''}));
       db.exec(
         `CREATE TABLE IF NOT EXISTS m_schema ('id' char, 'name' char, 'type' char, 'def' char, 'predicate' char, 'primary' char)`
@@ -192,7 +191,7 @@ export const getMDBTables = async (plugin: MDBFileTypeAdapter, dbPath: string) =
           db.exec(`SELECT * FROM m_fields WHERE schemaId = '${schema.id}'`)
         );
         
-      } catch (e) {
+      } catch {
         return;
       }
       
@@ -209,7 +208,7 @@ export const getMDBTables = async (plugin: MDBFileTypeAdapter, dbPath: string) =
         dbTable[0],
         schema,
         fields
-      );} catch (e) {
+      );} catch {
         
         mdbTables[schema.id] = {
           schema,
@@ -229,7 +228,7 @@ export const deleteMDBTable = async (
   dbPath: string,
 ): Promise<boolean> => {
   const sqlJS = await plugin.sqlJS();
-  const buf = await getDBFile(plugin, dbPath, false);
+  const buf = await getDBFile(plugin, dbPath);
   if (!buf) {
     return false;
   }
@@ -248,7 +247,7 @@ export const getMDBTableSchemas = async (
   path: string,
 ): Promise<SpaceTableSchema[]> => {
   const sqlJS = await plugin.sqlJS();
-  const buf = await getDBFile(plugin, path, false);
+  const buf = await getDBFile(plugin, path);
   if (!buf) {
     return null;
   }
@@ -256,8 +255,7 @@ export const getMDBTableSchemas = async (
   let schemas : QueryExecResult[] = [];
   try {
     schemas = db.exec(`SELECT * FROM m_schema`)
-  } catch (e) {
-  }
+  } catch { /* empty */ }
   db.close();
   return (schemas[0]?.values ?? []).map((f) => {
     const [id, name, type, def, predicate, primary] = f as string[];
@@ -270,7 +268,7 @@ export const getMDBTableProperties = async (
   path: string,
 ): Promise<SpaceProperty[]> => {
   const sqlJS = await adapter.sqlJS();
-  const buf = await getDBFile(adapter, path, false);
+  const buf = await getDBFile(adapter, path);
   if (!buf) {
     return null;
   }
@@ -281,7 +279,7 @@ export const getMDBTableProperties = async (
   try {
     fieldsTables = dbResultsToDBTables(db.exec(`SELECT * FROM m_fields`))[0].rows as SpaceProperty[];
 
-  } catch (e) {
+  } catch {
     db.close();
     return [];
   }
@@ -291,8 +289,7 @@ export const getMDBTableProperties = async (
       db.exec(
         `CREATE TABLE m_fields (name TEXT, schemaId TEXT, type TEXT, value TEXT, hidden TEXT, attrs TEXT, unique TEXT, primary TEXT)`
       );
-    } catch (e) {
-    }
+    } catch { /* empty */ }
     
     db.close();
 

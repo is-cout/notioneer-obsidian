@@ -127,7 +127,7 @@ export const TreeItem = (props: TreeItemProps) => {
   };
   const openPathAtTarget = (path: TreeNode, e: React.MouseEvent) => {
     if (e.shiftKey) {
-      onSelectRange(path.id as string);
+      onSelectRange(path.id);
       return;
     } else if (e.altKey) {
       setSelectedPaths((s) => [...s.filter((f) => f.id != path.id), path]);
@@ -196,8 +196,8 @@ export const TreeItem = (props: TreeItemProps) => {
     if (isFolder) {
       // Do something with the files
       files.map(async (file) => {
-        file.arrayBuffer().then((arrayBuffer) => {
-          superstate.spaceManager.writeToPath(
+        void file.arrayBuffer().then((arrayBuffer) => {
+          void superstate.spaceManager.writeToPath(
             pathState.path + "/" + file.name,
             arrayBuffer,
             true
@@ -235,7 +235,7 @@ export const TreeItem = (props: TreeItemProps) => {
         superstate,
         (link) => {
           if (isString(link)) {
-            pinPathToSpaceAtIndex(superstate, space, link);
+            void pinPathToSpaceAtIndex(superstate, space, link);
           }
         },
         { placeholder: i18n.labels.pinNotePlaceholder }
@@ -244,11 +244,11 @@ export const TreeItem = (props: TreeItemProps) => {
       return;
     }
 
-    defaultAddAction(superstate, space, windowFromDocument(e.view.document));
+    void defaultAddAction(superstate, space, windowFromDocument(e.view.document));
   };
   const handleRightClick = (e: React.MouseEvent) => {
     selectedPaths.length > 1 &&
-    selectedPaths.some((f) => f.id == (data.id as string))
+    selectedPaths.some((f) => f.id == (data.id))
       ? triggerMultiPathMenu(superstate, selectedPaths, e)
       : contextMenu(e);
   };

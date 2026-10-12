@@ -21,8 +21,7 @@ export const showSetValueMenu = (
   schema?: string
 ) => {
   if (!property) return;
-  if (property.type == "text") {
-  } else if (property.type == "number") {
+  if (property.type == "text") { /* empty */ } else if (property.type == "number") {
     const input = menuInput("", (value) => onChangeValue(value), "");
     superstate.ui.openMenu(
       rect,
@@ -76,7 +75,7 @@ export const showSetValueMenu = (
                   };
               newProperty.name = value[0];
               newProperty.schemaId = schema;
-              superstate.spaceManager.addSpaceProperty(path, newProperty);
+              void superstate.spaceManager.addSpaceProperty(path, newProperty);
               onChangeValue(value[0]);
             } else {
               onChangeValue(value[0]);

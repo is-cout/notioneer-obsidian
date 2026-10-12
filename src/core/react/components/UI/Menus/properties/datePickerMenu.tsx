@@ -137,8 +137,7 @@ export const DatePicker = (props: {
     setDate(date);
 
     if (props.time == DatePickerTimeMode.Toggle) {
-      if (h == 0 && m == 0 && s == 0 && !mode) {
-      } else {
+      if (h == 0 && m == 0 && s == 0 && !mode) { /* empty */ } else {
         setMode(true);
       }
     }

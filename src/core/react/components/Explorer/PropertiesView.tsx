@@ -125,12 +125,12 @@ export const PropertiesView = (props: {
 
   const mdbChanged = (payload: { path: string }) => {
     if (props.spaces.find((f) => f == payload.path)) {
-      refreshData();
+      void refreshData();
     }
   };
 
   useEffect(() => {
-    refreshData();
+    void refreshData();
     props.superstate.eventsDispatcher.addListener(
       "contextStateUpdated",
       mdbChanged
@@ -149,7 +149,7 @@ export const PropertiesView = (props: {
 
       if (property) saveProperty(f, property);
     }
-    saveProperties(props.superstate, pathState.path, {
+    void saveProperties(props.superstate, pathState.path, {
       [f.name]: parseMDBStringValue(f.type, value, true),
     });
   };
@@ -197,7 +197,7 @@ export const PropertiesView = (props: {
         value: [],
         options,
         saveOptions: (_: string[], value: string[]) => {
-          saveMetadata(property, value[0]);
+          void saveMetadata(property, value[0]);
         },
         placeholder: i18n.labels.spaceSelectPlaceholder,
         detail: true,
@@ -220,7 +220,7 @@ export const PropertiesView = (props: {
       const property = tableData?.cols?.find((g) => g.name == key);
       if (property) saveProperty({ ...property, type: value[0] }, property);
     }
-    saveProperties(props.superstate, pathState.path, {
+    void saveProperties(props.superstate, pathState.path, {
       [key]: defaultValueForType(value[0]),
     });
   };

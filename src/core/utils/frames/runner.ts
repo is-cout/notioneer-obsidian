@@ -206,19 +206,10 @@ export const executeNode = async (executable: FrameExecutable, results: ResultSt
     const actions = executeCodeBlocks(executable.node,'actions', executable.execActions, stylesResults)
     return actions;
 }
-export const executeCode =  (code: any, environment: {[key: string]: any}) => {
-    // let result;
-    const isMultiLine = (typeof code === 'string' || code instanceof String) ? code.includes('\n') : false;
-            // Execute the code block.
-            
-            const func = isMultiLine
-                ? new Function(`with(this) { ${code} }`)
-                : new Function(`with(this) { return ${code}; }`);
-                return func.call(environment);
-            // if (result instanceof Promise) {
-            //     result = await result;
-            // }
-// return result;
+/** make.md ran "script" commands through `new Function`. Notioneer does not execute
+    dynamic code, so script commands fail with an error the callers already report. */
+export const executeCode = (): never => {
+    throw new Error("Script commands are not supported in Notioneer");
 }
 
 const executePropsCodeBlocks = async (executable: FrameExecutable, results: ResultStore, contexts: FrameContexts, api: API): Promise<ResultStore> => {
@@ -263,8 +254,7 @@ const executePropsCodeBlocks = async (executable: FrameExecutable, results: Resu
             }
         }
             
-        } catch (error) {
-                    }
+        } catch { /* empty */ }
     }
 
     return results;
@@ -296,8 +286,7 @@ const { id } = node
             } else {
                 delete results.state[node.id][type][key];
             }
-        } catch (error) {
-        }
+        } catch { /* empty */ }
     }
 
     return results;

@@ -23,7 +23,7 @@ export const ActionTester = (props: {
   const [error, setError] = useState<any>();
   useEffect(() => {
     if (props.autoTest)
-      debounce(() => runCommand(), 500, {
+      void debounce(() => runCommand(), 500, {
         leading: true,
         trailing: true,
       })();
@@ -59,7 +59,7 @@ export const ActionTester = (props: {
           iterations: 0,
         });
       if (props.type == "script")
-        result = await executeCode(props.code, values);
+        result = executeCode();
       if (props.type == "formula")
         result = await runFormulaWithContext(
           props.superstate.formulaContext,

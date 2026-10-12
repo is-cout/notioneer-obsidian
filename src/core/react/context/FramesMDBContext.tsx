@@ -81,7 +81,7 @@ export const FramesMDBProvider: React.FC<
     const computedSchemas =
       ((schemaTable?.rows ?? []).map((f) =>
         mdbSchemaToFrameSchema(f as SpaceTableSchema)
-      ) as FrameSchema[]) ?? [];
+      )) ?? [];
 
     return computedSchemas;
   }, [schemaTable]);
@@ -153,8 +153,7 @@ export const FramesMDBProvider: React.FC<
             // if (f[frameSchema?.id]) {
             //   setHistory((prev) => [...prev, f[frameSchema?.id] as MDBFrame]);
             // }
-          } else {
-          }
+          } else { /* empty */ }
         })
         .catch((error) => {});
     }
@@ -167,7 +166,7 @@ export const FramesMDBProvider: React.FC<
             schemaTable.rows.find(
               (g) => g.id == props.schema
             ) as SpaceTableSchema
-          ) as FrameSchema;
+          );
           if (preselectSchema) {
             return preselectSchema;
           } else {
@@ -236,14 +235,13 @@ export const FramesMDBProvider: React.FC<
           };
           return newSchemaTable;
         });
-      } else {
-      }
-    } catch (error) {}
+      } else { /* empty */ }
+    } catch { /* empty */ }
   }, [props.schema, spaceInfo, spaceManager]);
   const refreshSpace = useCallback(
     async (payload: { path: string }) => {
       if (payload.path == spaceInfo.path) {
-        loadTables();
+        void loadTables();
         return;
       }
     },
@@ -274,13 +272,13 @@ export const FramesMDBProvider: React.FC<
     try {
       const tables = await spaceManager.readAllFrames(spaceInfo.path);
       return tables || {};
-    } catch (error) {
+    } catch {
       return {};
     }
   };
 
   useEffect(() => {
-    loadTables();
+    void loadTables();
   }, [spaceInfo, props.schema]);
 
   const saveFrame = async (newTable: MDBFrame, track = true) => {
@@ -310,7 +308,7 @@ export const FramesMDBProvider: React.FC<
     // Restore the frameData to the last state in the new history
     if (newHistory.length > 0) {
       const lastState = newHistory[newHistory.length - 1];
-      saveFrame(lastState, false);
+      void saveFrame(lastState, false);
     }
   };
   const redoAction = () => {
@@ -323,7 +321,7 @@ export const FramesMDBProvider: React.FC<
     setHistory((prevHistory) => [...prevHistory, redoneState]);
 
     // Restore the frameData to the redone state
-    saveFrame(redoneState, false);
+    void saveFrame(redoneState, false);
   };
   const delProperty = (column: SpaceProperty) => {
     const mdbtable: SpaceTable = tableData;
@@ -335,7 +333,7 @@ export const FramesMDBProvider: React.FC<
       ...mdbtable,
       cols: newFields ?? [],
     };
-    saveFrame(newTable as MDBFrame);
+    void saveFrame(newTable as MDBFrame);
   };
 
   const newProperty = (col: SpaceProperty): boolean => {
@@ -385,7 +383,7 @@ export const FramesMDBProvider: React.FC<
       ...mdbtable,
       cols: newFields ?? [],
     };
-    saveFrame(newTable as MDBFrame);
+    void saveFrame(newTable as MDBFrame);
     return true;
   };
 

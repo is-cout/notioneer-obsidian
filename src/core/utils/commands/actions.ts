@@ -24,7 +24,7 @@ export const runActionTree = async (
   instance: ActionInstance
 ): Promise<any> => {
   if (instance.iterations > superstate.settings.actionMaxSteps) {
-    alert(i18n.descriptions.maxStepsReachedYouCanChangeThisInSettings);
+    superstate.ui.notify(i18n.descriptions.maxStepsReachedYouCanChangeThisInSettings);
     return;
   }
   const newInstance  : ActionInstance= {

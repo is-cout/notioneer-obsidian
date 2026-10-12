@@ -11,7 +11,6 @@ import { IconCell } from "./IconCell";
 import { ImageCell } from "./ImageCell";
 import { LinkCell } from "./LinkCell";
 import { NumberCell } from "./NumberCell";
-import { OptionCell } from "./OptionCell";
 import { TextCell } from "./TextCell";
 
 export const FormulaCell = (

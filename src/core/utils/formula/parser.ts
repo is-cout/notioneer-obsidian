@@ -95,7 +95,7 @@ export function parseFormula(
 					formula: undefined,
 					errors: ["Could not parse formula 😭"],
             }
-	} catch (e) {
+	} catch {
 		return {
 			formula: undefined,
 			errors: ["Could not parse formula 😭"],
@@ -325,7 +325,7 @@ export const runFormulaWithContext = (runContext: math.MathJsInstance, paths: Ma
 		}
 	} catch (e) {
 		value = ""
-		if (emitError) console.log(e)
+		if (emitError) console.error(e)
 	}
 	return  value
 }
@@ -366,8 +366,7 @@ export const runFormula = (paths: Map<string, PathState>, spaceMap: IndexMap, fo
 	try {
 		value = runContext.evaluate(formula, scope)
 		value = parseProperty("", value)
-	} catch (e) {
-	}
+	} catch { /* empty */ }
 	return  value
 }
 

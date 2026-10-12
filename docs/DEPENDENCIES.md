@@ -8,29 +8,27 @@ All dependency versions in `package.json` are **pinned exactly** (no `^`, no `~`
 
 **How to apply:** when a new dependency is needed, or an existing one needs a bump (security fix, feature, bug fix), propose the exact version and the reason, and wait for approval before editing `package.json`.
 
-## Current pins (as of 2026-10-12)
+## Current pins (as of 2026-10-12, 2.0.0)
 
-Since 0.7.0 this project is a fork of [make.md](https://github.com/Make-md/makemd) and
-inherits its dependency tree: **52 runtime dependencies, 35 dev dependencies, 764 packages
-installed**. Upstream ships 94 of its 97 versions as `^`/`~` ranges; every one was resolved to
-the exact version that was installed and written back to `package.json`, so this repo still
-holds zero ranges. `package-lock.json` pins the transitive tree.
-
-The full list lives in `package.json` — reproducing ~100 rows here would rot immediately. The
-ones that carry weight:
+**8 runtime dependencies, 9 dev dependencies, 117 packages installed.** 2.0.0 replaced the
+make.md fork with a port of its header (see [ARCHITECTURE.md](ARCHITECTURE.md#history-from-fork-to-port)),
+which dropped 70 packages — every make.md dependency the ported header does not import —
+with the owner's approval. No remaining version changed.
 
 | Package | Pinned version | Why it is here |
 |---|---|---|
-| `react`, `react-dom` | `18.2.0` | make.md's entire UI, including the note header. |
-| `@tanstack/react-table`, `@tanstack/react-virtual` | `8.14.0`, `3.2.0` | Table views — removed in 0.8.0, still listed. Droppable in stage 4. |
-| `@dnd-kit/*` | `6.1.0` / `6.0.1` / `7.0.2` | Still imported by the property rows the header renders. |
-| `mathjs`, `numfmt`, `rrule`, `date-fns` | see `package.json` | Formula properties and date handling. |
-| `lodash` | `4.18.1` | Bumped off `4.17.21` to clear a high-severity advisory (approved 2026-07-27). |
-| `esbuild` | `0.14.54` | Downgraded from our `0.28.1` by the fork; upstream’s config uses the old `watch:` API. |
-| `typescript` | `5.9.3` | Upstream’s pin, up from our `5.4.2`. |
-
-Trimming this list back down is the point of the fork's later stages — every subsystem that
-gets removed should take its dependencies with it, and this table should shrink with it.
+| `react`, `react-dom` | `18.2.0` | The header's components are make.md's React components, ported. |
+| `react-day-picker` | `8.10.0` | The date property's picker. |
+| `vaul` | `0.9.1` | Menus and pickers become bottom drawers on phones. |
+| `react-transition-group` | `4.4.5` | Fade-in of modals (the cover picker). |
+| `fuse.js` | `7.0.0` | Search inside select menus. |
+| `date-fns` | `2.30.0` | Date formatting and parsing, as make.md formatted them. |
+| `classnames` | `2.5.1` | Class name joining in the ported components. |
+| `obsidian` | `1.5.7` | API typings (dev). |
+| `typescript`, `tslib` | `5.9.3`, `2.6.2` | Type-checking (dev). |
+| `@types/react`, `@types/react-dom`, `@types/react-transition-group`, `@types/node` | see `package.json` | Typings (dev). |
+| `esbuild` | `0.14.54` | Bundler; the config uses the old `watch:` API, so stay below 0.17 or update the config. |
+| `esbuild-plugin-copy` | `1.6.0` | Copies `manifest.json` for the preview/demo builds. |
 
 ## Removed: build-only packages the community scanner bans (2026-10-12)
 
@@ -42,11 +40,10 @@ they were removed with the owner's approval rather than replaced:
 |---|---|
 | `builtin-modules` | Node's own `builtinModules` from `node:module`. |
 | `dotenv` | `process.loadEnvFile('.env')`, only when a `.env` exists (Node 20.12+). |
-| `find-cache-dir` | A fixed `node_modules/.cache/esbuild-plugin-inline-worker` directory. |
+| `find-cache-dir` | A fixed cache directory for the worker bundler (itself removed in 2.0.0). |
 | `eslint-plugin-react` | Nothing — no ESLint config in the repo used it. |
 
-`lodash` is flagged the same way but is a runtime dependency of make.md code throughout
-`src/`; dropping it is stage-4 work.
+`lodash` was flagged the same way; it went with the rest of make.md's code in 2.0.0.
 
 ## Removed: WASM and its loaders (2026-10-12)
 
@@ -56,12 +53,12 @@ packages removed (approved):
 
 | Package | Was used for | Now |
 |---|---|---|
-| `sql.js` (+ `@types/sql.js`) | make.md's SQLite index cache and `.mdb` space files | `adapters/obsidian/jsonCachePersister.ts`; `.mdb` adapter is a read-empty stub |
+| `sql.js` (+ `@types/sql.js`) | make.md's SQLite index cache and `.mdb` space files | A JSON cache in 1.0.3; no index at all since 2.0.0 |
 | `jszip` | Zipping that SQLite cache | Nothing — the JSON cache is not zipped |
 | `pica` (+ `@types/pica`) | Image thumbnail resizing (off by default) | Canvas `drawImage` scaling |
 | `esbuild-plugin-wat` | Bundling sql.js's `.wasm` | Nothing |
 
-## Resolved advisory: lodash (high)
+## Resolved advisory: lodash (high) — package removed in 2.0.0
 
 `lodash@4.17.21`, inherited from upstream, carried a high-severity advisory (prototype
 pollution in `_.unset`/`_.omit`, code injection via `_.template`:
@@ -69,16 +66,14 @@ pollution in `_.unset`/`_.omit`, code injection via `_.template`:
 [GHSA-f23m-r3pf-42rh](https://github.com/advisories/GHSA-f23m-r3pf-42rh),
 [GHSA-xxjr-mmjv-4gpg](https://github.com/advisories/GHSA-xxjr-mmjv-4gpg)).
 
-Bumped to `4.18.1` on 2026-07-27 with the owner's approval; `npm audit --omit=dev` reports no
-vulnerabilities. This is a deliberate divergence from upstream, which still states the older
-range — worth re-checking when merging from make.md.
+Bumped to `4.18.1` on 2026-07-27 with the owner's approval; the package is gone since 2.0.0.
 
 ## Known advisory: esbuild dev server (GHSA-67mh-4wv8-2f99)
 
 `esbuild` versions before 0.25.0 have a moderate-severity advisory ([GHSA-67mh-4wv8-2f99](https://github.com/advisories/GHSA-67mh-4wv8-2f99)): esbuild's local **dev server** (`esbuild serve`) doesn't validate the `Origin` header, so any website open in your browser could send requests to it and read responses.
 
-The fork pins `0.14.54` (upstream’s), which is **below** 0.25.0, so unlike before, the advisory
-now applies on paper. It is not exercised here: `esbuild.config.mjs` calls `esbuild.build()`
+The project pins `0.14.54` (make.md's), which is **below** 0.25.0, so the advisory applies
+on paper. It is not exercised here: `esbuild.config.mjs` calls `esbuild.build()`
 only, never `esbuild.serve()`, so the dev server never starts. Worth revisiting when the
 fork's build config is modernised.
 

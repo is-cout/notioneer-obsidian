@@ -19,7 +19,7 @@ This project pins **exact** dependency versions (no `^`/`~` ranges) — see [DEP
 npm run build
 ```
 
-Runs `tsc -noEmit -skipLibCheck` (type-check only, no emit), then `esbuild.config.mjs production` — which bundles `src/main.ts` into `main.js` **and** bundles `src/styles/index.css` into the root `styles.css` — then `scripts/copy-to-vault.mjs`. The root `styles.css` is generated; edit the source under `src/styles/` instead of the root file.
+Runs `tsc -noEmit -skipLibCheck` (type-check only, no emit), then `esbuild.config.mjs production` — which bundles `src/main.ts` into `main.js` **and** bundles the CSS `src/main.ts` imports (`src/css/`) into the root `styles.css` — then `scripts/copy-to-vault.mjs`. The root `styles.css` is generated; edit the source under `src/css/` instead of the root file.
 
 The copy step is optional and local-only: if a `.env.local` file exists at the project root with an `OBSIDIAN_PLUGIN_DIR=<path>` line, `main.js`, `manifest.json` and `styles.css` are copied there automatically after a successful build. `.env.local` is gitignored, so each contributor points it at their own vault; without it, the copy step is a no-op.
 
@@ -48,13 +48,17 @@ Copy `main.js`, `manifest.json` and `styles.css` into `YOUR_VAULT/.obsidian/plug
 Every release is scanned by Obsidian's automated review, which lints the source with
 [`eslint-plugin-obsidianmd`](https://www.npmjs.com/package/eslint-plugin-obsidianmd)'s
 `recommended` config and shows the result on the plugin's
-[scorecard](https://community.obsidian.md/plugins/notioneer#scorecard). Two things to know when
+[scorecard](https://community.obsidian.md/plugins/notioneer#scorecard). Worth knowing when
 reading it:
 
-- The scanner lints **without installing dependencies**. Types from `obsidian`, `react` and
-  every other package resolve to `any`, so most of its `no-unsafe-*` warnings (~8.5k of
-  ~12k as of 1.0.0) do not appear when linting with `node_modules` present. They only go
-  away as make.md code is removed.
+- The 1.0.0 scan ran **without installing dependencies**, so types from `obsidian`, `react`
+  and every other package resolved to `any` and produced ~8.5k spurious `no-unsafe-*`
+  warnings; scans from 1.0.2 on install them. The rating ("Risks" or better) follows the
+  total of warnings and "other" findings, not any single one.
+- It also lints the CSS: `!important`, `:has()`, duplicate properties and features Obsidian's
+  minimum version only partly supports. To outrank Obsidian or a theme, prefix the selector
+  with `:root:root:root:root` instead of using `!important` — see
+  [ARCHITECTURE.md](ARCHITECTURE.md#styling).
 - To reproduce locally without adding ESLint to this repo, install `eslint`,
   `eslint-plugin-obsidianmd` and `typescript-eslint` in a scratch folder and point
   `eslint -c <scratch>/eslint.config.mjs src` at the project. The developer dashboard can

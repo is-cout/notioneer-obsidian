@@ -4,6 +4,41 @@ Living log of significant changes to the project. This is **not** optional bookk
 
 Format: `YYYY-MM-DD — short description. Why (if not obvious). Files touched.`
 
+## 2026-10-12 (2.0.0)
+
+- **The header is now a port of make.md's, not make.md itself.** The 1.0.3 scan still rated
+  the review "Risks" on ~3,000 warnings, almost all in make.md code the header only needed for
+  its `Superstate` index. The header's React components were copied into `src/ui/` nearly
+  line for line — same JSX, DOM, class names and make.md stylesheets, so it looks and behaves
+  the same — and now run on a small typed layer over Obsidian's API (`src/ui/header/api.ts`)
+  instead of the Superstate. Everything else of make.md is deleted: 379 → 75 source files
+  (53 TypeScript, 22 stylesheets), bundle 3.4 MB → 380 KB, `styles.css` 151 KB → 33 KB, typed
+  lint ~2,900 → 1 finding (settings search needs Obsidian 1.13's API).
+  See [ARCHITECTURE.md](ARCHITECTURE.md#history-from-fork-to-port).
+- **MAJOR** because documented behaviour around the edges changed, even though the header
+  itself is the same: the right-click menus on property-link chips and on their icons, and
+  the "icon" entries of the phone "…" menu, are gone (they led into removed make.md
+  features); property rows can no longer be dragged (dropping did nothing); there is no index
+  cache any more, and the 1.0.3 `superstate-cache.json`/`file-cache.json` are deleted on
+  start. Kept on purpose, as make.md does it: the date picker opens on today, "Special →
+  Repeat" has no label, option colours reset on save. Fixed instead of kept: deleting a field
+  in one item of an object list no longer clears the other items.
+- **CSS pruned and de-`!important`-ed.** Rules that can only match make.md DOM Notioneer no
+  longer renders were dropped (1,489 → 273 rules, `!important` 221 → 0, `:has` 14 → 0).
+  Important declarations moved to `:root:root:root:root`-prefixed copies, which match the same
+  elements with higher specificity. make.md's tweaks to Obsidian's own UI are kept.
+- **Dependencies:** 70 packages removed (approved); none bumped. Runtime: `react`,
+  `react-dom`, `react-day-picker`, `react-transition-group`, `vaul`, `fuse.js`, `date-fns`,
+  `classnames`. See [DEPENDENCIES.md](DEPENDENCIES.md).
+- `data.json` keeps working: settings use make.md's key names and defaults, and keys this
+  version no longer reads are preserved on save.
+- Files: all of `src/` (new `src/ui/`, `src/properties/`, `src/settings.ts`,
+  `src/settingsTab.ts`; make.md's `src/adapters`, `src/core`, `src/shared`, `src/schemas`,
+  `src/basics`, `src/utils`, `src/notioneer-header` removed), `src/css/`,
+  `esbuild.config.mjs`, `tsconfig.json`, `scripts/` (`debarrel.mjs` removed),
+  `package.json`, `package-lock.json`, `manifest.json`, `versions.json`, `README.md`,
+  `docs/*.md`.
+
 ## 2026-10-12 (1.0.3)
 
 - **No WASM, no Node `fs`, no network code left in the bundle.** The 1.0.2 scan (3,135

@@ -49,9 +49,9 @@ export class ObsidianFileSystem implements FileSystemAdapter {
             return;
         }
         this.cache.set(path, newCache);
-        this.persister.store(path,JSON.stringify(newCache), 'file');
+        void this.persister.store(path,JSON.stringify(newCache), 'file');
         if (refresh)
-        this.middleware.eventDispatch.dispatchEvent("onCacheUpdated", {path: path});
+        void this.middleware.eventDispatch.dispatchEvent("onCacheUpdated", {path: path});
     }
     public constructor (public plugin: MakeMDPlugin, middleware: FilesystemMiddleware, public vaultDBPath: string) {
         this.middleware = middleware
@@ -67,9 +67,9 @@ export class ObsidianFileSystem implements FileSystemAdapter {
         return loadTags(this.plugin.app, this.plugin.superstate.settings);
     }
     public async addTagToFile (path: string, tag: string) {
-        const file = this.plugin.app.vault.getAbstractFileByPath(path) as TFile;
+        const file = this.plugin.app.vault.getAbstractFileByPath(path);
         if (!file) return;
-        if (file.extension == "md") {
+        if (file instanceof TFile && file.extension == "md") {
             addTagToProperties(this.plugin.superstate.spaceManager, tag, file.path);
             return;
         }
@@ -78,9 +78,9 @@ export class ObsidianFileSystem implements FileSystemAdapter {
         this.updateFileLabel(path, "tags", serializeMultiDisplayString([...vaultItem.tags, tag]))
     }
     public async renameTagForFile (path: string, oldTag: string, newTag: string) {
-        const file = this.plugin.app.vault.getAbstractFileByPath(path) as TFile;
-        if (file.extension == "md") {
-            renameTagInMarkdownFile(this.plugin, oldTag, newTag, file);
+        const file = this.plugin.app.vault.getAbstractFileByPath(path);
+        if (file instanceof TFile && file.extension == "md") {
+            void renameTagInMarkdownFile(this.plugin, oldTag, newTag, file);
             return;
         }
         const vaultItem = this.cache.get(path);
@@ -88,8 +88,8 @@ export class ObsidianFileSystem implements FileSystemAdapter {
         this.updateFileLabel(path, "tags", serializeMultiDisplayString([...vaultItem.tags.filter(t => t.toLowerCase() != oldTag.toLowerCase()), newTag]))
     }
     public async removeTagFromFile (path: string, tag: string) {
-        const file = this.plugin.app.vault.getAbstractFileByPath(path) as TFile;
-        if (file.extension == "md") {
+        const file = this.plugin.app.vault.getAbstractFileByPath(path);
+        if (file instanceof TFile && file.extension == "md") {
             removeTagFromMarkdownFile(this.plugin, tag, file);
             return;
         }
@@ -163,13 +163,13 @@ export class ObsidianFileSystem implements FileSystemAdapter {
         await Promise.all(this.vaultDBCache.map(f => this.middleware.createFileCache(f.path)));
 
         this.plugin.superstate.ui.notify(`Make.md - File Cache Loaded in ${(Date.now()-start)/1000} seconds ${this.cache.size}`, 'console')
-        this.middleware.eventDispatch.dispatchEvent("onFilesystemIndexed", null);
+        void this.middleware.eventDispatch.dispatchEvent("onFilesystemIndexed", null);
         this.plugin.registerEvent(this.plugin.app.vault.on("create", this.onCreate));
         this.plugin.registerEvent(this.plugin.app.vault.on("modify", this.onModify));
         this.plugin.registerEvent(this.plugin.app.vault.on("delete", this.onDelete));
         this.plugin.registerEvent(this.plugin.app.vault.on("rename", this.onRename));
         this.plugin.registerEvent(this.plugin.app.vault.on("raw", this.onRaw));
-        this.plugin.superstate.initialize();
+        void this.plugin.superstate.initialize();
       }
         public onRaw = async (path: string) => {
             
@@ -271,7 +271,7 @@ export class ObsidianFileSystem implements FileSystemAdapter {
         file: afile,
         ctime: afile.ctime,
         metadata: {},
-        label: {sticker: "", thumbnail: "", color: "", name:(file as TFile).basename ?? file.name} as PathLabel,
+        label: {sticker: "", thumbnail: "", color: "", name: file instanceof TFile ? file.basename : file.name} as PathLabel,
         tags: [],
         parent: afile.parent,
         type: afile.isFolder ? "space" : 'file',
@@ -304,7 +304,7 @@ const oldCache = this.cache.get(oldPath);
     this.cache.set(newFile.path, {...this.cache.get(oldPath), 
         file: newFile, 
         ctime:  oldCache.ctime > 0 ? oldCache.ctime : newFile.ctime,
-        label: {...oldCache.label, name: (file as TFile).basename ?? file.name} as PathLabel, 
+        label: {...oldCache.label, name: file instanceof TFile ? file.basename : file.name} as PathLabel, 
         parent: newFile.parent, 
         type: newFile.isFolder ? "space" : 'file',
         subtype: newFile.isFolder ? "folder" : newFile.extension
@@ -366,8 +366,7 @@ const oldCache = this.cache.get(oldPath);
                         newPath = folder + "/" + newName + "." + file.extension;
                     }
                     await this.plugin.app.vault.adapter.copy((file.path), newPath)
-                } catch(e) {
-                }
+                } catch { /* empty */ }
                 newFile = tFileToAFile(this.plugin.app.vault.getAbstractFileByPath(newPath));
             }
             if (!newFile) return;
@@ -389,14 +388,14 @@ const oldCache = this.cache.get(oldPath);
 
     }
 public async writeTextToFile (path: string, content: string) {
-        const newFile = this.plugin.app.vault.getAbstractFileByPath(path) as TFile
-        if (!newFile)
+        const newFile = this.plugin.app.vault.getAbstractFileByPath(path)
+        if (!(newFile instanceof TFile))
         {await this.plugin.app.vault.adapter.write(path, content)} else 
         {await this.plugin.app.vault.modify(newFile, content)}
 }
 public async readTextFromFile (path: string) {
-    const file = this.plugin.app.vault.getAbstractFileByPath(path) as TFile;
-    if (file) {
+    const file = this.plugin.app.vault.getAbstractFileByPath(path);
+    if (file instanceof TFile) {
         return this.plugin.app.vault.read(file)
     } 
     if (await this.fileExists(path))

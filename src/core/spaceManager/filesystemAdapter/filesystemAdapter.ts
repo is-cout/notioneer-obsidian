@@ -162,7 +162,7 @@ export class FilesystemSpaceAdapter implements SpaceAdapter {
         extension: 'mdb'
       };
       await this.fileSystem.saveFileFragment(mdbFile, 'schema', frames.schema.id, () => frames.schema)
-      this.fileSystem.saveFileFragment(mdbFile, 'mdbFrame', frames.schema.id, () => frames)
+      void this.fileSystem.saveFileFragment(mdbFile, 'mdbFrame', frames.schema.id, () => frames)
     }
     public async saveSpaceTemplate (frames: MDBFrames, name: string) {
       let templateName = name;
@@ -177,16 +177,16 @@ export class FilesystemSpaceAdapter implements SpaceAdapter {
       if (!payload.path) return;
       if (payload.path.endsWith('.json')) {
         const spacePathFromDef = payload.path.split('/').slice(0, -2).join('/');
-        this.spaceManager.onPathPropertyChanged(spacePathFromDef)
+        void this.spaceManager.onPathPropertyChanged(spacePathFromDef)
         return;
       }
       const path = this.spaceManager.superstate.pathsIndex.get(payload.path);
       
       if (path?.metadata.spacePath?.length > 0) {
-        this.spaceManager.onPathPropertyChanged(path?.metadata.spacePath)
+        void this.spaceManager.onPathPropertyChanged(path?.metadata.spacePath)
         return;
       }
-      this.spaceManager.onPathPropertyChanged(payload.path)
+      void this.spaceManager.onPathPropertyChanged(payload.path)
     }
     
     public uriByPath (path: string) {
@@ -338,7 +338,7 @@ export class FilesystemSpaceAdapter implements SpaceAdapter {
     const file = await this.fileSystem.getFile(uri.path);
     if (uri.refStr) {
       const fragmentType = this.fileSystem.getFileCacheTypeByRefString(file, uri.refStr);
-      this.fileSystem.getFileContent(file, fragmentType, uri.refStr)
+      void this.fileSystem.getFileContent(file, fragmentType, uri.refStr)
     }
     return this.fileSystem.readTextFromFile(path);
   }
@@ -353,7 +353,7 @@ export class FilesystemSpaceAdapter implements SpaceAdapter {
     const file = await this.fileSystem.getFile(uri.path);
     if (uri.refStr) {
       const fragmentType = this.fileSystem.getFileCacheTypeByRefString(file, uri.refStr);
-      this.fileSystem.saveFileFragment(file, fragmentType, uri.refStr, () => content)
+      void this.fileSystem.saveFileFragment(file, fragmentType, uri.refStr, () => content)
     }
     if (binary) {
       return this.fileSystem.writeBinaryToFile(path, content);
@@ -627,7 +627,7 @@ const defaultSpaceTemplate = this.defaultFrame(path);
     let error;
     try {
       if (command.schema.type == 'script')
-      result = executeCode(command.code, args)
+      result = executeCode()
     if (command.schema.type == 'formula')
     result = runFormulaWithContext(this.spaceManager.superstate.formulaContext,this.spaceManager.superstate.pathsIndex, this.spaceManager.superstate.spacesMap, command.code, command.fields.reduce((p, c) => ({ ...p, [c.name]: c }), {}), args, this.spaceManager.superstate.pathsIndex.get(path))
     } catch (e) {
@@ -742,7 +742,7 @@ const defaultSpaceTemplate = this.defaultFrame(path);
   }
   public async addProperty (path: string, property: SpaceProperty) {
     const file = await this.fileSystem.getFile(path)
-    this.fileSystem.newFileFragment(file, 'property', property.name, property)
+    void this.fileSystem.newFileFragment(file, 'property', property.name, property)
   }
   public async saveProperties (path: string, properties:  {[key:string]: any}) {
     const file = await this.fileSystem.getFile(path)
@@ -752,7 +752,7 @@ const defaultSpaceTemplate = this.defaultFrame(path);
 
   public async readLabel (path: string) {
     
-    const pathCache = this.fileSystem.getFileCache(path)?.label as PathLabel;
+    const pathCache = this.fileSystem.getFileCache(path)?.label;
     if (!pathCache) {
       const file = await this.fileSystem.getFile(path);
       if (file)
@@ -790,13 +790,13 @@ const defaultSpaceTemplate = this.defaultFrame(path);
     }
     
     const file = await this.fileSystem.getFile(path)
-    this.fileSystem.saveFileLabel(file, label, value)
+    void this.fileSystem.saveFileLabel(file, label, value)
   }
 
   public async renameProperty (path: string, property: string, newProperty: string) {
 
       const file = await this.fileSystem.getFile(path)
-      this.fileSystem.saveFileFragment(file, 'property', null, (prev: {[key: string]: any}) => {
+      void this.fileSystem.saveFileFragment(file, 'property', null, (prev: {[key: string]: any}) => {
        const { [property]: value, ...properties} =  prev;
        if (!value) return prev;
        return {...properties, [newProperty]: value}
@@ -814,9 +814,9 @@ const defaultSpaceTemplate = this.defaultFrame(path);
     onCreate = async (payload: {file: AFile}) => {
       
       if (payload.file.isFolder){
-        this.spaceManager.onSpaceCreated(payload.file.path)
+        void this.spaceManager.onSpaceCreated(payload.file.path)
       } else {
-        this.spaceManager.onPathCreated(payload.file.path)
+        void this.spaceManager.onPathCreated(payload.file.path)
       }
       };
     
@@ -824,9 +824,9 @@ const defaultSpaceTemplate = this.defaultFrame(path);
 
         if (!payload.file) return;
         if (!payload.file.isFolder && payload.file.extension != "mdb") {
-          this.spaceManager.onPathDeleted(payload.file.path)
+          void this.spaceManager.onPathDeleted(payload.file.path)
         } else if (payload.file.isFolder) {
-          this.spaceManager.onSpaceDeleted(payload.file.path)
+          void this.spaceManager.onSpaceDeleted(payload.file.path)
         }
       };
       
@@ -834,10 +834,10 @@ const defaultSpaceTemplate = this.defaultFrame(path);
 
         if (!payload.file) return;
         if (!payload.file.isFolder && payload.file.extension != "mdb") {
-          this.spaceManager.onPathChanged(payload.file.path, payload.oldPath)
+          void this.spaceManager.onPathChanged(payload.file.path, payload.oldPath)
         } else if (payload.file.isFolder) 
         {
-          this.spaceManager.onSpaceRenamed(payload.file.path, payload.oldPath)
+          void this.spaceManager.onSpaceRenamed(payload.file.path, payload.oldPath)
         }
         }
 
@@ -955,7 +955,7 @@ const defaultSpaceTemplate = this.defaultFrame(path);
       return this.fileSystem.renameFile(spaceInfo.folderPath, newSpaceInfo.folderPath).then(f => 
       {
         if (this.spaceManager.superstate.settings.enableFolderNote)
-          this.fileSystem.renameFile(movePath(spaceInfo.notePath, newSpaceInfo.path), newSpaceInfo.notePath)
+          void this.fileSystem.renameFile(movePath(spaceInfo.notePath, newSpaceInfo.path), newSpaceInfo.notePath)
         return f
       });
     }
@@ -963,7 +963,7 @@ const defaultSpaceTemplate = this.defaultFrame(path);
 
       const spaceCache = this.spaceInfoForPath(path)
         const spaceInfo = fileSystemSpaceInfoFromTag(this.spaceManager, spaceCache.name);
-        this.fileSystem.deleteFile(spaceInfo.folderPath);
+        void this.fileSystem.deleteFile(spaceInfo.folderPath);
     }
 
     public childrenForSpace (path: string) {
@@ -975,7 +975,7 @@ const defaultSpaceTemplate = this.defaultFrame(path);
       
       if (fileCache.subtype == 'md' || fileCache.subtype == 'folder') {
         
-        this.fileSystem.addTagToFile(path, tag);
+        void this.fileSystem.addTagToFile(path, tag);
         return;
       }
       const tagPath = tagSpacePathFromTag(tag);
@@ -989,16 +989,16 @@ const defaultSpaceTemplate = this.defaultFrame(path);
       const newMetadata = {...metadata, links: spaceExists}
       await this.saveSpace(tagPath, (oldMetadata) => ({...oldMetadata, ...newMetadata}));
       await this.spaceManager.superstate.updateSpaceMetadata(tagPath, newMetadata)
-      this.spaceManager.superstate.reloadPath(path, true).then(f => this.spaceManager.superstate.dispatchEvent("pathStateUpdated", {path: path}))
+      void this.spaceManager.superstate.reloadPath(path, true).then(f => this.spaceManager.superstate.dispatchEvent("pathStateUpdated", {path: path}))
       
     }
 
     public renameTag (path: string, tag: string, newTag: string) {
-      this.fileSystem.renameTagForFile(path, tag, newTag)
+      void this.fileSystem.renameTagForFile(path, tag, newTag)
     }
 
     public deleteTag (path: string, tag: string) {
-      this.fileSystem.removeTagFromFile(path, tag)
+      void this.fileSystem.removeTagFromFile(path, tag)
       
     }
 

@@ -5,7 +5,7 @@ export const safelyParseJSON = (json: string) => {
   let parsed;
   try {
     parsed = JSON.parse(json);
-  } catch (e) {
+  } catch {
     //
     // Oh well, but whatever...
   }

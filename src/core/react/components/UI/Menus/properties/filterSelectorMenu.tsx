@@ -1,7 +1,6 @@
 import { FilterEditor, FilterEditorProps } from "core/react/components/SpaceEditor/Actions/FilterEditor";
 import { SelectSection } from "shared/types/menu";
 import { ISuperstate as Superstate } from "shared/types/superstate";
-import { UIAdapter } from "shared/types/uiManager";
 import { UIManager } from "core/middleware/ui";
 import React from "react";
 import { SpaceProperty } from "shared/types/mdb";

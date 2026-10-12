@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useRef } from "react";
-import { safelyParseJSON } from "shared/utils/json";
 import { CellEditMode } from "shared/types/cellEditMode";
 import { TableCellProp } from "shared/types/cellEditMode";
 import { parseFieldValue } from "core/schemas/parseFieldValue";
@@ -91,7 +90,7 @@ export const NumberCell = (props: TableCellProp) => {
       className="mk-cell-text"
       type="number"
       ref={ref}
-      value={(value as string) ?? ""}
+      value={(value) ?? ""}
       onChange={(e) => setValue(e.target.value)}
       onKeyDown={onKeyDown}
       onBlur={onBlur}

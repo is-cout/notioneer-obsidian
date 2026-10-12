@@ -1,16 +1,5 @@
 import React, { useState } from "react";
-import {
-  DndContext,
-  KeyboardSensor,
-  MouseSensor,
-  TouchSensor,
-  closestCenter,
-  useSensor,
-  useSensors,
-  DragEndEvent,
-  MeasuringStrategy,
-  PointerSensor,
-} from "@dnd-kit/core";
+import { DndContext, KeyboardSensor, closestCenter, useSensor, useSensors, DragEndEvent, MeasuringStrategy, PointerSensor } from "@dnd-kit/core";
 import {
   SortableContext,
   arrayMove,
@@ -22,8 +11,8 @@ import { CSS } from "@dnd-kit/utilities";
 import { SelectOption } from "shared/types/menu";
 import { ISuperstate as Superstate } from "shared/types/superstate";
 import i18n from "shared/i18n";
-import { getColors, getColorPalettes, getColorPaletteById, getThemeColors } from "core/utils/colorPalette";
-import { defaultMenu, menuInput, menuSeparator } from "core/react/components/UI/Menus/menu/SelectionMenu";
+import { getColorPalettes, getColorPaletteById, getThemeColors } from "core/utils/colorPalette";
+import { defaultMenu } from "core/react/components/UI/Menus/menu/SelectionMenu";
 import { showColorPickerMenu } from "core/react/components/UI/Menus/properties/colorPickerMenu";
 import { uniq } from "shared/utils/array";
 import { parseMultiString } from "utils/parsers";

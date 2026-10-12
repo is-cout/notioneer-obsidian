@@ -27,7 +27,7 @@ export const newSpaceModal = (superstate: Superstate) => {
       saveLabel={i18n.buttons.createFolder}
       value={""}
       saveValue={(v) => {
-        defaultSpace(
+        void defaultSpace(
           superstate,
           superstate.pathsIndex.get(superstate.ui.activePath)
         ).then((space) => {
@@ -55,7 +55,7 @@ export const newSpaceModal = (superstate: Superstate) => {
             superstate.ui.notify(i18n.notice.duplicateSpaceName);
             return;
           }
-          createSpace(superstate, newPath, {});
+          void createSpace(superstate, newPath, {});
         });
       }}
     ></InputModal>,
@@ -89,10 +89,10 @@ export const defaultAddAction = async (
     );
   }
   if (space?.metadata.template?.length > 0) {
-    newTemplateInSpace(superstate, space, space.metadata.template, location);
+    void newTemplateInSpace(superstate, space, space.metadata.template, location);
     return;
   } else {
-    newPathInSpace(superstate, space, "md", null, false, null, location);
+    void newPathInSpace(superstate, space, "md", null, false, null, location);
   }
 };
 
@@ -126,7 +126,7 @@ export const showSpaceAddMenu = (
       name: i18n.labels.createNote,
       icon: "ui//edit",
       onClick: (e) => {
-        newPathInSpace(
+        void newPathInSpace(
           superstate,
           space,
           "md",
@@ -139,7 +139,7 @@ export const showSpaceAddMenu = (
       name: i18n.buttons.createCanvas,
       icon: "ui//layout-dashboard",
       onClick: (e) => {
-        newPathInSpace(superstate, space, "canvas", null, dontOpen);
+        void newPathInSpace(superstate, space, "canvas", null, dontOpen);
       },
     });
     menuOptions.push({
@@ -176,7 +176,7 @@ export const showSpaceAddMenu = (
                 superstate.ui.notify(i18n.notice.duplicateSpaceName);
                 return;
               }
-              createSpace(superstate, newPath, {});
+              void createSpace(superstate, newPath, {});
             }}
           ></InputModal>,
           windowFromDocument(e.view.document)
@@ -197,7 +197,7 @@ export const showSpaceAddMenu = (
             superstate,
             (link) => {
               if (isString(link)) {
-                pinPathToSpaceAtIndex(superstate, space, link);
+                void pinPathToSpaceAtIndex(superstate, space, link);
               }
             }
           );
@@ -212,7 +212,7 @@ export const showSpaceAddMenu = (
           name: template,
           icon: "ui//clipboard-pen",
           onClick: (e) => {
-            newTemplateInSpace(superstate, space, template);
+            void newTemplateInSpace(superstate, space, template);
           },
         });
       }

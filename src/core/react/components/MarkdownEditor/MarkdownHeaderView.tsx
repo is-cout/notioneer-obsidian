@@ -95,7 +95,7 @@ export const NoteActionBar = (props: { superstate: Superstate }) => {
   const { newProperty: newPropertyInFrame } = useContext(FramesMDBContext);
   const saveField = (source: string, field: SpaceProperty) => {
     if (source == "$fm") {
-      saveProperties(props.superstate, pathState.path, {
+      void saveProperties(props.superstate, pathState.path, {
         [field.name]: defaultValueForType(field.type),
       });
       if (newPropertyInFrame) {
@@ -104,7 +104,7 @@ export const NoteActionBar = (props: { superstate: Superstate }) => {
 
       return true;
     }
-    props.superstate.spaceManager.addSpaceProperty(source, field);
+    void props.superstate.spaceManager.addSpaceProperty(source, field);
     return true;
   };
   const showContextMenu = (e: React.MouseEvent) => {
@@ -150,7 +150,7 @@ export const NoteActionBar = (props: { superstate: Superstate }) => {
           if (link.charAt(0) == "#") {
             addTagToPath(props.superstate, pathState.path, link);
           } else {
-            createSpace(props.superstate, link, { links: [pathState.path] });
+            void createSpace(props.superstate, link, { links: [pathState.path] });
           }
         } else {
           addToSpace(link);

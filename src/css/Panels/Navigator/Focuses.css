@@ -89,7 +89,6 @@ padding-top: 12px;
   background: var(--nav-item-background-hover);
 }
 .mk-focuses-item {
-  color: var(--mk-ui-text-secondary);
   height: 30px;
   min-width: 30px;
   padding: 6px;

@@ -216,7 +216,7 @@ export const preventModifyTargetRanges = EditorState.transactionFilter.of(
           }
         }
       }
-    } catch (e) {
+    } catch {
       return [];
     }
     return [tr, ...newTrans];

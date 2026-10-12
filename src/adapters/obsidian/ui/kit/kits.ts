@@ -123,7 +123,7 @@ export const installSpaceKit = async (plugin: MakeMDPlugin, superstate: Supersta
     }
     if (kit.frames && Object.keys(kit.frames).length > 0) {
         const framePath = (newSpace.space as FilesystemSpaceInfo).framePath;
-        plugin.mdbFileAdapter.newContent({
+        void plugin.mdbFileAdapter.newContent({
             path: framePath,
             isFolder: false,
             name: 'frames',
@@ -134,7 +134,7 @@ export const installSpaceKit = async (plugin: MakeMDPlugin, superstate: Supersta
     if (kit.context)
         {
             const dbPath = (newSpace.space as FilesystemSpaceInfo).dbPath;
-        plugin.mdbFileAdapter.newContent({
+        void plugin.mdbFileAdapter.newContent({
             path: dbPath,
             isFolder: false,
             name: 'context',
@@ -153,7 +153,7 @@ export const installSpaceKit = async (plugin: MakeMDPlugin, superstate: Supersta
         if (isTemplate) {
             await plugin.files.writeTextToFile(newSpace.path+'/'+note.name, note.content);
         } else {
-            newPathInSpace(superstate, newSpace, "md", note.name, true, note.content);
+            void newPathInSpace(superstate, newSpace, "md", note.name, true, note.content);
         }
     }
     for (const child of kit.children) {

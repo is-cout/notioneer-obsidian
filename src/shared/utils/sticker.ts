@@ -8,7 +8,7 @@ export const savePathSticker = async (
   superstate.spaceManager.saveLabel(path, superstate.settings.fmKeySticker, sticker);
 };export const removeIconsForPaths = (superstate: Superstate, paths: string[]) => {
   paths.forEach((path) => {
-    savePathSticker(superstate, path, "");
+    void savePathSticker(superstate, path, "");
   });
 };
 

@@ -10,7 +10,7 @@ export const saveIconsForPaths = (
   icon: string
 ) => {
   paths.forEach((path) => {
-      savePathSticker(superstate, path, icon);
+      void savePathSticker(superstate, path, icon);
   });
 };
 
@@ -21,7 +21,7 @@ export const saveColorForPaths = (
 ) => {
   paths.forEach((path) => {
 
-      savePathColor(superstate, path, icon);
+      void savePathColor(superstate, path, icon);
 
   });
 };
@@ -32,9 +32,9 @@ export const savePathIcon = (
   path: string,
   icon: string
 ) => {
-  savePathSticker(superstate, path, icon);
+  void savePathSticker(superstate, path, icon);
 };
 
 export const removePathIcon = (superstate: Superstate, path: string) => {
-  savePathSticker(superstate, path, "");
+  void savePathSticker(superstate, path, "");
 };

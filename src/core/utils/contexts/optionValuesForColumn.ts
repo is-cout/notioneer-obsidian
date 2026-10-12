@@ -57,12 +57,12 @@ export const renameTagSpacePath = async (
   const spacePath = folderForTagSpace(tag, superstate.settings);
 
     if (await superstate.spaceManager.pathExists(spacePath)) {
-      superstate.spaceManager.renamePath(spacePath, pathToParentPath(spacePath) + '/' + newTag)
+      void superstate.spaceManager.renamePath(spacePath, pathToParentPath(spacePath) + '/' + newTag)
 
     } else {
-      deletePath(superstate, spacePath)
+      void deletePath(superstate, spacePath)
       
     }
-  superstate.onTagRenamed(tag, newTag)
+  void superstate.onTagRenamed(tag, newTag)
 
 };

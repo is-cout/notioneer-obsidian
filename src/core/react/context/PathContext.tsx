@@ -46,11 +46,11 @@ export const PathProvider: React.FC<
   const addToSpace = async (spacePath: string) => {
     const spaceCache = props.superstate.spacesIndex.get(spacePath);
     if (spaceCache) {
-      addPathToSpaceAtIndex(props.superstate, spaceCache, pathState.path, -1);
+      void addPathToSpaceAtIndex(props.superstate, spaceCache, pathState.path, -1);
     }
   };
   const removeFromSpace = (spacePath: string) => {
-    removePathsFromSpace(props.superstate, spacePath, [pathState.path]);
+    void removePathsFromSpace(props.superstate, spacePath, [pathState.path]);
   };
 
   const readMode = pathState?.readOnly || props.readMode;
@@ -71,7 +71,7 @@ export const PathProvider: React.FC<
           // Fallback to superstate if spaceManager doesn't have the path
           setPathState(props.superstate.pathsIndex.get(props.path));
         }
-      } catch (error) {
+      } catch {
         // Fallback to superstate on error
         setPathState(props.superstate.pathsIndex.get(props.path));
       }
@@ -90,7 +90,7 @@ export const PathProvider: React.FC<
             // Fallback to superstate if spaceManager doesn't have the path
             setPathState(props.superstate.pathsIndex.get(payload.newPath));
           }
-        } catch (error) {
+        } catch {
           // Fallback to superstate on error
           setPathState(props.superstate.pathsIndex.get(payload.newPath));
         }

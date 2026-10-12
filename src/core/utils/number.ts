@@ -11,7 +11,7 @@ import { format as formatNumber } from "numfmt";
 export const safeFormatNumber = (format: string, value: number): string => {
   try {
     return formatNumber(format, value);
-  } catch (error) {
+  } catch {
     return value.toString();
   }
 };

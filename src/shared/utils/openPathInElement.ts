@@ -15,7 +15,7 @@ export const openPathInElement = (
   if (!initiatingEl) initiatingEl = parent.containerEl;
   const hoverPopover = new FlowEditor(
     parent,
-    initiatingEl!,
+    initiatingEl,
     app,
     undefined,
     onShowCallback

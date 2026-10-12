@@ -35,7 +35,7 @@ export const ContextTitle = (props: { superstate: Superstate }) => {
     const newValue = e.target.innerText;
 
     if (newValue != name) {
-      props.superstate.spaceManager.saveTableSchema(
+      void props.superstate.spaceManager.saveTableSchema(
         source,
         dbSchema.id,
         () => ({

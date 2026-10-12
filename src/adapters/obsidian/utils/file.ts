@@ -107,7 +107,7 @@ const newName = folderPathToString(newPath);
   if (newPath.startsWith(plugin.superstate.settings.spacesFolder)) {
     const spaceNote = getAbstractFileAtPath(plugin.app, `${newPath}/${oldName}.md`)
     if (spaceNote)
-    renameFile(plugin, spaceNote, newName)
+    void renameFile(plugin, spaceNote, newName)
   } else if (plugin.superstate.settings.enableFolderNote) {
     const oldSpaceInfo = plugin.superstate.spaceManager.spaceInfoForPath(oldPath);
     const newSpaceInfo = plugin.superstate.spaceManager.spaceInfoForPath(newPath);
@@ -131,7 +131,7 @@ export function getAllAbstractFilesInVault(
   function recursiveFx(folder: TFolder) {
     for (const child of folder.children) {
       if (child instanceof TFolder) {
-        const childFolder: TFolder = child as TFolder;
+        const childFolder: TFolder = child;
         if (childFolder.children) recursiveFx(childFolder);
       }
       files.push(child);
@@ -162,7 +162,7 @@ export const getFolderPathFromString =  (plugin: MakeMDPlugin, file: string) =>
 
 export const deleteFiles = (plugin: MakeMDPlugin, files: string[]) => {
   files.forEach((f) => {
-      plugin.files.deleteFile(f);
+      void plugin.files.deleteFile(f);
   });
 };
 
@@ -195,7 +195,7 @@ export const openSpace = async (
     type: viewType,
     state: { path: spacePath },
   });
-  await plugin.app.workspace.requestSaveLayout();
+  plugin.app.workspace.requestSaveLayout();
   if (isTouchScreen(plugin.superstate.ui)) {
     plugin.app.workspace.leftSplit.collapse();
   }
@@ -232,7 +232,7 @@ export const openURL = async (url: string,app: App,  location?: TargetLocation) 
       type: viewType,
       state: { path: url },
     });
-    await app.workspace.requestSaveLayout();
+    app.workspace.requestSaveLayout();
   } else if (url.endsWith(".mdb")) {
     const viewType = SPACE_VIEW_TYPE;
     app.workspace.setActiveLeaf(leaf, { focus: true });
@@ -240,7 +240,7 @@ export const openURL = async (url: string,app: App,  location?: TargetLocation) 
       type: viewType,
       state: { path: url },
     });
-    await app.workspace.requestSaveLayout();
+    app.workspace.requestSaveLayout();
   } else {
     app.workspace.setActiveLeaf(leaf, { focus: true });
     await leaf.setViewState({
@@ -261,7 +261,7 @@ export function getAllFoldersInVault(app: App): TFolder[] {
   function recursiveFx(folder: TFolder) {
     for (const child of folder.children) {
       if (child instanceof TFolder) {
-        const childFolder: TFolder = child as TFolder;
+        const childFolder: TFolder = child;
         folders.push(childFolder);
         if (childFolder.children) recursiveFx(childFolder);
       }
@@ -299,10 +299,10 @@ export const openTFolder = async (
     }
     const space = plugin.superstate.spacesIndex.get(file.path)?.space.notePath;
     if (!space) return;
-    const spaceFile = getAbstractFileAtPath(plugin.app, space) as TFile;
-    if (!spaceFile) return;
+    const spaceFile = getAbstractFileAtPath(plugin.app, space);
+    if (!(spaceFile instanceof TFile)) return;
     plugin.app.workspace.setActiveLeaf(leaf, { focus: true });
-    leaf.openFile(spaceFile);
+    void leaf.openFile(spaceFile);
     return;
   }
   
@@ -317,7 +317,7 @@ export const openTFolder = async (
       type: SPACE_VIEW_TYPE,
       state: { path: file.path },
     });
-    await plugin.app.workspace.requestSaveLayout();
+    plugin.app.workspace.requestSaveLayout();
     if (Platform.isMobile) {
       plugin.app.workspace.leftSplit.collapse();
     }
@@ -340,7 +340,7 @@ export const openTagContext = async (
   const viewType = SPACE_VIEW_TYPE;
   app.workspace.setActiveLeaf(leaf, { focus: true });
   await leaf.setViewState({ type: viewType, state: { path:tag} });
-  await app.workspace.requestSaveLayout();
+  app.workspace.requestSaveLayout();
   if (Platform.isMobile) {
     app.workspace.leftSplit.collapse();
   }
@@ -354,7 +354,7 @@ export const openArbitraryView = async (
   const leaf = getLeaf(app, newLeaf)
   app.workspace.setActiveLeaf(leaf, { focus: true });
   await leaf.setViewState({ type: view});
-  await app.workspace.requestSaveLayout();
+  app.workspace.requestSaveLayout();
   
 };
 

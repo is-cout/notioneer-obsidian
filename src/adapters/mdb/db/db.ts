@@ -12,10 +12,7 @@ import { serializeSQLFieldNames, serializeSQLStatements, serializeSQLValues } fr
 JSZip.support.nodebuffer = false;
 
 export const getDBFile = async (plugin: MDBFileTypeAdapter,
-  path: string, isRemote: boolean) => {
-  if (isRemote) {
-    return fetch(path).then((res) => res.arrayBuffer());
-  }
+  path: string) => {
   if (!(await plugin.middleware.fileExists(path))) {
     return null;
   }
@@ -29,11 +26,10 @@ export const getDB = async (
   plugin: MDBFileTypeAdapter,
   sqlJS: SqlJsStatic,
   path: string,
-  isRemote?: boolean,
 ) => {
-  const buf = await getDBFile(plugin, path, isRemote);
+  const buf = await getDBFile(plugin, path);
   if (buf) {
-    const db = await new sqlJS.Database(new Uint8Array(buf));
+    const db = new sqlJS.Database(new Uint8Array(buf));
     try {
       db.exec(
         "SELECT name FROM sqlite_schema"
@@ -50,11 +46,10 @@ export const getZippedDB =  async (
   plugin: MDBFileTypeAdapter,
   sqlJS: SqlJsStatic,
   path: string,
-  isRemote?: boolean,
 ) => {
-  const buf = await getZippedDBFile(plugin, path, isRemote);
+  const buf = await getZippedDBFile(plugin, path);
   if (buf) {
-    const db = await new sqlJS.Database(new Uint8Array(buf));
+    const db = new sqlJS.Database(new Uint8Array(buf));
     try {
       db.exec(
         "SELECT name FROM sqlite_schema"
@@ -68,10 +63,7 @@ export const getZippedDB =  async (
 };
 
 export const getZippedDBFile = async (plugin: MDBFileTypeAdapter,
-  path: string, isRemote: boolean) => {
-  if (isRemote) {
-    return fetch(path).then((res) => res.arrayBuffer());
-  }
+  path: string) => {
   if (!(await plugin.middleware.fileExists(path))) {
     return null;
   }
@@ -83,8 +75,7 @@ export const getZippedDBFile = async (plugin: MDBFileTypeAdapter,
   let buffer;
   try {
     buffer = await zip.loadAsync(file).then(f => zip.file("data.mdb").async("arraybuffer"))
-  } catch (e) {
-  }
+  } catch { /* empty */ }
   return buffer;
 };
 
@@ -180,7 +171,7 @@ export const selectDB = (
   let tables;
   try {
     tables = dbResultsToDBTables(db.exec(sqlstr)); // Run the query without returning anything
-  } catch (e) {
+  } catch {
     return null;
   }
   if (tables.length == 1) return tables[0];
@@ -207,8 +198,7 @@ export const insertIntoDB = (
     );
   try {
     db.exec(`${sqlstr}`);
-  } catch (e) {
-  }
+  } catch { /* empty */ }
 };
 
 
@@ -233,8 +223,7 @@ export const updateDB = (
     );
   try {
     db.exec(sqlstr);
-  } catch (e) {
-  }
+  } catch { /* empty */ }
 };
 
 export const execQuery = (db: Database, sqlstr: string) => {
@@ -242,8 +231,7 @@ export const execQuery = (db: Database, sqlstr: string) => {
   // Run the query without returning anything
   try {
     db.exec(sqlstr);
-  } catch (e) {
-  }
+  } catch { /* empty */ }
 };
 
 
@@ -256,8 +244,7 @@ export const deleteFromDB = (
   // Run the query without returning anything
   try {
     db.exec(sqlstr);
-  } catch (e) {
-  }
+  } catch { /* empty */ }
 };
 
 export const dropTable = (db: Database, table: string) => {
@@ -265,8 +252,7 @@ export const dropTable = (db: Database, table: string) => {
   // Run the query without returning anything
   try {
     db.exec(sqlstr);
-  } catch (e) {
-  }
+  } catch { /* empty */ }
 };
 
 
@@ -310,7 +296,7 @@ export const replaceDB = (db: Database, tables: DBTables) => {
     for (const s of sqlStatements) {
       db.exec(s)
     }
-  } catch (e) {
+  } catch {
     return false
   }
   return true;
@@ -357,20 +343,17 @@ export const saveDBToPath = async (
     let mdbStruct : DBRows = []
     try {
       mdbStruct = dbResultsToDBTables(db.exec(`SELECT name FROM sqlite_master WHERE type='table' AND name='m_schema' OR name='m_fields';`))[0]?.rows ?? []
-    } catch (e) {
-    }
+    } catch { /* empty */ }
     if (!mdbStruct.some(f => f.name == "m_schema")) {
       const createSchemaTable = `CREATE TABLE m_schema ("id" char, "name" char, "type" char, "def" char, "predicate" char, "primary" char)`
       try {
       db.exec(createSchemaTable);
-      } catch(e) {
-      }
+      } catch { /* empty */ }
     }
     if (!mdbStruct.some(f => f.name == "m_fields")) {
       const createFieldsTable = `CREATE TABLE m_fields ("name" char, "schemaId" char, "type" char, "value" char, "hidden" char, "attrs" char, "unique" char, "primary" char)`
       try {db.exec(createFieldsTable);
-      } catch(e) { 
-      }
+      } catch { /* empty */ }
     }
 
   }

@@ -6,7 +6,7 @@ import { defaultFrameSchema } from "schemas/frames";
 import { fieldSchema } from "shared/schemas/fields";
 import { FrameExecutable, LinkedContext, LinkedNode } from "shared/types/frameExec";
 import { DBTables, SpaceTable } from "shared/types/mdb";
-import { FrameRoot, FrameTreeProp, MDBFrames, MFrame } from "shared/types/mframe";
+import { FrameRoot, FrameTreeProp, MDBFrames } from "shared/types/mframe";
 import { SpaceInfo } from "shared/types/spaceInfo";
 import { deepOmit } from "../objects";
 import { flattenToFrameNodes } from "./ast";
@@ -91,8 +91,7 @@ export const parseContextNode = (pathString: string) : LinkedContext => {
           }
       }
   });
-} catch  (e){
-  }
+} catch { /* empty */ }
   if (path.length < 3) return null;
   return {
     context: path[1],
@@ -136,8 +135,7 @@ export const parseLinkedNode = (pathString: string) : LinkedNode => {
           }
       }
   });
-} catch  (e){
-  }
+} catch { /* empty */ }
   if (path.length < 3) return null;
   return {
     node: path[0],
@@ -156,7 +154,7 @@ const treeNodes = flattenToFrameNodes(frameRoot, tableData.schema.id);
     cols: tableData.cols ?? [],
     rows: [
       ...treeNodes,
-    ].map((f) => nodeToFrame(relinkProps('$root', tableData.schema.id, f, tableData.schema.id))) as MFrame[],
+    ].map((f) => nodeToFrame(relinkProps('$root', tableData.schema.id, f, tableData.schema.id))),
   };
 
   await superstate.spaceManager.saveFrame(space.path, newTable)

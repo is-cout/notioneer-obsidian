@@ -58,7 +58,7 @@ export const DataTypeView: React.FC<DataTypeViewProps> = (
     }
   };
   const viewProps = {
-    initialValue: initialValue as string,
+    initialValue: initialValue,
     saveValue: saveValue,
     editMode: props.editMode,
     setEditMode: props.setEditMode ?? (() => {}),

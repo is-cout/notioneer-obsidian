@@ -1,13 +1,13 @@
-import builtins from 'builtin-modules';
-import * as dotenv from 'dotenv';
 import esbuild from "esbuild";
 import { copy } from 'esbuild-plugin-copy';
 import watPlugin from 'esbuild-plugin-wat';
 import fs from 'fs';
+import { builtinModules } from 'module';
 import path from 'path';
 import process from "process";
 
-dotenv.config()
+// prevDir / demoDir for the preview and demo builds. Optional; CI has no .env.
+if (fs.existsSync('.env')) process.loadEnvFile('.env');
 
 const banner =
 `/*
@@ -21,8 +21,6 @@ const prod = (process.argv[2] === 'production');
 const prev = (process.argv[2] === 'preview');
 const buildv = prod || prev
 
-
-import findCacheDir from 'find-cache-dir';
 
 function inlineWorkerPlugin(extraConfig) {
   return {
@@ -78,10 +76,8 @@ export default function inlineWorker(scriptText, name) {
 
 
 
-let cacheDir = findCacheDir({
-  name: 'esbuild-plugin-inline-worker',
-  create: true,
-});
+const cacheDir = path.resolve('node_modules/.cache/esbuild-plugin-inline-worker');
+fs.mkdirSync(cacheDir, { recursive: true });
 
 async function buildWorker(workerPath, extraConfig) {
   let scriptNameParts = path.basename(workerPath).split('.');
@@ -124,17 +120,29 @@ async function buildWorker(workerPath, extraConfig) {
 // but its `createElement("script")` calls still trip the Obsidian community
 // plugin scanner. Renaming the probed element keeps the sniff false and leaves
 // no script element construction in the bundle.
+//
+// The same `setImmediate` polyfill compiles a non-function argument with
+// `new Function`. jszip only ever passes functions, so that branch is dead too;
+// it now throws instead, which keeps dynamic code execution out of the bundle.
 const jszipScriptPolyfillPlugin = {
 	name: 'strip-jszip-script-polyfill',
 	setup(build) {
 		build.onLoad({ filter: /jszip[\\/]dist[\\/]jszip(\.min)?\.js$/ }, async (args) => {
 			const source = await fs.promises.readFile(args.path, 'utf8');
-			const contents = source.replace(/createElement\("script"\)/g, 'createElement("span")');
-			if (contents === source) {
-				throw new Error(
-					`strip-jszip-script-polyfill: no createElement("script") found in ${args.path}. ` +
-					`jszip probably changed — re-check the polyfill before shipping.`
-				);
+			const patches = [
+				[/createElement\("script"\)/g, 'createElement("span")'],
+				[/\(e=new Function\(""\+e\)\)/g, '(()=>{throw new TypeError("setImmediate expects a function")})()'],
+			];
+			let contents = source;
+			for (const [pattern, replacement] of patches) {
+				const next = contents.replace(pattern, replacement);
+				if (next === contents) {
+					throw new Error(
+						`strip-jszip-script-polyfill: ${pattern} not found in ${args.path}. ` +
+						`jszip probably changed — re-check the polyfill before shipping.`
+					);
+				}
+				contents = next;
 			}
 			return { contents, loader: 'js' };
 		});
@@ -175,7 +183,7 @@ esbuild.build({
 		'@codemirror/search',
 		'@codemirror/state',
 		'@codemirror/view',
-		...builtins],
+		...builtinModules],
 	format: 'cjs',
   loader: {
     '.ttf': 'base64', 

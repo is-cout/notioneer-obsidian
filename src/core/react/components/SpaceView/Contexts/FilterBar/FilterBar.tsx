@@ -452,7 +452,7 @@ export const FilterBar = (props: {
         },
         type: "view",
       };
-      saveSchema(newSchema).then((f) => setFrameSchema(newSchema));
+      void saveSchema(newSchema).then((f) => setFrameSchema(newSchema));
     });
   };
 
@@ -472,7 +472,7 @@ export const FilterBar = (props: {
           },
           type: "view",
         };
-        saveSchema(newSchema).then((f) => setFrameSchema(newSchema));
+        void saveSchema(newSchema).then((f) => setFrameSchema(newSchema));
       },
     }));
     return props.superstate.ui.openMenu(
@@ -487,13 +487,13 @@ export const FilterBar = (props: {
   const [listItemOptions, setListItemOptions] = useState<SpaceProperty[]>([]);
 
   useEffect(() => {
-    propertiesForPredicate(predicate, "listView").then((f) =>
+    void propertiesForPredicate(predicate, "listView").then((f) =>
       setListViewOptions(f)
     );
-    propertiesForPredicate(predicate, "listGroup").then((f) =>
+    void propertiesForPredicate(predicate, "listGroup").then((f) =>
       setListGroupOptions(f)
     );
-    propertiesForPredicate(predicate, "listItem").then((f) =>
+    void propertiesForPredicate(predicate, "listItem").then((f) =>
       setListItemOptions(f)
     );
   }, [predicate]);
@@ -743,7 +743,7 @@ export const FilterBar = (props: {
 
   useEffect(() => {
     if (optionsMenuRef.current) {
-      showViewOptionsMenu(null, true);
+      void showViewOptionsMenu(null, true);
     }
   }, [predicate]);
 

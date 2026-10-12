@@ -20,13 +20,13 @@ const tagKeys = ["tags"];
 
 
 export const loadTags = (app: App, settings: MakeMDSettings) : string[] => {
+  const spacesFolder = getAbstractFileAtPath(app, settings.spacesFolder);
   const folder =
     settings.spacesFolder == ""
       ? app.vault.getRoot()
-      : (getAbstractFileAtPath(
-          app,
-          settings.spacesFolder
-        ) as TFolder);
+      : spacesFolder instanceof TFolder
+        ? spacesFolder
+        : null;
   return uniq([
     ...Object.keys(app.metadataCache.getTags()).map(f => f.toLowerCase()),
     ...(folder?.children
@@ -71,7 +71,7 @@ export const getAllFilesForTag = (plugin: MakeMDPlugin, tag: string) => {
 
 export const addTagToProperties = (manager: SpaceManager, tag: string, path: string) => {
   const newTag = validateName(tag);
-  editTagInProperties(manager, "", newTag, path);
+  void editTagInProperties(manager, "", newTag, path);
 };
 
 const positionsForTag = (plugin: MakeMDPlugin, tag: string, file: TFile) => {
@@ -97,8 +97,8 @@ const positionsForTag = (plugin: MakeMDPlugin, tag: string, file: TFile) => {
 export const removeTagFromMarkdownFile = (plugin: MakeMDPlugin, tag: string, file: TFile) => {
 
   const pos = positionsForTag(plugin, tag, file);
-  removeTagInProperties(plugin.superstate.spaceManager, tag, file.path);
-  editTagInFileBody(plugin, tag, "", pos, file);
+  void removeTagInProperties(plugin.superstate.spaceManager, tag, file.path);
+  void editTagInFileBody(plugin, tag, "", pos, file);
 };
 
 export const renameTagInMarkdownFile = async (plugin: MakeMDPlugin, tag: string, newTag: string, tFile: TFile) => {
@@ -137,7 +137,7 @@ const removeTagInProperties = async (manager: SpaceManager, oldTag: string, path
     return false;
   });
   editKeys.forEach((tag) => {
-    manager.saveProperties(path, { [tag]: processKey(fm[tag]) });
+    void manager.saveProperties(path, { [tag]: processKey(fm[tag]) });
     
   });
   
@@ -195,18 +195,18 @@ const editTagInProperties = async (
       });
       if (editKeys.length > 0) {
         editKeys.forEach((key) => {
-          manager.saveProperties(path, {
+          void manager.saveProperties(path, {
             [key]: processKey(fm[key]),
           });
         });
       } else {
-        manager.saveProperties(path, {
+        void manager.saveProperties(path, {
           tags: addTag(fm["tags"]),
         });
         
       }
     } else {
-      manager.saveProperties(path, {
+      void manager.saveProperties(path, {
         tags: stringFromTag(newTag),
       });
       

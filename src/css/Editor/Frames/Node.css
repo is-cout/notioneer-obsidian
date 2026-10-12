@@ -54,7 +54,6 @@ body:not(.is-mobile) .mk-frame-props-editor {
   .mk-editor-frame-node-selector {
     --icon-size: 14px;
     display: flex;
-    padding: 0;
     z-index: var(--layer-popover);
     background: var(--mk-ui-background);
     max-height: unset;

@@ -99,21 +99,21 @@ update: (property: string, value: string, path: string, saveState: (state: any) 
         create: (name: string, space: string, type: string, content?: Promise<string> | string) => {
             if (content instanceof Promise) {
                 return content.then(c => {
-                    newPathInSpace(this.superstate, this.superstate.spacesIndex.get(space), type, name, true, c)
+                    void newPathInSpace(this.superstate, this.superstate.spacesIndex.get(space), type, name, true, c)
                 })
             }
             return newPathInSpace(this.superstate, this.superstate.spacesIndex.get(space), type, name, true, content)
         },
         setProperty: (path: string, property: string, value:  Promise<string> | string) => {
             if (value instanceof Promise) {
-                value.then(v => {
-                    saveProperties(this.superstate, path, {
+                void value.then(v => {
+                    void saveProperties(this.superstate, path, {
                         [property]: v
                     })
                 })
                 return
             }
-            saveProperties(this.superstate, path, {
+            void saveProperties(this.superstate, path, {
                     [property]: value
                 })
         },
@@ -149,7 +149,7 @@ update: (property: string, value: string, path: string, saveState: (state: any) 
 
     public buttonCommand = (action: string, parameters: { [key: string]: any }, contexts: FrameContexts, saveState: (state: any) => void) => {
         // Handle button commands by delegating to the regular command runner
-        this.commands.run(action, parameters, contexts);
+        void this.commands.run(action, parameters, contexts);
     }
     
     
@@ -170,7 +170,7 @@ update: (property: string, value: string, path: string, saveState: (state: any) 
                     ...f, [g]: _row[g]}
             }, {});
             if (schema == defaultContextSchemaID) {
-                this.context.insert(path, schema, row[PathPropertyName], row)
+                void this.context.insert(path, schema, row[PathPropertyName], row)
                 return;
             }
             const space = this.superstate.spacesIndex.get(path)
@@ -185,7 +185,7 @@ update: (property: string, value: string, path: string, saveState: (state: any) 
                 name: table,
                 type: "db",
               };
-            this.spaceManager.createTable(
+            void this.spaceManager.createTable(
                 path,
                 newSchema
               );
@@ -197,7 +197,7 @@ update: (property: string, value: string, path: string, saveState: (state: any) 
                 this.superstate.ui.openPath(path, target)
             } else {
                 // For non-default schemas, open the edit modal instead of a path
-                this.table.editModal(space, table, index)
+                void this.table.editModal(space, table, index)
             }
         },
         contextMenu: async (e: React.MouseEvent, space: string, table: string, index: number) => {
@@ -206,7 +206,7 @@ update: (property: string, value: string, path: string, saveState: (state: any) 
                 const path = context?.rows[index]?.[PathPropertyName]
                 showPathContextMenu(this.superstate, path, space, { x: e.clientX, y: e.clientY, width: 0, height: 0 }, windowFromDocument(e.view.document))
             } else {
-                showRowContextMenu(e, this.superstate, space, table, index)
+                void showRowContextMenu(e, this.superstate, space, table, index)
             }
         },
         editModal: async (space: string, table: string, index: number, properties?: DBRow, win?: Window) => {
@@ -237,17 +237,17 @@ update: (property: string, value: string, path: string, saveState: (state: any) 
 
             const space = this.superstate.spacesIndex.get(path)
             if (space)
-            updateValueInContext(this.spaceManager as SpaceManager, file, field, value, space.space)
+            void updateValueInContext(this.spaceManager as SpaceManager, file, field, value, space.space)
         },
         insert: async (path: string, schema: string, name: string, row: DBRow) => {
             if (schema == defaultContextSchemaID)
             {
-                newPathInSpace(this.superstate, this.superstate.spacesIndex.get(path), "md", name, true).then(f =>
+                void newPathInSpace(this.superstate, this.superstate.spacesIndex.get(path), "md", name, true).then(f =>
                 {
                     if (row)
                     {
                         delete row[PathPropertyName]
-                        saveProperties(this.superstate, f, {
+                        void saveProperties(this.superstate, f, {
                         ...(row ?? {}),
                     })
                 }
@@ -262,7 +262,7 @@ update: (property: string, value: string, path: string, saveState: (state: any) 
                     ...(row ?? {}), 
                     [prop.name]: name
                 } : row
-                this.table.insert(path, schema, newRow)
+                void this.table.insert(path, schema, newRow)
             }
                 
         }
@@ -271,7 +271,7 @@ update: (property: string, value: string, path: string, saveState: (state: any) 
 
 public date = {
     parse: (date: string) => {
-        return new Date(date?.replace(/-/g, '\/').replace(/T.+/, ''));
+        return new Date(date?.replace(/-/g, '/').replace(/T.+/, ''));
     },
     daysInMonth: (date: Date) => {
         return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();

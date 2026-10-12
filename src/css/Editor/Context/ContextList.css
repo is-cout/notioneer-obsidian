@@ -13,7 +13,6 @@ flex-direction: column;
 .mk-editor-context-groups {
   display: flex;
   --icon-size: 14px;
-    padding: 0;
     z-index: var(--layer-popover);
     background: var(--mk-ui-background);
     max-height: unset;

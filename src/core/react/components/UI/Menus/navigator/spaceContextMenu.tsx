@@ -399,7 +399,7 @@ export const showSpaceContextMenu = (
           (link) => {
             const spaceCache = superstate.spacesIndex.get(link);
             if (spaceCache)
-              addPathToSpaceAtIndex(superstate, spaceCache, space.path, -1);
+              void addPathToSpaceAtIndex(superstate, spaceCache, space.path, -1);
           },
           true
         );
@@ -418,7 +418,7 @@ export const showSpaceContextMenu = (
           win,
           superstate,
           (link) => {
-            superstate.spaceManager.renameSpace(
+            void superstate.spaceManager.renameSpace(
               space.path,
               movePath(space.path, link)
             );
@@ -432,7 +432,7 @@ export const showSpaceContextMenu = (
     name: i18n.menu.duplicate,
     icon: "ui//documents",
     onClick: (e) => {
-      superstate.spaceManager.copyPath(path.path, `${path.parent}`);
+      void superstate.spaceManager.copyPath(path.path, `${path.parent}`);
     },
   });
   if (
@@ -443,7 +443,7 @@ export const showSpaceContextMenu = (
       name: i18n.buttons.saveTemplate,
       icon: "ui//clipboard-add",
       onClick: (e) => {
-        saveSpaceTemplate(superstate, space.path, parentSpace);
+        void saveSpaceTemplate(superstate, space.path, parentSpace);
       },
     });
   }
@@ -487,7 +487,7 @@ export const showSpaceContextMenu = (
           name: i18n.menu.removeFromSpace.replace("${1}", spaceCache.name),
           icon: "ui//pin-off",
           onClick: (e) => {
-            removePathsFromSpace(superstate, spaceCache.path, [space.path]);
+            void removePathsFromSpace(superstate, spaceCache.path, [space.path]);
           },
         });
       }
@@ -507,7 +507,7 @@ export const showSpaceContextMenu = (
       name: i18n.menu.hide,
       icon: "ui//eye-off",
       onClick: (e) => {
-        hidePath(superstate, space.path);
+        void hidePath(superstate, space.path);
       },
     });
   }

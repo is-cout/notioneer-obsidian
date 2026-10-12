@@ -27,7 +27,7 @@ export const formatDate = (
           ? `${settings.defaultDateFormat} ${settings.defaultTimeFormat}`
           : settings.defaultDateFormat,
     );
-  } catch (e) {
+  } catch {
     dateString = '';
   }
   return dateString;

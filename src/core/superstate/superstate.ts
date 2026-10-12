@@ -158,7 +158,7 @@ public api: API;
         return searchPath({ queries: queries, pathsIndex: this.pathsIndex, count: 10 })
     }
     public reindexSearch () {
-        this.indexer.reload<Record<string, unknown>>({ type: 'index', path: ''}).then(r => {
+        void this.indexer.reload<Record<string, unknown>>({ type: 'index', path: ''}).then(r => {
             this.searchIndex = Fuse.parseIndex(r as any);
         });
     }
@@ -263,10 +263,10 @@ public api: API;
         }
         const start = Date.now();
         
-        this.initializeActions();
-        this.initializeFocuses();
-        this.initializeKits();
-        this.initializeTemplates();
+        void this.initializeActions();
+        void this.initializeFocuses();
+        void this.initializeKits();
+        void this.initializeTemplates();
         if (this.settings.spacesEnabled)
                 await this.initializeSpaces();
             
@@ -276,8 +276,7 @@ public api: API;
         // Initialize AssetManager to load iconset mappings before path loading
         if (this.assets) {
             await this.assets.initialize();
-        } else {
-        }
+        } else { /* empty */ }
         
         await this.initializePaths();
         await this.initializeContexts();
@@ -358,9 +357,9 @@ public api: API;
         
         return items.map<PathStateWithRank>((f, i) => {
             if (this.spacesIndex.has(f)) {
-                this.spaceManager.loadPath(this.spacesIndex.get(f).space.notePath);
+                void this.spaceManager.loadPath(this.spacesIndex.get(f).space.notePath);
             } else {
-                this.spaceManager.loadPath(f);
+                void this.spaceManager.loadPath(f);
             }
             const pathCache = this.pathsIndex.get(f);
   
@@ -435,7 +434,7 @@ public api: API;
     }
 
     public dispatchEvent<K extends keyof SuperstateEvent>(event: K, payload: SuperstateEvent[K]) {
-        this.eventsDispatcher.dispatchEvent(event, payload);
+        void this.eventsDispatcher.dispatchEvent(event, payload);
     }
 
     public async initializeBuiltins() {
@@ -482,7 +481,7 @@ public api: API;
     public async initializeFocuses() {
         const allFocuses = await this.spaceManager.readFocuses();
         if (allFocuses.length == 0) {
-            this.spaceManager.saveFocuses([{name: i18n.labels.home, sticker: "ui//home", paths: ['/']}]);
+            void this.spaceManager.saveFocuses([{name: i18n.labels.home, sticker: "ui//home", paths: ['/']}]);
             return;
         }
         this.focuses = allFocuses;
@@ -527,7 +526,7 @@ public api: API;
                 this.addToContextStateQueue(() => renameTagInContexts(this.spaceManager, tag, newTag, allContextsWithTag));
             } 
             if (spaceCache.metadata?.contexts.includes(tag)) {
-                saveSpaceCache(this, spaceCache.space, {...spaceCache.metadata, contexts: spaceCache.metadata.contexts.map(f => f == tag ? newTag : f)})
+                void saveSpaceCache(this, spaceCache.space, {...spaceCache.metadata, contexts: spaceCache.metadata.contexts.map(f => f == tag ? newTag : f)})
             }
         }
         this.dispatchEvent("spaceStateUpdated", { path: tagsSpacePath});
@@ -539,14 +538,14 @@ public api: API;
     public async onTagDeleted(tag: string) {
 
         this.tagsMap.getInverse(tag).forEach(path => {
-                this.deleteTagInPath(tag, path)
+                void this.deleteTagInPath(tag, path)
         })
         const spacePath = folderForTagSpace(tag, this.settings)
     await this.spaceManager.deletePath(spacePath);
         this.onSpaceDeleted(tagSpacePathFromTag(tag));
         for(const [contextPath, spaceCache] of this.spacesIndex) {
             if (spaceCache.metadata?.contexts.includes(tag)) {
-                saveSpaceCache(this, spaceCache.space, {...spaceCache.metadata, contexts: spaceCache.metadata.contexts.filter(f => f != tag)})
+                void saveSpaceCache(this, spaceCache.space, {...spaceCache.metadata, contexts: spaceCache.metadata.contexts.filter(f => f != tag)})
             }
         }
         const allContextsWithTag : SpaceInfo[] = [];
@@ -577,7 +576,7 @@ public api: API;
         } else {
             await this.reloadPath(path);
         }
-        this.onPathReloaded(path);
+        void this.onPathReloaded(path);
         this.dispatchEvent("pathStateUpdated", { path});
         
     }
@@ -588,12 +587,12 @@ public api: API;
             // Metadata Changed
         }
         if (!this.pathsIndex.has(path)) {return}
-        this.reloadPath(path).then(f => 
+        void this.reloadPath(path).then(f => 
             {
                 const pathState = this.pathsIndex.get(path);
                 const spaceState = this.spacesIndex.get(path);
                 if (spaceState) {
-                    this.reloadSpace(spaceState.space).then(f => this.onSpaceDefinitionChanged(f, spaceState.metadata))
+                    void this.reloadSpace(spaceState.space).then(f => this.onSpaceDefinitionChanged(f, spaceState.metadata))
                 }
                 const allContextsWithFile = pathState.spaces.map(f => this.spacesIndex.get(f)?.space).filter(f => f);   
                 this.addToContextStateQueue(() => updateContextWithProperties(this, path, allContextsWithFile));
@@ -659,7 +658,7 @@ public api: API;
         
         
         await this.reloadPath(newPath, true)
-        this.persister.remove(oldPath, 'path');
+        void this.persister.remove(oldPath, 'path');
 
         const changedSpaces = uniq([...(this.spacesMap.get(newPath) ?? []), ...oldSpaces]);
         //reload contexts to calculate proper paths
@@ -705,7 +704,7 @@ public api: API;
         this.spacesMap.delete(path);
         this.linksMap.delete(path);
         this.linksMap.deleteInverse(path);
-        this.persister.remove(path, 'path');
+        void this.persister.remove(path, 'path');
         const fileCache = this.pathsIndex.get(path)
 
         if (!fileCache) {
@@ -760,7 +759,7 @@ public api: API;
         }
         this.spacesMap.delete(space)
         this.spacesMap.deleteInverse(space)
-            this.persister.remove(space, 'space');
+            void this.persister.remove(space, 'space');
             
             this.dispatchEvent('spaceDeleted', {path: space});
         
@@ -768,7 +767,7 @@ public api: API;
 
     public async reloadActions (space: SpaceInfo) {
         if (!space) return false;
-            this.spaceManager.commandsForSpace(space.path).then(r => {
+            void this.spaceManager.commandsForSpace(space.path).then(r => {
                 this.actionsIndex.set(space.path, r);
                 this.dispatchEvent("actionStateUpdated", {path: space.path});
             });
@@ -840,7 +839,7 @@ public api: API;
                 {
                     await this.spaceManager.saveTable(path, cache.contextTable);
                 }
-            this.persister.store(path,  JSON.stringify(cache), 'context');
+            void this.persister.store(path,  JSON.stringify(cache), 'context');
             this.dispatchEvent("contextStateUpdated", {path: path});
             
             return true;
@@ -985,7 +984,7 @@ public async updateSpaceMetadata (spacePath: string, metadata: SpaceDefinition) 
             propertyTypes
         }
         this.spacesIndex.set(space.path, cache);
-        this.persister.store(space.path, JSON.stringify(cache), 'space');
+        void this.persister.store(space.path, JSON.stringify(cache), 'space');
         cache.metadata?.links?.forEach(f => {
             if (pathIsSpace(this, f)) {
                 this.spacesMap.set(f, new Set([...this.spacesMap.get(f), space.path]))
@@ -1019,7 +1018,7 @@ public async updateSpaceMetadata (spacePath: string, metadata: SpaceDefinition) 
                 const promises = cache.tags.map(f => fileSystemSpaceInfoFromTag(this.spaceManager, f)).filter(f => !this.spacesIndex.has(f.path)).map(async f =>  
                     {
                         await this.reloadSpace(f);
-                        this.reloadContext(f, { force: false, calculate: true });
+                        void this.reloadContext(f, { force: false, calculate: true });
                         await this.reloadPath(f.path);
                         return 
                     }
@@ -1047,10 +1046,10 @@ public async updateSpaceMetadata (spacePath: string, metadata: SpaceDefinition) 
             const isSvgFile = cache.metadata?.file?.extension === 'svg';
             
             if (isSvgFile && this.assets && (this.assets.iconPathMapping.has(path) || this.settings.indexSVG)) {
-                this.spaceManager.readPath(path).then(f => {
+                void this.spaceManager.readPath(path).then(f => {
                     // Let AssetManager handle all icon caching
                     this.assets.cacheIconFromPath(path, f);
-                    this.persister.store(path, f, 'icon');
+                    void this.persister.store(path, f, 'icon');
                 });
             }
             

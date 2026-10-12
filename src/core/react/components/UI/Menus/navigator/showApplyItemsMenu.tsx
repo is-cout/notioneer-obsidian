@@ -16,7 +16,7 @@ const saveContexts = (
   contexts: string[]
 ) => {
   const space = superstate.spacesIndex.get(spacePath);
-  saveSpaceCache(superstate, space.space, {
+  void saveSpaceCache(superstate, space.space, {
     ...space.metadata,
     contexts,
   });

@@ -37,23 +37,7 @@ export class WebCacher {
         if (this.cache.has(path)){
             return this.cache.get(path)
         }
-        this.loading[path] = true;
-        return new Promise((resolve, reject) => {
-            return fetch(path).then((response) => {  
-                
-                this.loading[path] = false;
-                if (response.status !== 200) {
-                    return reject(response.statusText);
-                }
-                return response.json()}).then(f => {
-                const kit = f as SpaceKit;
-                return this.loadedKit(path, path, kit).then(g => f)
-                }).then((kit) => {
-                return resolve(kit);
-            })
-            
-        });
+        // make.md fetched web space kits over the network; Notioneer makes no network calls.
+        throw new Error(`Web spaces are not supported in Notioneer: ${path}`);
     }
-    
-
 }

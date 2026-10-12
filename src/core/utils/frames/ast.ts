@@ -85,7 +85,7 @@ const getFrameNodesByPath = async (
       return rootToFrame(kit)
     }
     const context = await superstate.spaceManager.readFrame(path.basePath, path.ref);
-    return context as MDBFrame;
+    return context;
   };
 
   export function flattenToFrameNodes(root: FrameTreeNode | FrameRoot, schemaId: string): FrameNode[] {

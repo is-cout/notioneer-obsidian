@@ -233,18 +233,18 @@ export const movePathToNewSpaceAtIndex = async (
       } else {
         await superstate.spaceManager.renamePath(item.path, movePath(item.path, newParent))
       }
-      updatePathRankInSpace(superstate,newPath, index, newParent)
+      void updatePathRankInSpace(superstate,newPath, index, newParent)
     
   
 };
 
 export const setTemplateInSpace = (superstate: Superstate, path: string, template: string) => {
-  saveSpaceMetadataValue(superstate, path, "template", template)
+  void saveSpaceMetadataValue(superstate, path, "template", template)
 
 }
 
 export const setTemplateNameInSpace = (superstate: Superstate, path: string, templateName: string) => {
-  saveSpaceMetadataValue(superstate, path, "templateName", templateName)
+  void saveSpaceMetadataValue(superstate, path, "templateName", templateName)
 
 }
 
@@ -252,19 +252,19 @@ export const insertContextInSpace = (superstate: Superstate, path: string, newTa
   const spaceCache = superstate.spacesIndex.get(path);
   const contexts = [...spaceCache.metadata.contexts.filter(f => f != newTag), newTag]
 ;
-  saveSpaceMetadataValue(superstate, path, "contexts", contexts)
+  void saveSpaceMetadataValue(superstate, path, "contexts", contexts)
 }
 
 export const removeContextInSpace = (superstate: Superstate, path: string, oldTag: string) => {
   const spaceCache = superstate.spacesIndex.get(path);
   const contexts = spaceCache.metadata.contexts.filter(f => f != oldTag)
-  saveSpaceMetadataValue(superstate, path, "contexts", contexts)
+  void saveSpaceMetadataValue(superstate, path, "contexts", contexts)
 }
 
 export const renameContextInSpace = (superstate: Superstate, path: string, oldTag: string, newTag: string) => {
   const spaceCache = superstate.spacesIndex.get(path);
   const contexts = spaceCache.metadata.contexts.map(f => f == oldTag ? newTag : f)
-  saveSpaceMetadataValue(superstate, path,"contexts", contexts)
+  void saveSpaceMetadataValue(superstate, path,"contexts", contexts)
 }
 
 export const createSpace = async (
@@ -304,7 +304,7 @@ export const createSpace = async (
     newSpaceCache = await superstate.reloadSpace(spaceInfo)
   }
   }
-  superstate.onSpaceDefinitionChanged(newSpaceCache, null);
+  void superstate.onSpaceDefinitionChanged(newSpaceCache, null);
   return newSpaceCache;
 };
 
@@ -380,7 +380,7 @@ export const pinPathToSpaceAtIndex = async (
   await saveSpaceCache(superstate, space.space, {...space.metadata, links: spaceExists});  
 
   await superstate.reloadPath(path, true).then(f => superstate.dispatchEvent("pathStateUpdated", {path: path}))
-  updatePathRankInSpace(superstate,path, rank, space.path)
+  void updatePathRankInSpace(superstate,path, rank, space.path)
 
 };
 
@@ -389,7 +389,7 @@ export const removeSpace = async (superstate: Superstate, space: string) => {
 const spaceCache = superstate.spacesIndex.get(space)
 if (!spaceCache) return;
 if (spaceCache.type == 'tag') {
-  superstate.onTagDeleted(spaceCache.name)
+  void superstate.onTagDeleted(spaceCache.name)
 } else if (spaceCache.type == 'folder') {
   await deletePath(superstate, spaceCache.path)
 }
@@ -404,7 +404,7 @@ export const updateSpaceSort = (
   const space = superstate.spacesIndex.get(path);
 
   if (space)
-  saveSpaceCache(superstate, space.space, {
+  void saveSpaceCache(superstate, space.space, {
     ...space.metadata,
     sort
   })
@@ -458,10 +458,9 @@ export const newTemplateInSpace = async (
       const result = runFormulaWithContext(superstate.formulaContext,superstate.pathsIndex, superstate.spacesMap, space.metadata.templateName, {}, {}, superstate.pathsIndex.get(space.path))
       if (result?.length> 0) newName = result
     }
-  } catch (e) {
-  }
+  } catch { /* empty */ }
   if (!(await superstate.spaceManager.pathExists(`${space.path}/${superstate.settings.spaceSubFolder}/templates/${name}`))) {
-    newPathInSpace(superstate, space, "md", null, false, null, location);
+    void newPathInSpace(superstate, space, "md", null, false, null, location);
     return;
   }
 const newPath = await superstate.spaceManager.copyPath(`${space.path}/${superstate.settings.spaceSubFolder}/templates/${name}`, space.path, newName)
@@ -549,14 +548,14 @@ export  const saveNewProperty = async (superstate: Superstate, path: string, pro
       ...mdbtable,
       cols: newFields ?? [],
     };
-    superstate.spaceManager.saveFrame(path, newTable as MDBFrame);
+    void superstate.spaceManager.saveFrame(path, newTable as MDBFrame);
     return true;
   };
   if (superstate.spacesIndex.has(path)) {
     const tableData = await superstate.spaceManager.readFrame(path, 'main');
     saveProperty(tableData, {...property, schemaId: "main"});
 } else {
-  superstate.spaceManager.saveProperties(path, { [property.name]: defaultValueForType(property.type) });
+  void superstate.spaceManager.saveProperties(path, { [property.name]: defaultValueForType(property.type) });
 }
 }
 

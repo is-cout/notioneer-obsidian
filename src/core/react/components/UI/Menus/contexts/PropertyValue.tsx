@@ -3,7 +3,7 @@ import { parseFieldValue } from "core/schemas/parseFieldValue";
 import { unitTypes } from "core/utils/contexts/fields/units";
 import { aggregateFnTypes } from "core/utils/contexts/predicate/aggregates";
 import { schemaNameFromSpacePath, spaceNameFromSpacePath } from "core/utils/strings";
-import { SelectMenuProps, SelectOption } from "shared/types/menu";
+import { SelectOption } from "shared/types/menu";
 import { ISuperstate as Superstate } from "shared/types/superstate";
 import React, { useMemo } from "react";
 import { fieldTypeForField, fieldTypeForType, fieldTypes } from "schemas/mdb";
@@ -103,7 +103,7 @@ export const PropertyValueComponent = (props: {
       .get(parsedValue.space)
       ?.contextTable?.cols?.find((f) => f.name == field);
     if (!colExists) {
-      props.superstate.spaceManager.addSpaceProperty(parsedValue.space, {
+      void props.superstate.spaceManager.addSpaceProperty(parsedValue.space, {
         name: field,
         schemaId: defaultContextSchemaID,
         type: "context",
@@ -113,7 +113,7 @@ export const PropertyValueComponent = (props: {
         }),
       });
     } else {
-      props.superstate.spaceManager.saveSpaceProperty(
+      void props.superstate.spaceManager.saveSpaceProperty(
         parsedValue.space,
         {
           ...colExists,
@@ -432,7 +432,7 @@ export const PropertyValueComponent = (props: {
 
     const parseOptions = (_options: SelectOption[]): SelectOption[] => {
       return [
-        ...(((_options as SelectOption[]) ?? [])
+        ...(((_options) ?? [])
           .filter((f) => f.value)
           .map((t) => ({
             ...t,

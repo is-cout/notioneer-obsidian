@@ -50,7 +50,7 @@ export const PathStickerView = (props: {
           windowFromDocument(e.view.document),
           color || "",
           (newColor) => {
-            savePathColor(props.superstate, pathState.path, newColor);
+            void savePathColor(props.superstate, pathState.path, newColor);
           }
         );
       },

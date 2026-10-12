@@ -201,7 +201,7 @@ const NewPropertyMenuComponent = (
     }
   };
   useEffect(() => {
-    setTimeout(() => {
+    window.setTimeout(() => {
       input.current?.focus();
     }, 50);
   }, []);
@@ -243,10 +243,10 @@ const NewPropertyMenuComponent = (
         searchable: true,
         saveOptions: (_: string[], value: any[]) => {
           if (value[0] == "all") {
-            props.superstate.spaceManager
+            void props.superstate.spaceManager
               .readTable(source, defaultContextSchemaID)
               .then((f) => {
-                props.superstate.spaceManager.saveTable(
+                void props.superstate.spaceManager.saveTable(
                   source,
                   {
                     ...f,

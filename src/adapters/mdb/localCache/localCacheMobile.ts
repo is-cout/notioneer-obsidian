@@ -86,7 +86,7 @@ public async reset() {
                     }
                 }
             }, {})
-            saveZippedDBToPath(this.mdbAdapter, this.storageDBPath, tables)
+            void saveZippedDBToPath(this.mdbAdapter, this.storageDBPath, tables)
     }, 2000,
     {
         leading: false,

@@ -24,7 +24,7 @@ export const EditPropertiesSubmenu = (props: {
       );
       setContext(context);
     };
-    loadContext();
+    void loadContext();
   }, [props.path, props.schema]);
   const fields = context?.cols ?? [];
   const values = context?.rows[props.index];
@@ -35,7 +35,7 @@ export const EditPropertiesSubmenu = (props: {
     );
     const row = context.rows[props.index];
     if (row) {
-      updateTableRow(
+      void updateTableRow(
         props.superstate.spaceManager,
         props.superstate.spacesIndex.get(props.path)?.space,
         props.schema,
@@ -82,7 +82,7 @@ export const EditPropertiesSubmenu = (props: {
                 editMode={CellEditMode.EditModeValueOnly}
                 row={values}
                 updateValue={(value: string) => {
-                  savePropValue(f.name, value);
+                  void savePropValue(f.name, value);
                 }}
                 source={props.pathState.path}
                 columns={fields}

@@ -193,7 +193,7 @@ export const ContextEditorProvider: React.FC<
     if (!schemas) {
       try {
         schemas = await spaceManager.tablesForSpace(contextPath);
-      } catch (error) {
+      } catch {
         schemas = [];
       }
     }
@@ -215,7 +215,7 @@ export const ContextEditorProvider: React.FC<
   }, [dbSchema]);
 
   const loadContextFields = useCallback(async (space: string) => {
-    spaceManager.contextForSpace(space).then((f) => {
+    void spaceManager.contextForSpace(space).then((f) => {
       setContextTable((t) => ({
         ...t,
         [space]: f,
@@ -230,18 +230,17 @@ export const ContextEditorProvider: React.FC<
         if (f) {
           if (newSchema.primary) {
             for (const c of contexts) {
-              loadContextFields(tagSpacePathFromTag(c));
+              void loadContextFields(tagSpacePathFromTag(c));
             }
           }
           for (const c of f.cols) {
             if (c.type.startsWith("context")) {
               const value = parseFieldValue(c.value, c.type);
-              if (value.space) loadContextFields(value.space);
+              if (value.space) void loadContextFields(value.space);
             }
           }
           updateTable(f);
-        } else {
-        }
+        } else { /* empty */ }
       })
       .catch((error) => {});
   };
@@ -256,17 +255,17 @@ export const ContextEditorProvider: React.FC<
   useEffect(() => {
     const refreshMDB = (payload: { path: string }) => {
       if (payload.path == contextPath) {
-        loadTables();
+        void loadTables();
       } else {
         const tag = Object.keys(contextTable).find(
           (t) => spaceManager.spaceInfoForPath(t)?.path == payload.path
         );
-        if (tag) loadContextFields(tag);
+        if (tag) void loadContextFields(tag);
       }
     };
     const refreshPath = (payload: { path: string }) => {
       if (payload.path == contextPath) {
-        loadTables();
+        void loadTables();
       } else if (
         dbSchema?.primary == "true" &&
         tableData?.rows.some((f) => f[PathPropertyName] == payload.path)
@@ -306,7 +305,7 @@ export const ContextEditorProvider: React.FC<
   }, [contextTable, dbSchema, retrieveCachedTable, spaceInfo, tableData]);
 
   useEffect(() => {
-    loadTables();
+    void loadTables();
   }, [spaceInfo, frameSchema, props.source, spaceManager]);
   const saveDB = async (newTable: SpaceTable) => {
     if (spaceInfo.readOnly) return;
@@ -379,7 +378,7 @@ export const ContextEditorProvider: React.FC<
   useEffect(() => {
     if (tableData) {
       for (const c of contexts) {
-        loadContextFields(c);
+        void loadContextFields(c);
       }
     }
   }, [tableData]);
@@ -519,7 +518,7 @@ export const ContextEditorProvider: React.FC<
           const changedCols = Object.keys(row).filter(
             (f) => f != PathPropertyName
           );
-          saveProperties(
+          void saveProperties(
             props.superstate,
             row?.[PathPropertyName],
             changedCols.reduce(
@@ -534,26 +533,26 @@ export const ContextEditorProvider: React.FC<
               {}
             )
           );
-          saveDB(createNewRow(tableData, row));
+          void saveDB(createNewRow(tableData, row));
           return;
         }
-        updateRow(row, actualIndex);
+        void updateRow(row, actualIndex);
         return;
       }
-      saveDB(createNewRow(tableData, row));
+      void saveDB(createNewRow(tableData, row));
       return;
     }
     const currentData = data[index];
     if (!currentData) {
       // Index out of bounds, treat as new row
-      saveDB(createNewRow(tableData, row));
+      void saveDB(createNewRow(tableData, row));
       return;
     }
     const changedCols = Object.keys(row).filter(
       (f) => row[f] != currentData[f]
     );
     if (props.superstate.settings.saveAllContextToFrontmatter) {
-      saveProperties(
+      void saveProperties(
         props.superstate,
         currentData?.[PathPropertyName],
         changedCols.reduce(
@@ -569,7 +568,7 @@ export const ContextEditorProvider: React.FC<
         )
       );
     }
-    saveDB({
+    void saveDB({
       ...tableData,
       rows: tableData.rows.map((r, i) =>
         i == index
@@ -598,7 +597,7 @@ export const ContextEditorProvider: React.FC<
       props.superstate.settings.saveAllContextToFrontmatter
     ) {
       const resolvedPath = props.superstate.spaceManager.resolvePath(path ?? tableData.rows[index]?.[PathPropertyName], contextPath);
-      saveProperties(
+      void saveProperties(
         props.superstate,
         resolvedPath,
         { [column]: parseMDBStringValue(fieldTypeForField(col), value, true) }
@@ -606,7 +605,7 @@ export const ContextEditorProvider: React.FC<
     }
 
     if (table == "") {
-      saveDB({
+      void saveDB({
         ...tableData,
         rows: tableData.rows.map((r, i) =>
           i == index
@@ -620,7 +619,7 @@ export const ContextEditorProvider: React.FC<
     } else if (contextTable[table]) {
       const path = tableData.rows[index][PathPropertyName];
 
-      saveContextDB(
+      void saveContextDB(
         {
           ...contextTable[tagSpacePathFromTag(table)],
           rows: contextTable[tagSpacePathFromTag(table)].rows.map((r, i) =>
@@ -662,7 +661,7 @@ export const ContextEditorProvider: React.FC<
   ) => {
     const col = tableData.cols.find((f) => f.name == column);
     if (props.superstate.settings.saveAllContextToFrontmatter)
-      saveProperties(
+      void saveProperties(
         props.superstate,
         path ?? tableData.rows[index]?.[PathPropertyName],
         { [column]: parseMDBStringValue(fieldTypeForField(col), value, true) }
@@ -688,10 +687,10 @@ export const ContextEditorProvider: React.FC<
             : r
         ),
       };
-      saveDB(newTable);
+      void saveDB(newTable);
     } else if (contextTable[tagSpacePathFromTag(table)]) {
       const path = tableData.rows[index][PathPropertyName];
-      saveContextDB(
+      void saveContextDB(
         {
           ...contextTable[tagSpacePathFromTag(table)],
           cols: contextTable[tagSpacePathFromTag(table)].cols.map((m) =>
@@ -776,7 +775,7 @@ export const ContextEditorProvider: React.FC<
     const rowsChanged = !_.isEqual(newRows, tableData?.rows);
     const colsChanged = !_.isEqual(tableData?.cols, f.cols);
     if (rowsChanged || colsChanged) {
-      saveDB({
+      void saveDB({
         ...f,
         rows: newRows,
       });
@@ -809,12 +808,12 @@ export const ContextEditorProvider: React.FC<
     const cleanedPredicate = validatePredicate(pred, defPredicate);
 
     if (frameSchema) {
-      saveSchema({
+      void saveSchema({
         ...frameSchema,
         predicate: JSON.stringify(cleanedPredicate),
       });
     } else {
-      saveSchema({
+      void saveSchema({
         id: uniqueNameFromString(
           dbSchema.id + "View",
           frameSchemas.map((f) => f.id)
@@ -875,9 +874,9 @@ export const ContextEditorProvider: React.FC<
       }),
     };
     if (table == "") {
-      saveDB(newTable);
+      void saveDB(newTable);
     } else if (contextTable[tagSpacePathFromTag(table)]) {
-      saveContextDB(newTable, tagSpacePathFromTag(table));
+      void saveContextDB(newTable, tagSpacePathFromTag(table));
     }
   };
   const newColumn = (col: SpaceTableColumn): boolean => {
@@ -995,12 +994,12 @@ export const ContextEditorProvider: React.FC<
       });
     if (table == "") {
       if (dbSchema.id == defaultContextSchemaID) {
-        syncAllProperties(newTable);
+        void syncAllProperties(newTable);
       } else {
-        saveDB(newTable);
+        void saveDB(newTable);
       }
     } else if (contextTable[tagSpacePathFromTag(table)]) {
-      saveContextDB(newTable, tagSpacePathFromTag(table));
+      void saveContextDB(newTable, tagSpacePathFromTag(table));
     }
 
     return true;

@@ -4,6 +4,20 @@ Living log of significant changes to the project. This is **not** optional bookk
 
 Format: `YYYY-MM-DD — short description. Why (if not obvious). Files touched.`
 
+## 2026-10-12 (1.0.1)
+
+- **Native inline title hidden reliably under the header** ([#1](https://github.com/is-cout/notioneer-obsidian/issues/1)).
+  make.md's rule hid it only in live preview and without `!important`, so a theme or snippet
+  styling `.inline-title` brought it back and notes showed two titles — and after the editor
+  re-rendered (e.g. inserting a callout) the native one jumped above the header. The new rule
+  matches the native properties one: `!important`, also in source mode, and only in editors
+  where the header is mounted.
+- **Header title survives "Show inline title" being off.** The header's title reuses the
+  `inline-title` class, so Obsidian's `body:not(.show-inline-title) .inline-title` hid it too
+  — turning the setting off to get rid of the duplicate left no title at all. Now it only
+  affects the native one.
+- Files: `src/css/notioneer.css`, `docs/FAQ.md`.
+
 ## 2026-07-28 (1.0.0)
 
 - **First stable release.** The plugin's data format, settings and public behaviour are

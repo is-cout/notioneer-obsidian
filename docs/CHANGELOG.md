@@ -4,6 +4,40 @@ Living log of significant changes to the project. This is **not** optional bookk
 
 Format: `YYYY-MM-DD — short description. Why (if not obvious). Files touched.`
 
+## 2026-10-12 (1.0.2)
+
+- **Community scorecard cleanup.** The Obsidian scorecard rated the review "Risks" (12,193
+  findings on 1.0.0). Most of that count (~8.5k) comes from the scanner linting without
+  dependencies installed, so every imported type is `any` — see
+  [DEVELOPMENT.md](DEVELOPMENT.md#community-scorecard). What was actually fixable:
+  - **No dynamic code execution.** make.md's frame engine and "script" commands used
+    `new Function`; frame values are now limited to literals and script commands report an
+    error. jszip's dead `setImmediate` fallback is patched at build time, so the bundle has no
+    `Function` constructor at all. Files: `src/core/utils/frames/executable.ts`,
+    `src/core/utils/frames/runner.ts` and its three callers, `esbuild.config.mjs`.
+  - **No `fetch`.** The never-used remote `.mdb` branch is gone and web space kits are no
+    longer downloaded. Files: `src/adapters/mdb/db/db.ts`, `src/adapters/mdb/utils/mdb.ts`,
+    `src/core/spaceManager/webAdapter/webCache.ts`.
+  - `alert` → in-app notice; `console.log` removed or turned into `console.error`; `btoa`
+    → Obsidian's `arrayBufferToBase64`; `substr` → `slice`.
+  - Mechanical lint fixes across ~100 files (typed lint: 3,477 → 2,919 findings): floating
+    promises marked `void`, unused catch bindings/imports, empty blocks, useless regex
+    escapes, redundant type assertions, `window.*` timers, `TFile`/`TFolder` casts →
+    `instanceof`, `createEl`/`createDiv`. The `await-thenable` findings were left alone on
+    purpose: several make.md methods are typed `void` but return a promise, so dropping the
+    `await` would change execution order.
+  - 13 duplicate CSS declarations that were already overridden in the same rule removed.
+  - Manifest description ends with a period.
+- **Tooling (no runtime effect).** Removed dev dependencies the scanner bans —
+  `builtin-modules`, `dotenv`, `find-cache-dir`, `eslint-plugin-react` — replaced in
+  `esbuild.config.mjs` by Node built-ins (approved). Release workflow now publishes build
+  provenance attestations. Added `CONTRIBUTING.md`.
+- Not addressed: `sql.js`/WASM (and the `fs` access inside it), ~2.6k `any`/`no-unsafe-*`
+  findings in make.md code, `!important`/`:has` in make.md CSS, `FileManager.trashFile`
+  (needs `minAppVersion` 1.6.6).
+- Files: see above, plus `manifest.json`, `package.json`, `package-lock.json`,
+  `versions.json`, `.github/workflows/release.yml`, `CONTRIBUTING.md`, `docs/*.md`.
+
 ## 2026-10-12 (1.0.1)
 
 - **Native inline title hidden reliably under the header** ([#1](https://github.com/is-cout/notioneer-obsidian/issues/1)).

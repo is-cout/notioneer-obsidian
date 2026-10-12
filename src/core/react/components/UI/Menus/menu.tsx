@@ -173,7 +173,7 @@ export const showMenu = (props: {
       if (submenu) submenu.hide(true);
       if (hasBeenCalled) return;
       hasBeenCalled = true;
-      setTimeout(() => {
+      window.setTimeout(() => {
         root.unmount();
         props.win.document.body.removeChild(portalElement);
       }, 50);

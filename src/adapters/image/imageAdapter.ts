@@ -33,13 +33,13 @@ this.picaInstance = pica();
             srcImage.src = this.middleware.resourcePathForPath(file.path);
             const result = await new Promise((resolve, reject) => { srcImage.onload = () => resolve(true); srcImage.onerror = () => resolve(false) });
             if (!result) return false;
-            const srcCanvas = document.createElement('canvas');
+            const srcCanvas = createEl('canvas');
             srcCanvas.width = srcImage.width;
             srcCanvas.height = srcImage.height;
             const aspect_ratio = Math.max(size / srcImage.width, size / srcImage.height);
             const ctx =  srcCanvas.getContext('2d');
             ctx.drawImage(srcImage, 0, 0);
-            const resize = document.createElement("canvas");
+            const resize = createEl("canvas");
 	        resize.width = aspect_ratio * srcCanvas.width; // 512
 	        resize.height = aspect_ratio * srcCanvas.height; // 288
 	        

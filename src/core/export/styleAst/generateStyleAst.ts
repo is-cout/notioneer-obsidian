@@ -467,9 +467,9 @@ function getAllCSSVariableNames(styleSheets = document.styleSheets){
                       cssVars.push(name);
                    }
                 }
-             } catch (error) {}
+             } catch { /* empty */ }
           }
-       } catch (error) {}
+       } catch { /* empty */ }
     }
     return cssVars;
  }
@@ -495,7 +495,7 @@ function isNumeric(str: any) {
   }
 
 export const generateStyleAst = (thumbnail?: boolean): StyleAst => {
-    const markdownRenderer = document.createElement('div')
+    const markdownRenderer = createDiv()
     markdownRenderer.classList.add('markdown-rendered')
     const defaultEl = window.getComputedStyle(markdownRenderer);
         

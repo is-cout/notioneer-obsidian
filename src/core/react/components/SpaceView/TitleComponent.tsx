@@ -71,11 +71,11 @@ export const TitleComponent = (
       if (pathState.path == "/") {
         props.superstate.settings.systemName = newValue;
         props.superstate.saveSettings();
-        props.superstate.reloadPath("/", true);
+        void props.superstate.reloadPath("/", true);
         return;
       }
       if (aliasMode) {
-        updatePrimaryAlias(
+        void updatePrimaryAlias(
           props.superstate,
           pathState.path,
           pathState.metadata?.property?.aliases,
@@ -84,10 +84,10 @@ export const TitleComponent = (
       } else {
         const sanitizedName = sanitizeFileName(newValue);
 
-        renamePathByName(props.superstate, pathState.path, sanitizedName).then(
+        void renamePathByName(props.superstate, pathState.path, sanitizedName).then(
           (f) => {
             if (f && sanitizedName != newValue) {
-              updatePrimaryAlias(
+              void updatePrimaryAlias(
                 props.superstate,
                 f,
                 pathState.metadata?.property?.aliases,

@@ -108,10 +108,10 @@ const ContextCreateItemContent = (props: {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [itemTitle, setItemTitle] = useState<string>(() => {
     if (isEdit && props.initialData?.[PathPropertyName]) {
-      return props.initialData[PathPropertyName] as string;
+      return props.initialData[PathPropertyName];
     }
     if (isEdit && data && data[rowIndex]?.[PathPropertyName]) {
-      return data[rowIndex][PathPropertyName] as string;
+      return data[rowIndex][PathPropertyName];
     }
     return "";
   });
@@ -155,9 +155,9 @@ const ContextCreateItemContent = (props: {
     if (isEdit) {
       try {
         if (props.onSave) {
-          props.onSave(updatedItem, rowIndex);
+          void props.onSave(updatedItem, rowIndex);
         } else {
-          updateRow(updatedItem, rowIndex);
+          void updateRow(updatedItem, rowIndex);
         }
       } catch (error) {
         console.error(i18n.labels.autosaveFailed, error);
@@ -249,7 +249,7 @@ const ContextCreateItemContent = (props: {
           return;
         } else {
           // Editing existing file - handle title change
-          const currentPath = props.initialData?.[PathPropertyName] as string;
+          const currentPath = props.initialData?.[PathPropertyName];
           const newTitle = itemTitle.trim();
 
           if (currentPath && newTitle && currentPath !== newTitle) {
@@ -330,7 +330,7 @@ const ContextCreateItemContent = (props: {
                   if (e.key === "Enter") {
                     e.preventDefault();
                     if (!isEdit) {
-                      handleSave();
+                      void handleSave();
                     }
                   }
                 }}

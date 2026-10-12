@@ -39,7 +39,7 @@ export const SuperCell = (
         }
         return { ...p, [c]: parsedValue[c] };
       }, {});
-    } catch (e) {
+    } catch {
       return null;
     }
     return parsedValue;

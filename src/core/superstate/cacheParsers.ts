@@ -186,7 +186,7 @@ export const parseMetadata = (
     const keys: string[] = [];
         
     for (const space of spaces) {
-        const valList = (map.get(space)?.contexts as string[] ?? []).filter(f => f).map(f => f.toLowerCase());
+        const valList = (map.get(space)?.contexts ?? []).filter(f => f).map(f => f.toLowerCase());
 
       for (const key of valList) {
         // If the current key is already seen, skip it to prevent infinite loops

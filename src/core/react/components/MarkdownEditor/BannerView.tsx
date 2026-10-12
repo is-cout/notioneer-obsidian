@@ -142,7 +142,7 @@ export const BannerView = (props: {
   const saveOffset = useCallback(
     (offset: number) => {
       setOffset(offset + "%");
-      saveProperties(props.superstate, pathState.path, {
+      void saveProperties(props.superstate, pathState.path, {
         [props.superstate.settings.fmKeyBannerOffset]: offset.toString(),
       });
     },

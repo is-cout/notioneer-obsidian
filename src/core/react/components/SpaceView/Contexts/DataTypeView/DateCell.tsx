@@ -127,7 +127,7 @@ export const DateCell = (props: TableCellProp) => {
             className="mk-cell-text"
             ref={ref}
             type="text"
-            value={value as string}
+            value={value}
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={onKeyDown}
             // onBlur={onBlur}

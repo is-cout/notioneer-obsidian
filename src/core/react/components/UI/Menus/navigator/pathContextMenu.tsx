@@ -111,7 +111,7 @@ export const triggerMultiPathMenu = (
         superstate,
         (link) => {
           paths.forEach((f) => {
-            movePathToSpace(superstate, f, link);
+            void movePathToSpace(superstate, f, link);
           });
         }
       );
@@ -128,7 +128,7 @@ export const triggerMultiPathMenu = (
         windowFromDocument(e.view.document),
         superstate,
         (link) => {
-          dropPathsInSpaceAtIndex(
+          void dropPathsInSpaceAtIndex(
             superstate,
             selectedPaths.map((f) => f.path),
             link,
@@ -147,7 +147,7 @@ export const triggerMultiPathMenu = (
     name: i18n.menu.hide,
     icon: "ui//eye-off",
     onClick: (e) => {
-      hidePaths(superstate, paths);
+      void hidePaths(superstate, paths);
     },
   });
 
@@ -161,7 +161,7 @@ export const triggerMultiPathMenu = (
         <ConfirmationModal
           confirmAction={() => {
             paths.forEach((f) => {
-              deletePath(superstate, f);
+              void deletePath(superstate, f);
             });
           }}
           confirmLabel={i18n.buttons.delete}
@@ -262,7 +262,7 @@ export const showPathContextMenu = (
       name: i18n.menu.changeToFolderNote,
       icon: "ui//file-plus-2",
       onClick: (e) => {
-        convertPathToSpace(superstate, path, false);
+        void convertPathToSpace(superstate, path, false);
       },
     });
 
@@ -292,7 +292,7 @@ export const showPathContextMenu = (
         windowFromDocument(e.view.document),
         superstate,
         (link) => {
-          dropPathsInSpaceAtIndex(superstate, [path], link, -1, "link");
+          void dropPathsInSpaceAtIndex(superstate, [path], link, -1, "link");
         },
         true
       );
@@ -310,7 +310,7 @@ export const showPathContextMenu = (
         superstate,
         (link) => {
           const item = superstate.pathsIndex.get(path);
-          superstate.spaceManager.renamePath(path, movePath(path, link));
+          void superstate.spaceManager.renamePath(path, movePath(path, link));
         }
       );
     },
@@ -320,7 +320,7 @@ export const showPathContextMenu = (
     name: i18n.menu.duplicate,
     icon: "ui//documents",
     onClick: (e) => {
-      superstate.spaceManager.copyPath(
+      void superstate.spaceManager.copyPath(
         path,
         `${cache.parent}`,
         `${cache.name}`
@@ -332,7 +332,7 @@ export const showPathContextMenu = (
     name: i18n.buttons.saveTemplate,
     icon: "ui//clipboard-add",
     onClick: (e) => {
-      saveSpaceTemplate(superstate, path, space);
+      void saveSpaceTemplate(superstate, path, space);
     },
   });
   if (superstate.ui.hasNativePathMenu(path)) {
@@ -381,7 +381,7 @@ export const showPathContextMenu = (
         name: i18n.menu.removeFromSpace.replace("${1}", spaceCache.name),
         icon: "ui//pin-off",
         onClick: (e) => {
-          removePathsFromSpace(superstate, spaceCache.path, [path]);
+          void removePathsFromSpace(superstate, spaceCache.path, [path]);
         },
       });
     }
@@ -392,7 +392,7 @@ export const showPathContextMenu = (
     name: i18n.menu.hide,
     icon: "ui//eye-off",
     onClick: (e) => {
-      hidePath(superstate, path);
+      void hidePath(superstate, path);
     },
   });
 
@@ -400,7 +400,7 @@ export const showPathContextMenu = (
     name: i18n.menu.delete,
     icon: "ui//trash",
     onClick: (e) => {
-      deletePath(superstate, path);
+      void deletePath(superstate, path);
     },
   });
 

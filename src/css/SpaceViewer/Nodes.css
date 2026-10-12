@@ -53,7 +53,6 @@
     overflow: hidden;
     -webkit-line-clamp: var(--line-count);
     -webkit-box-orient: vertical;
-    color: inherit;
     font-size: var(--font-text-size);
     font-weight: var(--font-text-weight);
     font-style: var(--font-text-style);

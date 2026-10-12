@@ -38,7 +38,7 @@ const removeMarkdown = (str: string) => {
     output = output.replace(/^(-\s*?|\*\s*?|_\s*?){3,}\s*/gm, '');
 
   try {
-        output = output.replace(/^([\s\t]*)([\*\-\+]|\d+\.)\s+/gm, '$1');
+        output = output.replace(/^([\s\t]*)([*\-+]|\d+\.)\s+/gm, '$1');
       output = output
       // Header
         .replace(/\n={2,}/g, '\n')
@@ -60,14 +60,14 @@ const removeMarkdown = (str: string) => {
       // Remove HTML tags
       .replace(htmlReplaceRegex, '')
       // Remove setext-style headers
-      .replace(/^[=\-]{2,}\s*$/g, '')
+      .replace(/^[=-]{2,}\s*$/g, '')
       // Remove footnotes?
-      .replace(/\[\^.+?\](\: .*?$)?/g, '')
+      .replace(/\[\^.+?\](: .*?$)?/g, '')
       .replace(/\s{0,2}\[.*?\]: .*?$/g, '')
       // Remove images
-      .replace(/\!\[(.*?)\][\[\(].*?[\]\)]/g, '')
+      .replace(/!\[(.*?)\][[(].*?[\])]/g, '')
       // Remove inline links
-      .replace(/\[([^\]]*?)\][\[\(].*?[\]\)]/g, '$1')
+      .replace(/\[([^\]]*?)\][[(].*?[\])]/g, '$1')
       // Remove blockquotes
       .replace(/^(\n)?\s{0,3}>\s?/gm, '$1')
       // .replace(/(^|\n)\s{0,3}>\s?/g, '\n\n')
@@ -76,7 +76,7 @@ const removeMarkdown = (str: string) => {
       // Remove atx-style headers
       .replace(/^(\n)?\s{0,}#{1,6}\s*( (.+))? +#+$|^(\n)?\s{0,}#{1,6}\s*( (.+))?$/gm, '$1$3$4$6')
       // Remove * emphasis
-      .replace(/([\*]+)(\S)(.*?\S)??\1/g, '$2$3')
+      .replace(/([*]+)(\S)(.*?\S)??\1/g, '$2$3')
       // Remove _ emphasis. Unlike *, _ emphasis gets rendered only if 
       //   1. Either there is a whitespace character before opening _ and after closing _.
       //   2. Or _ is at the start/end of the string.
@@ -123,7 +123,7 @@ public app: App;
     }
     public metadataChange (file: TFile) {
         
-        this.parseCache(tFileToAFile(file), true);
+        void this.parseCache(tFileToAFile(file), true);
         
     }
     public cacheDirectory = ".makemd/thumbnails";
@@ -137,7 +137,7 @@ public app: App;
                 if (!Platform.isMobile) {
                     const thumbnailResult = await this.generateThumbnail(file, thumbnailPath);
                     if (thumbnailResult) {
-                        this.parseCache(file, true);
+                        void this.parseCache(file, true);
                         this.thumbnailFreshCache.set(file.path, true);
                     }
                     
@@ -173,7 +173,7 @@ public app: App;
             foreignObject.setAttribute('externalResourcesRequired', 'true')
           
             svg.appendChild(foreignObject)
-            const node = document.createElement('div')
+            const node = createDiv()
             node.appendChild(sanitizeHTMLToDom(html))
             foreignObject.appendChild(node)
             const dataURI = await Promise.resolve()
@@ -183,8 +183,8 @@ public app: App;
             const img : HTMLImageElement = await new Promise((resolve, reject) => {
                 const img = new Image()
                 img.onload = () => {
-                  img.decode().then(() => {
-                    requestAnimationFrame(() => resolve(img))
+                  void img.decode().then(() => {
+                    window.requestAnimationFrame(() => resolve(img))
                   })
                 }
                 img.onerror = reject
@@ -193,8 +193,8 @@ public app: App;
                 img.src = dataURI
               })
 
-            const canvas = document.createElement('canvas')
-            const context = canvas.getContext('2d')!
+            const canvas = createEl('canvas')
+            const context = canvas.getContext('2d')
             const ratio = 1;
             const canvasWidth = width
             const canvasHeight = height
@@ -224,7 +224,7 @@ public app: App;
             this.styleAst = await generateStyleAst(true);
             
           }
-          const baseStyle = (Object.entries(this.styleAst.styles).map(([key, value]) => `${hyphenate(key)}: ${(value.replace(/"/g, '&quot;').replace((/  |\r\n|\n|\r/gm),""))}${this.styleAst.type == 'slide' ? '!important' : ''};`).join(" "))
+          const baseStyle = (Object.entries(this.styleAst.styles).map(([key, value]) => `${hyphenate(key)}: ${(value.replace(/"/g, '&quot;').replace((/ {2}|\r\n|\n|\r/gm),""))}${this.styleAst.type == 'slide' ? '!important' : ''};`).join(" "))
           const exportOptions: HTMLExportOptions = {
             header: {
                 enabled: true,
@@ -377,7 +377,7 @@ public app: App;
         }
     }
     public getCache (file: AFile, fragmentType: keyof CleanCachedMetadata, query?: any) {
-        return this.cache.get(file.path)?.[fragmentType] as CleanCachedMetadata[typeof fragmentType]
+        return this.cache.get(file.path)?.[fragmentType]
     }
 
     public async readContent (file: AFile, fragmentType: keyof CachedMetadataContentTypes, fragmentId: any) {

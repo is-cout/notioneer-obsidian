@@ -268,7 +268,6 @@ body:not(.is-mobile) .mk-context-title:hover .mk-toolbar-button {
 }
 .mk-query-filters {
   flex-wrap: wrap;
-  padding: 0;
   border-bottom: none;
   display: flex;
   background: var(--mk-ui-background);

@@ -1,11 +1,7 @@
 import { PathContext } from "core/react/context/PathContext";
 import { SpaceContext } from "core/react/context/SpaceContext";
 import { savePathBanner } from "core/superstate/utils/label";
-import {
-  metadataPathForSpace,
-  saveSpaceCache,
-  saveSpaceTemplate,
-} from "core/superstate/utils/spaces";
+import { metadataPathForSpace, saveSpaceTemplate } from "core/superstate/utils/spaces";
 import { removePathIcon, savePathIcon } from "core/utils/emoji";
 import { isTouchScreen } from "core/utils/ui/screen";
 import { isString } from "lodash";
@@ -55,7 +51,7 @@ export const SpaceHeaderBar = (props: {
         value=""
         saveLabel={i18n.buttons.save}
         saveValue={(value) => {
-          props.superstate.spaceManager
+          void props.superstate.spaceManager
             .tablesForSpace(spaceState.path)
             .then((schemas) => {
               if (schemas) {
@@ -85,7 +81,7 @@ export const SpaceHeaderBar = (props: {
   const newTemplate = (offset: Rect, win: Window) => {
     return showLinkMenu(offset, win, props.superstate, (space) => {
       if (isString(space))
-        saveSpaceTemplate(props.superstate, spaceState.path, space);
+        void saveSpaceTemplate(props.superstate, spaceState.path, space);
     });
   };
   const addNew = (e: React.MouseEvent) => {
@@ -273,7 +269,7 @@ export const SpaceHeaderBar = (props: {
           description: i18n.labels.resetViewDesc,
           icon: "ui//table",
           onClick: (e) => {
-            props.superstate.spaceManager.saveFrame(
+            void props.superstate.spaceManager.saveFrame(
               spaceState.path,
               props.superstate.spaceManager.superstate.settings.enableFolderNote
                 ? DefaultFolderNoteMDBTables.main

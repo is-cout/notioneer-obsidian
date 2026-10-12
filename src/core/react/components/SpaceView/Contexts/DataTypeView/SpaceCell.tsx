@@ -13,7 +13,7 @@ export const SpaceCell = (props: TableCellProp & { isTable: boolean }) => {
   const menuRef = useRef(null);
   const [spaceObject, setSpaceObject] = useState(null);
   useEffect(() => {
-    contextPathFromPath(props.superstate, props.initialValue).then((f) =>
+    void contextPathFromPath(props.superstate, props.initialValue).then((f) =>
       setSpaceObject(f)
     );
   }, [props.initialValue]);

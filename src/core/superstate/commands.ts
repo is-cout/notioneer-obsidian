@@ -4,7 +4,7 @@ import { runFormulaWithContext } from "core/utils/formula/parser";
 import { executeCode } from "core/utils/frames/runner";
 import { ISuperstate as Superstate } from "shared/types/superstate";
 import i18n from "shared/i18n";
-import { ActionInstance, ActionTree, CLIAdapter } from "shared/types/actions";
+import { ActionInstance, CLIAdapter } from "shared/types/actions";
 import { Command, CommandWithPath } from "shared/types/commands";
 import { parseURI } from "shared/utils/uri";
 
@@ -975,7 +975,7 @@ export class SpacesCommandsAdapter implements CLIAdapter {
                 if (command.schema.type === 'actions') {
                     newInstance = await runActionString(this.superstate, command.code || "", instance);
                 } else if (command.schema.type === 'script') {
-                    newInstance.result = await executeCode(command.code, {...instance.instanceProps, $prev: instance.result});
+                    newInstance.result = executeCode();
                 } else if (command.schema.type === 'formula') {
                     newInstance.result = runFormulaWithContext(
                         this.superstate.formulaContext,

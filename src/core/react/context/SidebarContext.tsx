@@ -75,7 +75,7 @@ export const SidebarProvider: React.FC<
     };
     newWaypoint.paths = [...newWaypoint.paths.filter((f) => f != path), path];
     if (activeFocus > props.superstate.focuses.length) {
-      props.superstate.spaceManager.saveFocuses([
+      void props.superstate.spaceManager.saveFocuses([
         ...props.superstate.focuses,
         newWaypoint,
       ]);
@@ -83,7 +83,7 @@ export const SidebarProvider: React.FC<
     const newFocuses = props.superstate.focuses.map((f, i) =>
       i == activeFocus ? newWaypoint : f
     );
-    props.superstate.spaceManager.saveFocuses(newFocuses.filter((f) => f));
+    void props.superstate.spaceManager.saveFocuses(newFocuses.filter((f) => f));
   };
 
   const closeActiveViewSpace = (path: string) => {
@@ -94,7 +94,7 @@ export const SidebarProvider: React.FC<
     };
     newWaypoint.paths = [...newWaypoint.paths.filter((f) => f != path)];
     if (activeFocus > props.superstate.focuses.length) {
-      props.superstate.spaceManager.saveFocuses([
+      void props.superstate.spaceManager.saveFocuses([
         ...props.superstate.focuses,
         newWaypoint,
       ]);
@@ -102,11 +102,11 @@ export const SidebarProvider: React.FC<
     const newFocuses = props.superstate.focuses.map((f, i) =>
       i == activeFocus ? newWaypoint : f
     );
-    props.superstate.spaceManager.saveFocuses(newFocuses.filter((f) => f));
+    void props.superstate.spaceManager.saveFocuses(newFocuses.filter((f) => f));
   };
 
   const saveFocuses = (paths: Focus[]) => {
-    props.superstate.spaceManager.saveFocuses(paths.filter((f) => f));
+    void props.superstate.spaceManager.saveFocuses(paths.filter((f) => f));
   };
 
   const refreshSpaces = (payload: { path: string }) => {

@@ -189,7 +189,7 @@ export const updateTableValue = async (
   field: string,
   value: string,
     rank?: number) => {
-      processTable(manager, space, schema, (async f => 
+      void processTable(manager, space, schema, (async f => 
         {
 
           let newMDB = {

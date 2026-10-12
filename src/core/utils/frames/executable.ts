@@ -1,27 +1,30 @@
 import * as acorn from "acorn";
 import { FrameExecutable, FrameTreeNode } from "shared/types/frameExec";
 import { applyFunctionToObject } from "../objects";
-import { objectIsConst, stringIsConst } from "./frames";
+import { stringIsConst } from "./frames";
 import { isString } from "lodash";
 
-const generateCodeForProp = (value: any, isClosure: boolean, type?: string) => {
-    let codeBlock : string = value || '';
-    if (!isString(codeBlock)) codeBlock = JSON.stringify(codeBlock);
-    if (codeBlock.startsWith('{') && codeBlock.endsWith('}')) codeBlock = `(${codeBlock})`
-    codeBlock = (isClosure && !codeBlock.startsWith('(')) ? `($event, $value, $state, $saveState, $api) => { ${codeBlock} }` : codeBlock;
-    const isMultiLine = (typeof codeBlock === 'string') ? codeBlock.includes('\n') : false;
-    const isObject = type?.startsWith('object') && objectIsConst(codeBlock, type)
-    
-    let func
+/** make.md compiled every frame prop, style and action into a function with `new Function`.
+    Notioneer renders no frames and runs no make.md scripts, so only literal values survive:
+    a quoted string, a number, `true`/`false`, or JSON. Anything that would need evaluating
+    resolves to undefined. This keeps dynamic code execution out of the bundle. */
+const evaluateLiteral = (code: unknown): unknown => {
+    if (!isString(code)) return code;
+    const trimmed = code.trim().replace(/;+$/, "");
+    if (trimmed === "") return undefined;
+    if (/^'(?:[^'\\]|\\.)*'$/.test(trimmed)) return trimmed.slice(1, -1).replace(/\\(.)/g, "$1");
     try {
-    func = isMultiLine && !(isClosure) && !codeBlock.startsWith('(') && !isObject
-    ? new Function(`with(this) { ${codeBlock} }`)
-    : new Function(`with(this) { return ${codeBlock}; }`);
-    
-    } catch (e) {
-        console.log(e, codeBlock)
+        return JSON.parse(trimmed);
+    } catch {
+        return undefined;
     }
-    return func;
+};
+
+const generateCodeForProp = (value: unknown, isClosure: boolean) => {
+    // Actions are closures over make.md's runtime API; there is nothing literal to keep.
+    if (isClosure) return undefined;
+    const result = evaluateLiteral(value);
+    return () => result;
   }
 
   export const buildExecutable = (root: FrameTreeNode) => {
@@ -37,7 +40,7 @@ const generateCodeForProp = (value: any, isClosure: boolean, type?: string) => {
     });
     
 
-    treeNode.execProps = applyFunctionToObject(treeNode.node.props, (e, k) => generateCodeForProp(e, false, treeNode.node.types?.[k]));
+    treeNode.execProps = applyFunctionToObject(treeNode.node.props, (e) => generateCodeForProp(e, false));
     treeNode.execStyles = applyFunctionToObject(treeNode.node.styles, (e) => generateCodeForProp(e, false));
     treeNode.execActions = applyFunctionToObject(treeNode.node.actions, (e) => generateCodeForProp(e, true));
     treeNode.children = treeNode.children.map((child) => 
@@ -122,7 +125,7 @@ function extractDependencies(code: string): string[][] {
 try {
     const ast = acorn.parse(code.replace("return ", ""), { ecmaVersion: 2020 }) as any;
     explore(ast);
-} catch (e) {
+} catch {
     return []
 }
     
@@ -159,7 +162,7 @@ function sortKeysByDependencies(
             if (depStr === key) continue; // Skip self dependencies
 
             // Add an edge from key to the dependency
-            graph.get(key)!.add(depStr);
+            graph.get(key).add(depStr);
         }
     }
     

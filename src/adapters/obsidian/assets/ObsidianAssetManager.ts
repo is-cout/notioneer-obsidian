@@ -1,7 +1,7 @@
 import i18n from "shared/i18n";
 
 import MakeMDPlugin from 'main';
-import { normalizePath } from 'obsidian';
+import { arrayBufferToBase64, normalizePath } from 'obsidian';
 import { emojis } from 'shared/assets/emoji';
 import {
   Asset,
@@ -280,7 +280,7 @@ export class ObsidianAssetManager implements IAssetManager {
   // Migrate icons from superstate if available
   protected migrateIconsFromSuperstate(): void {
     if (this.spaceManager.superstate?.iconsCache) {
-      const superstateCache = this.spaceManager.superstate.iconsCache as Map<string, string>;
+      const superstateCache = this.spaceManager.superstate.iconsCache;
       
       // Copy all entries from superstate cache
       for (const [key, value] of superstateCache.entries()) {
@@ -887,35 +887,35 @@ export class ObsidianAssetManager implements IAssetManager {
 
   // Type-specific getters
   public getIcons(): IconAsset[] {
-    return Array.from(this.assets.values()).filter(a => a.type === 'icon') as IconAsset[];
+    return Array.from(this.assets.values()).filter(a => a.type === 'icon');
   }
 
   public getIconsets(): IconsetAsset[] {
-    return Array.from(this.assets.values()).filter(a => a.type === 'iconset') as IconsetAsset[];
+    return Array.from(this.assets.values()).filter(a => a.type === 'iconset');
   }
 
   public getImages(): ImageAsset[] {
-    return Array.from(this.assets.values()).filter(a => a.type === 'image') as ImageAsset[];
+    return Array.from(this.assets.values()).filter(a => a.type === 'image');
   }
 
   public getTextures(): TextureAsset[] {
-    return Array.from(this.assets.values()).filter(a => a.type === 'texture') as TextureAsset[];
+    return Array.from(this.assets.values()).filter(a => a.type === 'texture');
   }
 
   public getAudios(): AudioAsset[] {
-    return Array.from(this.assets.values()).filter(a => a.type === 'audio') as AudioAsset[];
+    return Array.from(this.assets.values()).filter(a => a.type === 'audio');
   }
 
   public getModels(): ModelAsset[] {
-    return Array.from(this.assets.values()).filter(a => a.type === 'model') as ModelAsset[];
+    return Array.from(this.assets.values()).filter(a => a.type === 'model');
   }
 
   public getVisualizations(): VisualizationAsset[] {
-    return Array.from(this.assets.values()).filter(a => a.type === 'visualization') as VisualizationAsset[];
+    return Array.from(this.assets.values()).filter(a => a.type === 'visualization');
   }
 
   public getColorPalettes(): ColorPaletteAsset[] {
-    const palettes = Array.from(this.assets.values()).filter(a => a.type === 'colorpalette') as ColorPaletteAsset[];
+    const palettes = Array.from(this.assets.values()).filter(a => a.type === 'colorpalette');
     return palettes;
   }
 
@@ -1091,18 +1091,18 @@ export class ObsidianAssetManager implements IAssetManager {
 
   public async loadColorPalette(path: string): Promise<ColorPaletteAsset | null> {
     const asset = await this.loadAsset(path);
-    return asset && asset.type === 'colorpalette' ? asset as ColorPaletteAsset : null;
+    return asset && asset.type === 'colorpalette' ? asset : null;
   }
 
   public async reloadColorPalette(id: string): Promise<ColorPaletteAsset | null> {
     const asset = await this.refreshAsset(id);
-    return asset && asset.type === 'colorpalette' ? asset as ColorPaletteAsset : null;
+    return asset && asset.type === 'colorpalette' ? asset : null;
   }
 
   // Iconset management
   public async loadIconset(path: string): Promise<IconsetAsset | null> {
     const asset = await this.loadAsset(path);
-    return asset && asset.type === 'iconset' ? asset as IconsetAsset : null;
+    return asset && asset.type === 'iconset' ? asset : null;
   }
 
   public async saveIconset(iconset: IconsetAsset): Promise<boolean> {
@@ -1127,7 +1127,7 @@ export class ObsidianAssetManager implements IAssetManager {
           if (existingContent) {
             iconsetMapping = JSON.parse(existingContent);
           }
-        } catch (e) {
+        } catch {
           // File doesn't exist yet, start with empty mapping
         }
         
@@ -1197,7 +1197,6 @@ export class ObsidianAssetManager implements IAssetManager {
           const folderExists = await this.pathExists(iconsetFolderPath);
           if (folderExists) {
             await this.deletePath(iconsetFolderPath);
-            console.log(`[ObsidianAssetManager] Deleted iconset folder: ${iconsetFolderPath}`);
           }
         } catch (error) {
           console.error(`[ObsidianAssetManager] Failed to delete iconset folder ${iconsetFolderPath}:`, error);
@@ -1247,7 +1246,7 @@ export class ObsidianAssetManager implements IAssetManager {
 
   // Helper methods
   private generateId(): string {
-    return `asset_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return `asset_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
   }
 
   private pathToId(path: string): string {
@@ -1286,7 +1285,7 @@ export class ObsidianAssetManager implements IAssetManager {
       this.cache.set(id, content);
     } else if (content instanceof ArrayBuffer) {
       // Convert ArrayBuffer to base64 for caching
-      const base64 = btoa(String.fromCharCode(...new Uint8Array(content)));
+      const base64 = arrayBufferToBase64(content);
       this.cache.set(id, base64);
     }
   }

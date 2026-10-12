@@ -14,7 +14,7 @@ export const MobileDrawer = (props: {
     const drawers = document.querySelectorAll(".mk-drawer-content");
     let drawerIndex = 0;
     drawers.forEach((drawer) => {
-      if (drawer instanceof HTMLElement) {
+      if (drawer.instanceOf(HTMLElement)) {
         const index = drawer.getAttribute("data-drawer-index");
         if (index && parseInt(index) >= drawerIndex) {
           drawerIndex = parseInt(index) + 1;

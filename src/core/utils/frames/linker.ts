@@ -58,7 +58,7 @@ export const preprocessCode = (code: unknown, oldName: string, newName: string):
 
     string = generate(ast).trimEnd();
   } catch (e){
-    console.log(codeBlock, e)
+    console.error(codeBlock, e)
         string = `"error"`
   }
 

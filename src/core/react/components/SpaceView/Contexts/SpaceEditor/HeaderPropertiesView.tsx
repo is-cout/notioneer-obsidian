@@ -134,10 +134,10 @@ export const HeaderPropertiesView = (props: PropsWithChildren<{
 
   const saveField = (source: string, field: SpaceProperty) => {
     if (source == "$fm") {
-      saveNewProperty(props.superstate, pathState.path, field);
+      void saveNewProperty(props.superstate, pathState.path, field);
       return true;
     }
-    props.superstate.spaceManager.addSpaceProperty(source, field);
+    void props.superstate.spaceManager.addSpaceProperty(source, field);
     return true;
   };
 
@@ -171,7 +171,7 @@ export const HeaderPropertiesView = (props: PropsWithChildren<{
           if (link.charAt(0) == "#" || type == "tag") {
             addTagToPath(props.superstate, pathState.path, link);
           } else {
-            createSpace(props.superstate, link, { links: [pathState.path] });
+            void createSpace(props.superstate, link, { links: [pathState.path] });
           }
         } else {
           addToSpace(link);
@@ -189,7 +189,7 @@ export const HeaderPropertiesView = (props: PropsWithChildren<{
         value=""
         saveLabel={i18n.buttons.save}
         saveValue={(value) => {
-          props.superstate.spaceManager.createCommand(spaceState.path, {
+          void props.superstate.spaceManager.createCommand(spaceState.path, {
             id: value,
             name: value,
             type: "actions",
@@ -202,7 +202,7 @@ export const HeaderPropertiesView = (props: PropsWithChildren<{
 
   const [cols, setCols] = useState<PathContextProperty[]>([]);
   useEffect(() => {
-    reloadProperties();
+    void reloadProperties();
   }, [pathState]);
   useEffect(() => {
     const contextUpdated = (payload: { path: string }) => {
@@ -210,7 +210,7 @@ export const HeaderPropertiesView = (props: PropsWithChildren<{
         ...(props.superstate.spacesMap.get(pathState?.path) ?? []),
       ];
       if (!spaces.includes(payload.path)) return;
-      reloadProperties();
+      void reloadProperties();
     };
     props.superstate.eventsDispatcher.addListener(
       "contextStateUpdated",
@@ -295,16 +295,16 @@ export const HeaderPropertiesView = (props: PropsWithChildren<{
     setCols(properties);
   };
   const updateValue = (value: string, field: PathContextProperty) => {
-    saveProperties(props.superstate, pathState.path, {
+    void saveProperties(props.superstate, pathState.path, {
       [field.property.name]: parseMDBStringValue(
         field.property.type,
         value,
         true
       ),
     });
-    Promise.all(
+    void Promise.all(
       field.contexts.map((f) => {
-        updateContextValue(
+        void updateContextValue(
           props.superstate.spaceManager,
           props.superstate.spacesIndex.get(f).space,
           pathState.path,
@@ -319,7 +319,7 @@ export const HeaderPropertiesView = (props: PropsWithChildren<{
     value: string,
     field: PathContextProperty
   ) => {
-    saveProperties(props.superstate, pathState.path, {
+    void saveProperties(props.superstate, pathState.path, {
       [field.property.name]: parseMDBStringValue(
         field.property.type,
         value,
@@ -327,7 +327,7 @@ export const HeaderPropertiesView = (props: PropsWithChildren<{
       ),
     });
 
-    props.superstate.spaceManager.saveSpaceProperty(
+    void props.superstate.spaceManager.saveSpaceProperty(
       field.contexts[0],
       {
         ...field.property,
@@ -347,7 +347,7 @@ export const HeaderPropertiesView = (props: PropsWithChildren<{
       fields: cols.map((f) => f.property),
       contextPath: pathState.path,
       saveField: (newField) => {
-        props.superstate.spaceManager.saveSpaceProperty(
+        void props.superstate.spaceManager.saveSpaceProperty(
           field.contexts[0],
           newField,
           field.property
@@ -355,7 +355,7 @@ export const HeaderPropertiesView = (props: PropsWithChildren<{
       },
       anchor: "bottom",
       deleteColumn: (column) => {
-        props.superstate.spaceManager.deleteSpaceProperty(
+        void props.superstate.spaceManager.deleteSpaceProperty(
           field.contexts[0],
           field.property
         );

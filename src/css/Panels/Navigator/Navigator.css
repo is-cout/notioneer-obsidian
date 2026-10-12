@@ -248,7 +248,6 @@ body:not(.is-mobile) .mk-tree-new {
   --vertical-padding: 2px;
   flex-grow: 1;
   position: relative;
-  display: flex;
   align-items: center !important;
   padding: var(--vertical-padding) 2px;
   min-width: 0;

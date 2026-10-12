@@ -35,7 +35,7 @@ export const WindowManager = (props: { ui: ObsidianUI }) => {
   useEffect(() => {
     props.ui.createRoot = createRoot;
     props.ui.getRoot = getRoot;
-    props.ui.manager.eventsDispatch.dispatchEvent("windowReady", null);
+    void props.ui.manager.eventsDispatch.dispatchEvent("windowReady", null);
   }, [createRoot]);
 
   const [dragActive, setDragActive] = React.useState(false);

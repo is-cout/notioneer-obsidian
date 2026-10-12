@@ -73,7 +73,7 @@ export class FilesystemMiddleware {
         if (!file) return null;
         this.filetypeAdaptersForFile(file).forEach((adapter) => {
             if (adapter.loadFile)
-            adapter.loadFile(file);
+            void adapter.loadFile(file);
         });
         return null;
     }
@@ -92,7 +92,7 @@ export class FilesystemMiddleware {
     }
 
     public fileFragmentChanged (file: AFile) {
-        this.eventDispatch.dispatchEvent("onFileFragmentChanged", { file })
+        void this.eventDispatch.dispatchEvent("onFileFragmentChanged", { file })
     }
 
     public initiateFileSystemAdapter (adapter: FileSystemAdapter, primary: boolean) {
@@ -221,27 +221,27 @@ export class FilesystemMiddleware {
     }
 
     public onCreate (file: AFile) {
-        this.eventDispatch.dispatchEvent("onCreate", { file })
+        void this.eventDispatch.dispatchEvent("onCreate", { file })
     }
 
     public onModify (file: AFile) {
-        this.eventDispatch.dispatchEvent("onModify", { file })
+        void this.eventDispatch.dispatchEvent("onModify", { file })
     }
 
     public onRename (file: AFile, oldPath: string) {
-        this.eventDispatch.dispatchEvent("onRename", { file, oldPath })
+        void this.eventDispatch.dispatchEvent("onRename", { file, oldPath })
     }
 
     public onDelete (file: AFile) {
-        this.eventDispatch.dispatchEvent("onDelete", { file })
+        void this.eventDispatch.dispatchEvent("onDelete", { file })
     }
 
     public onSpaceUpdated (path: string, type: string) {
-        this.eventDispatch.dispatchEvent("onSpaceUpdated", { path, type })
+        void this.eventDispatch.dispatchEvent("onSpaceUpdated", { path, type })
     }
 
     public onFocusesUpdated () {
-        this.eventDispatch.dispatchEvent("onFocusesUpdated", null)
+        void this.eventDispatch.dispatchEvent("onFocusesUpdated", null)
     }
 
     public adapterForPath (path?: string) {

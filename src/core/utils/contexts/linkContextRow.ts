@@ -37,8 +37,7 @@ export const propertyDependencies = (fields: SpaceProperty[]) => {
     const deps = parse(value).filter((f) => f.type == 'FunctionNode').filter(f => (f as FunctionNode).fn.name == 'prop' && (f as FunctionNode).args[0].type == 'ConstantNode').map(f => ((f as FunctionNode).args[0] as ConstantNode)?.value as unknown as string)
     localDependencies.push(...deps)
   }
-  catch (e) {
-  }
+  catch { /* empty */ }
     
 
     const key = f.name
@@ -50,7 +49,7 @@ export const propertyDependencies = (fields: SpaceProperty[]) => {
       if (depStr === key) continue; // Skip self dependencies
   
       // Add an edge from key to the dependency
-      graph.get(key)!.add(depStr);
+      graph.get(key).add(depStr);
   }
 })
 const visited: Set<string> = new Set();
@@ -275,7 +274,7 @@ export const linkContextRow = (
       }),
     };
   }, {})
-  const formulaFields = result.map(f => fields.find(g => g.name == f) as SpaceProperty).filter((f) => f && (f.type == "fileprop")).reduce((p, c) => {
+  const formulaFields = result.map(f => fields.find(g => g.name == f)).filter((f) => f && (f.type == "fileprop")).reduce((p, c) => {
     
     const { value } = parseFieldValue(c.value, c.type);
     return {...p, [c.name]: runFormulaWithContext(runContext, paths, spaceMap, value, properties, {..._row,

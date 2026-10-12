@@ -3,7 +3,6 @@ import { InteractionType, ScreenType } from "shared/types/ui";
 
 import MakeMDPlugin from "main";
 import { Sticker } from "shared/types/ui";
-import { ISuperstate as Superstate } from "shared/types/superstate";
 import { UIAdapter } from "shared/types/uiManager";
 import { UIManager } from "core/middleware/ui";
 import i18n from "shared/i18n";
@@ -14,7 +13,6 @@ import { Container } from "react-dom";
 import { Root, createRoot } from "react-dom/client";
 import { emojis } from "shared/assets/emoji";
 import { Pos, Rect } from "shared/types/Pos";
-import { EmojiData } from "shared/types/emojis";
 import { TargetLocation } from "shared/types/path";
 import { openPathInElement } from "shared/utils/openPathInElement";
 import { getParentPathFromString } from "utils/path";
@@ -38,7 +36,7 @@ export class ObsidianUI implements UIAdapter {
   public manager: UIManager;
   public root: Root;
   public constructor(public plugin: MakeMDPlugin) {
-    const newDiv = document.createElement("div");
+    const newDiv = createDiv();
     document.body.appendChild(newDiv);
     newDiv.className = "mk-root";
     this.createRoot = () => null;
@@ -354,7 +352,7 @@ export class ObsidianUI implements UIAdapter {
       // Skip single slash paths as they should now be available with // format
     });
 
-    const allEmojis: Sticker[] = Object.keys(emojis as EmojiData).reduce(
+    const allEmojis: Sticker[] = Object.keys(emojis).reduce(
       (p, c: string) => [
         ...p,
         ...emojis[c].map((e) => ({
@@ -403,9 +401,9 @@ export class ObsidianUI implements UIAdapter {
         })
         .map((f) => {
           return {
-            path: f.view.file?.path as string,
+            path: f.view.file?.path,
             openPath: (path: string) => {
-              f.openFile(abstractFile as TFile);
+              void f.openFile(abstractFile);
             },
             parent: null as any,
             children: [] as any[],
@@ -435,7 +433,7 @@ export class ObsidianUI implements UIAdapter {
       const everLeaves =
         this.plugin.app.workspace.getLeavesOfType("mk-ever-view");
       if (everLeaves.length > 0) {
-        everLeaves[0].setViewState({
+        void everLeaves[0].setViewState({
           type: "mk-ever-view",
           state: { path: path },
         });
@@ -455,13 +453,9 @@ export class ObsidianUI implements UIAdapter {
         null,
         async (editor) => {
           const leaf = editor.attachLeaf();
-          if (
-            this.plugin.app.vault.getAbstractFileByPath(uri.basePath) instanceof
-            TFile
-          ) {
-            await leaf.openFile(
-              this.plugin.app.vault.getAbstractFileByPath(uri.basePath) as TFile
-            );
+          const file = this.plugin.app.vault.getAbstractFileByPath(uri.basePath);
+          if (file instanceof TFile) {
+            await leaf.openFile(file);
 
             const selectiveRange = getLineRangeFromRef(
               uri.basePath,
@@ -472,7 +466,7 @@ export class ObsidianUI implements UIAdapter {
               return;
             }
             if (props?.readOnly) {
-              leaf.setViewState({
+              void leaf.setViewState({
                 type: "markdown",
                 state: { mode: "preview" },
               });
@@ -491,7 +485,7 @@ export class ObsidianUI implements UIAdapter {
       return;
     }
     const leaf = getLeaf(this.plugin.app, newLeaf);
-    this.plugin.openPath(leaf, path);
+    void this.plugin.openPath(leaf, path);
   };
   public primaryInteractionType = () => {
     return Platform.isMobile ? InteractionType.Touch : InteractionType.Mouse;
@@ -515,14 +509,14 @@ export class ObsidianUI implements UIAdapter {
         item.setIcon("trash");
         item.onClick(() => {
           if (file instanceof TFile) {
-            this.plugin.app.vault.delete(file);
+            void this.plugin.app.vault.delete(file);
             return;
           }
           this.openModal(
             i18n.labels.deleteSpace,
             <ConfirmationModal
               confirmAction={() => {
-                removeSpace(this.manager.superstate, path);
+                void removeSpace(this.manager.superstate, path);
               }}
               confirmLabel={i18n.buttons.delete}
               message={i18n.descriptions.deleteSpace}

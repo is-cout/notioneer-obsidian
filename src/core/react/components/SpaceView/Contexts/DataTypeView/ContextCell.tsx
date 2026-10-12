@@ -91,7 +91,7 @@ export const ContextCell = (
     );
     if (fieldValue.field?.length > 0) {
       //force refresh linked so that all views are uptodate
-      props.superstate.reloadContextByPath(spacePath, { force: true });
+      void props.superstate.reloadContextByPath(spacePath, { force: true });
     }
     const newValues = value.filter((f) => f != v);
     setValue(newValues);
@@ -108,9 +108,9 @@ export const ContextCell = (
       currentPaths.forEach((f) => {
         const space = props.superstate.spacesIndex.get(spacePath);
         if (props.superstate.pathsIndex.get(f)) {
-          addPathToSpaceAtIndex(props.superstate, space, f);
+          void addPathToSpaceAtIndex(props.superstate, space, f);
         } else {
-          newPathInSpace(props.superstate, space, "md", f, true);
+          void newPathInSpace(props.superstate, space, "md", f, true);
         }
       });
     }

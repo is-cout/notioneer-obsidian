@@ -8,7 +8,6 @@ import { windowFromDocument } from "shared/utils/dom";
 import { defaultMenu } from "../menu/SelectionMenu";
 import { showPathContextMenu } from "../navigator/pathContextMenu";
 
-import { EditPropertiesSubmenu } from "./EditPropertyMenu";
 import { openContextCreateItemModal } from "../../Modals/ContextCreateItemModal";
 
 export const showRowContextMenu = async (

@@ -49,7 +49,7 @@ export class TextCacher implements FileTypeAdapter<Record<string, any>, Record<s
     }
     public refreshCache (payload: { file: AFile}) {
         if (this.supportedFileTypes.find(type => type == payload.file.extension))
-            this.parseCache(payload.file, true);
+            void this.parseCache(payload.file, true);
     }
     public middleware: FilesystemMiddleware;
     public async parseCache (file: AFile, refresh?: boolean) {

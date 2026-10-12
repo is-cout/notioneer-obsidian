@@ -58,7 +58,7 @@ export class Indexer {
         // Immediately run this task if there are available workers; otherwise, add it to the queue.
         const workerId = this.nextAvailableWorker();
         if (workerId !== undefined) {
-            this.send(jerb, workerId);
+            void this.send(jerb, workerId);
 
         } else {
             this.reloadQueue.push(jerb);
@@ -82,7 +82,7 @@ export class Indexer {
 
         // Queue a new job onto this worker.
         const job = this.reloadQueue.shift();
-        if (job !== undefined) this.send(job, index);
+        if (job !== undefined) void this.send(job, index);
 
         // Resolve promises to let users know this file has finished.
         if ("$error" in data) {
@@ -194,7 +194,7 @@ export class Indexer {
                 return;
             }
             const dbExists = await this.cache.spaceManager.contextInitiated(space.path);
-            this.cache.spaceManager.readAllTables(space.path).then(mdb => {
+            void this.cache.spaceManager.readAllTables(space.path).then(mdb => {
                 this.message(workerId, {
                 job, 
                 payload:{

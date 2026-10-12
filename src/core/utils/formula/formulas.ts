@@ -15,7 +15,7 @@ const letFunction = (args: MathNode[], math: any, scope: Map<string, any>) => {
 		return "";
 	}
 	const name = variable.name;
-	const value = args[1] as MathNode;
+	const value = args[1];
 	math.evaluate(`${name} = ${value.toString()}`, scope);
 	const fnCode = args[2].compile();
 	return fnCode.evaluate(scope);
@@ -34,7 +34,7 @@ const letsFunction = (args: MathNode[], math: any, scope: Map<string, any>) => {
 			return ""
 		}
 		const name = variable.name;
-		const value = args[i + 1] as MathNode;
+		const value = args[i + 1];
 		math.evaluate(`${name} = ${value.toString()}`, scope);
 	}
 	

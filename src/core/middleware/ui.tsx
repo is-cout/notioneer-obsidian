@@ -70,7 +70,7 @@ export class UIManager implements IUIManager {
       );
     } else if (space) {
       if (space?.metadata.template?.length > 0) {
-        newTemplateInSpace(
+        void newTemplateInSpace(
           this.superstate,
           space,
           space.metadata.template,
@@ -78,7 +78,7 @@ export class UIManager implements IUIManager {
         );
         return;
       } else {
-        newPathInSpace(
+        void newPathInSpace(
           this.superstate,
           space,
           "md",
@@ -89,12 +89,12 @@ export class UIManager implements IUIManager {
         );
       }
     } else {
-      defaultSpace(
+      void defaultSpace(
         this.superstate,
         this.superstate.pathsIndex.get(this.superstate.ui.activePath)
       ).then((f) => {
         if (f)
-          newPathInSpace(this.superstate, f, "md", null, false, null, location);
+          void newPathInSpace(this.superstate, f, "md", null, false, null, location);
       });
     }
   }
@@ -103,15 +103,15 @@ export class UIManager implements IUIManager {
   public setActiveState(state: Record<string, any>) {
     if (_.isEqual(state, this.activeState)) return;
     this.activeState = state;
-    this.eventsDispatch.dispatchEvent("activeStateChanged", null);
+    void this.eventsDispatch.dispatchEvent("activeStateChanged", null);
   }
   public activePath: string;
   public setActivePath(path: string) {
     this.activePath = path;
-    this.eventsDispatch.dispatchEvent("activePathChanged", path);
+    void this.eventsDispatch.dispatchEvent("activePathChanged", path);
   }
   public setActiveSelection(path: string, content: any) {
-    this.eventsDispatch.dispatchEvent("activeSelectionChanged", {
+    void this.eventsDispatch.dispatchEvent("activeSelectionChanged", {
       path,
       content,
     });

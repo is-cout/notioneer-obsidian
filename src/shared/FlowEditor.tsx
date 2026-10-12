@@ -118,7 +118,7 @@ export class FlowEditor extends nosuper(HoverPopover) {
         win?.document?.body.querySelectorAll(".mk-hover-popover") ?? []
       ) as HTMLElement[]
     )
-      .map((el) => popovers.get(el)!)
+      .map((el) => popovers.get(el))
       .filter((he) => he);
   }
 
@@ -130,7 +130,7 @@ export class FlowEditor extends nosuper(HoverPopover) {
     return el ? popovers.get(el) : undefined;
   }
 
-  hoverEl: HTMLElement = this.document.defaultView!.createDiv({
+  hoverEl: HTMLElement = this.document.defaultView.createDiv({
     cls: "mk-floweditor mk-hover-popover",
     attr: { id: "he" + this.id },
   });
@@ -153,7 +153,7 @@ export class FlowEditor extends nosuper(HoverPopover) {
     this.state = PopoverState.Showing;
     const { hoverEl } = this;
 
-    this.abortController!.load();
+    this.abortController.load();
     this.timer = window.setTimeout(this.show.bind(this), waitTime);
     this.setActive = this._setActive.bind(this);
     if (hoverEl) {
@@ -196,13 +196,12 @@ export class FlowEditor extends nosuper(HoverPopover) {
     }, this.rootSplit);
     if (leafCount === 0) {
       this.hide(); // close if we have no leaves
-    } else if (leafCount > 1) {
-    }
+    } else if (leafCount > 1) { /* empty */ }
     this.hoverEl.setAttribute("data-leaf-count", leafCount.toString());
   }
 
   setTitleBar() {
-    this.titleEl = this.document.defaultView!.createDiv("mk-flow-titlebar");
+    this.titleEl = this.document.defaultView.createDiv("mk-flow-titlebar");
     this.containerEl.prepend(this.titleEl);
   }
 
@@ -210,7 +209,7 @@ export class FlowEditor extends nosuper(HoverPopover) {
     this.rootSplit.getRoot = () =>
       this.app.workspace[
         this.document === document ? "rootSplit" : "floatingSplit"
-      ]!;
+      ];
     this.rootSplit.getContainer = () =>
       FlowEditor.containerForDocument(this.app, this.document);
 
@@ -250,7 +249,7 @@ export class FlowEditor extends nosuper(HoverPopover) {
 
   async onShow() {
     const closeDelay = 600;
-    setTimeout(() => (this.waitTime = closeDelay), closeDelay);
+    window.setTimeout(() => (this.waitTime = closeDelay), closeDelay);
 
     this.oldPopover?.hide();
     this.oldPopover = null;
@@ -284,7 +283,7 @@ export class FlowEditor extends nosuper(HoverPopover) {
     if (this.shouldShow()) {
       if (this.state === PopoverState.Hiding) {
         this.state = PopoverState.Shown;
-        clearTimeout(this.timer);
+        window.clearTimeout(this.timer);
       }
     } else {
       if (this.state === PopoverState.Showing) {
@@ -339,7 +338,7 @@ export class FlowEditor extends nosuper(HoverPopover) {
     this.timer = 0;
     this.shownPos = mouseCoords;
     this.targetEl.replaceChildren(this.hoverEl);
-    this.onShow();
+    void this.onShow();
     this.app.workspace.onLayoutChange();
     this.load();
   }
@@ -363,7 +362,7 @@ export class FlowEditor extends nosuper(HoverPopover) {
     // A timer might be pending to call show() for the first time, make sure
     // it doesn't bring us back up after we close
     if (this.timer) {
-      clearTimeout(this.timer);
+      window.clearTimeout(this.timer);
       this.timer = 0;
     }
 

@@ -2,7 +2,6 @@ import esbuild from "esbuild";
 import { copy } from 'esbuild-plugin-copy';
 import fs from 'fs';
 import { builtinModules } from 'module';
-import path from 'path';
 import process from "process";
 
 // prevDir / demoDir for the preview and demo builds. Optional; CI has no .env.
@@ -20,97 +19,7 @@ const prod = (process.argv[2] === 'production');
 const prev = (process.argv[2] === 'preview');
 const buildv = prod || prev
 
-
-function inlineWorkerPlugin(extraConfig) {
-  return {
-    name: 'esbuild-plugin-inline-worker',
-
-    setup(build) {
-      build.onLoad(
-        {filter: /\.worker\.(js|jsx|ts|tsx)$/},
-        async ({path: workerPath}) => {
-          // let workerCode = await fs.promises.readFile(workerPath, {
-          //   encoding: 'utf-8',
-          // });
-          const workerLookup = {
-            "indexer.worker.ts": "Superstate Indexer",
-            "runner.worker.ts": "Superstate Runner",
-            "search.worker.ts": "Superstate Search"
-          }
-          const workerName = workerPath.split('/').pop();
-          
-
-          let workerCode = await buildWorker(workerPath, extraConfig);
-          return {
-            contents: `import inlineWorker from '__inline-worker'
-export default function Worker() {
-  return inlineWorker(${JSON.stringify(workerCode)}, ${ JSON.stringify({name: workerLookup[workerName]})});
-}
-`,
-            loader: 'js',
-          };
-        }
-      );
-      
-
-      const inlineWorkerFunctionCode = `
-export default function inlineWorker(scriptText, name) {
-  let blob = new Blob([scriptText], {type: 'text/javascript'});
-  let url = URL.createObjectURL(blob);
-  let worker = new Worker(url, name);
-  URL.revokeObjectURL(url);
-  return worker;
-}
-`;
-
-      build.onResolve({filter: /^__inline-worker$/}, ({path}) => {
-        return {path, namespace: 'inline-worker'};
-      });
-      build.onLoad({filter: /.*/, namespace: 'inline-worker'}, () => {
-        return {contents: inlineWorkerFunctionCode, loader: 'js'};
-      });
-    },
-  };
-}
-
-
-
-const cacheDir = path.resolve('node_modules/.cache/esbuild-plugin-inline-worker');
-fs.mkdirSync(cacheDir, { recursive: true });
-
-async function buildWorker(workerPath, extraConfig) {
-  let scriptNameParts = path.basename(workerPath).split('.');
-  scriptNameParts.pop();
-  scriptNameParts.push('js');
-  let scriptName = scriptNameParts.join('.');
-  let bundlePath = path.resolve(cacheDir, scriptName);
-
-  if (extraConfig) {
-    delete extraConfig.entryPoints;
-    delete extraConfig.outfile;
-    delete extraConfig.outdir;
-    delete extraConfig.workerName;
-  }
-
-  
-  await esbuild.build({
-    entryPoints: [workerPath],
-    bundle: true,
-    minify: true,
-    outfile: bundlePath,
-		define: {
-			process: 'process',
-		},
-    target: 'es2020',
-    format: 'cjs',
-    ...extraConfig,
-  });
-
-  return fs.promises.readFile(bundlePath, {encoding: 'utf-8'});
-}
-
-
-
+// esbuild names the bundled CSS after the entry (main.css); Obsidian loads styles.css.
 let renamePlugin = {
     name: 'rename-styles',
     setup(build) {
@@ -137,19 +46,14 @@ esbuild.build({
 	external: [
 		'obsidian',
 		'electron',
-    // '@codemirror/autocomplete',
 		'@codemirror/collab',
 		'@codemirror/commands',
-		// '@codemirror/language',
 		'@codemirror/lint',
 		'@codemirror/search',
 		'@codemirror/state',
 		'@codemirror/view',
 		...builtinModules],
 	format: 'cjs',
-  loader: {
-    '.ttf': 'base64', 
-  },
 	watch: !buildv,
 	target: 'es2020',
 	logLevel: "info",
@@ -159,8 +63,6 @@ esbuild.build({
 	outfile: outputDir+'/main.js',
   define: { 'process.env.NODE_ENV': prod ? '"production"' : '"development"' },
 	plugins: [renamePlugin,
-		// preactCompatPlugin,
-		inlineWorkerPlugin(),
 		...(buildv ? [copy({
 			resolveFrom: 'cwd',
 			assets: {
@@ -170,4 +72,3 @@ esbuild.build({
 		  })] : []),
 	],
 }).catch(() => process.exit(1));
-

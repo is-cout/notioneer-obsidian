@@ -51,6 +51,13 @@ Settings → Notioneer → **Cover height**. It is make.md’s `bannerHeight` se
 The header is make.md’s code — this plugin is a fork of it. See
 [ARCHITECTURE.md](ARCHITECTURE.md#fork-status).
 
+### I see two titles — how do I keep just one?
+
+Notioneer hides Obsidian's native inline title in any editor that shows the header, so by
+default you only get the header's title. If a theme or snippet still brings the native one
+back, turning off Settings → Editor → **Show inline title** also works: since 1.0.1 that
+setting no longer hides the header's title.
+
 ### I have a snippet hiding the native properties panel — do I still need it?
 
 No, and it will hurt: Notioneer already hides `.metadata-container` inside the editor. A

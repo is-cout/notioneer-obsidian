@@ -76,6 +76,23 @@ body.mk-inline-context-enabled .markdown-source-view .metadata-container {
 	display: none !important;
 }
 
+/* --- Native inline title ---
+   make.md's rule (FileContext.css) only hides it in live preview and without `!important`,
+   so a theme or snippet that sets `.inline-title { display: … }` puts it back and the note
+   shows two titles (issue #1). Same weight as the properties rule above, scoped to editors
+   where our header is actually mounted so a note without one keeps its title. `> .inline-title`
+   only matches Obsidian's own: the header's title sits inside `.mk-inline-context`. */
+body.mk-inline-context-enabled .markdown-source-view .cm-sizer:has(> .mk-inline-context) > .inline-title {
+	display: none !important;
+}
+
+/* The header's title reuses the `inline-title` class (for theme styling), so Obsidian's
+   `body:not(.show-inline-title) .inline-title:not([data-level])` hid it too: turning off
+   "Show inline title" left a note with no title at all. Keep ours regardless of that setting. */
+body:not(.show-inline-title) .mk-inline-title.inline-title:not([data-level]) {
+	display: block;
+}
+
 /* --- Property values ---
    make.md renders every multi-value cell as a neutral grey chip
    (`rgba(var(--mono-rgb-100), 0.025)` in SpaceViewer/TableView.css). Inside the header we
